@@ -1,0 +1,24 @@
+{
+  "recordingVersion": "0.1",
+  "recordingId": "rec_f1e2d3c4",
+  "sessionId": "ses_a1b2c3d4",
+  "ownerRef": "usr_9f8e7d6c",
+  "createdAt": "2026-10-16T09:40:00Z",
+  "format": {
+    "container": "wav",
+    "codec": "pcm_s16le",
+    "sampleRateHz": 16000,
+    "channels": 1
+  },
+  "durationMs": 300000,
+  "sizeBytes": 9600000,
+  "consent": {
+    "consentVersion": "0.1",
+    "recordingRetentionGrantedAt": "2026-10-16T09:29:00Z"
+  },
+  "lifecycle": {
+    "state": "deleted",
+    "retentionUntil": "2026-11-15T09:40:00Z",
+    "deletedAt": "2026-10-17T08:00:00Z"
+  }
+}

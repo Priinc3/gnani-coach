@@ -1,0 +1,9 @@
+{
+  "errorVersion": "0.1",
+  "code": "request.invalid_settings",
+  "category": "invalid_request",
+  "message": "That combination of language and scenario is not available yet.",
+  "retryable": true,
+  "correlationId": "cor_4d5e6f7a",
+  "occurredAt": "2026-10-16T09:50:00Z"
+}

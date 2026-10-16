@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/recording-metadata/0.1.0",
+  "title": "Recording metadata boundary (draft v0.1)",
+  "description": "Boundary for metadata about an opted-in saved recording. Status: DRAFT v0.1 — not frozen; no storage implementation exists in Phase 01. The recording itself is private: this shape rejects `publicUrl`, `signedUrl`, `url` and `objectKey`, because any URL kept in a stored record becomes a shareable capability. Deletion keeps the record with a `deletedAt` timestamp instead of erasing the fact that audio once existed and was deleted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordingVersion",
+    "recordingId",
+    "sessionId",
+    "ownerRef",
+    "createdAt",
+    "format",
+    "durationMs",
+    "sizeBytes",
+    "consent",
+    "lifecycle"
+  ],
+  "properties": {
+    "recordingVersion": { "const": "0.1" },
+    "recordingId": { "$ref": "#/$defs/recordingId" },
+    "sessionId": { "$ref": "#/$defs/sessionId" },
+    "ownerRef": {
+      "type": "string",
+      "pattern": "^usr_[a-z0-9]{6,40}$",
+      "description": "Opaque internal owner reference; never an email, phone number or display name."
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "format": { "$ref": "#/$defs/format" },
+    "durationMs": { "type": "integer", "minimum": 0 },
+    "sizeBytes": { "type": "integer", "minimum": 0 },
+    "consent": { "$ref": "#/$defs/consent" },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "publicUrl": false,
+    "signedUrl": false,
+    "url": false,
+    "objectKey": false
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "properties": { "state": { "const": "deleted" } },
+            "required": ["state"]
+          }
+        },
+        "required": ["lifecycle"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "properties": { "deletedAt": { "type": "string", "format": "date-time" } },
+            "required": ["deletedAt"]
+          }
+        }
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "properties": { "deletedAt": { "type": "null" } },
+            "required": ["deletedAt"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sessionId": { "type": "string", "pattern": "^ses_[a-z0-9]{6,40}$" },
+    "recordingId": { "type": "string", "pattern": "^rec_[a-z0-9]{6,40}$" },
+    "format": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["container", "codec", "sampleRateHz", "channels"],
+      "description": "Draft container profile for an opted-in retained recording. The final capture format is unresolved until Phase 02 probes; this constrains the stored profile, not the wire format.",
+      "properties": {
+        "container": { "const": "wav" },
+        "codec": { "const": "pcm_s16le" },
+        "sampleRateHz": { "type": "integer", "minimum": 8000, "maximum": 48000 },
+        "channels": { "const": 1 }
+      }
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consentVersion", "recordingRetentionGrantedAt"],
+      "description": "Present only when the learner opted in to recording retention; the timestamp is when the permission was granted. There is no boolean here because this metadata exists only for opted-in recordings.",
+      "properties": {
+        "consentVersion": { "const": "0.1" },
+        "recordingRetentionGrantedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "retentionUntil", "deletedAt"],
+      "properties": {
+        "state": { "type": "string", "enum": ["retained", "deleted"] },
+        "retentionUntil": {
+          "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+          "description": "Planned automatic deletion time, when one is configured."
+        },
+        "deletedAt": {
+          "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+          "description": "When deletion completed; null while retained. `deleted` state requires a timestamp."
+        }
+      }
+    }
+  }
+}

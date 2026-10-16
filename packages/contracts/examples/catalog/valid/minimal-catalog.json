@@ -1,0 +1,39 @@
+{
+  "catalogVersion": "0.1",
+  "checkedOn": "2026-10-16",
+  "sources": [
+    {
+      "id": "stt-realtime",
+      "label": "Gnani realtime STT — supported languages",
+      "url": "https://docs.gnani.ai/api/STT/stt-websocket",
+      "checkedOn": "2026-10-16"
+    }
+  ],
+  "languages": [
+    {
+      "id": "hindi",
+      "displayName": "Hindi",
+      "nativeName": "हिन्दी",
+      "sttCode": "hi-IN",
+      "ttsCode": "hi-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime"]
+    }
+  ],
+  "codeMixedModes": [],
+  "scenarios": [
+    {
+      "id": "interview",
+      "displayName": "Interview practice",
+      "description": "Answer common interview questions out loud."
+    }
+  ],
+  "levels": [
+    { "id": "beginner", "displayName": "Beginner" }
+  ]
+}

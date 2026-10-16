@@ -1,0 +1,215 @@
+{
+  "catalogVersion": "0.1",
+  "checkedOn": "2026-10-16",
+  "sources": [
+    {
+      "id": "stt-realtime",
+      "label": "Gnani realtime STT — supported languages (reviewed 2026-10-16)",
+      "url": "https://docs.gnani.ai/api/STT/stt-websocket",
+      "checkedOn": "2026-10-16"
+    },
+    {
+      "id": "tts-realtime",
+      "label": "Gnani realtime TTS — models and language parameters (reviewed 2026-10-16)",
+      "url": "https://docs.gnani.ai/api/TTS/tts-websocket",
+      "checkedOn": "2026-10-16"
+    },
+    {
+      "id": "voices",
+      "label": "Gnani voice catalog — model-specific voices (reviewed 2026-10-16)",
+      "url": "https://docs.gnani.ai/api/TTS/available-voices",
+      "checkedOn": "2026-10-16"
+    }
+  ],
+  "languages": [
+    {
+      "id": "english",
+      "displayName": "English (India)",
+      "nativeName": "English",
+      "sttCode": "en-IN",
+      "ttsCode": "en-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"],
+      "notes": [
+        "The realtime STT documentation describes this entry as accepting Hindi–English mixed audio with Latin-script output. The TTS code hi-en must not be sent to STT."
+      ]
+    },
+    {
+      "id": "hindi",
+      "displayName": "Hindi",
+      "nativeName": "हिन्दी",
+      "sttCode": "hi-IN",
+      "ttsCode": "hi-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "bengali",
+      "displayName": "Bengali",
+      "nativeName": "বাংলা",
+      "sttCode": "bn-IN",
+      "ttsCode": "bn-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "gujarati",
+      "displayName": "Gujarati",
+      "nativeName": "ગુજરાતી",
+      "sttCode": "gu-IN",
+      "ttsCode": "gu-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "kannada",
+      "displayName": "Kannada",
+      "nativeName": "ಕನ್ನಡ",
+      "sttCode": "kn-IN",
+      "ttsCode": "kn-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "malayalam",
+      "displayName": "Malayalam",
+      "nativeName": "മലയാളം",
+      "sttCode": "ml-IN",
+      "ttsCode": "ml-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "marathi",
+      "displayName": "Marathi",
+      "nativeName": "मराठी",
+      "sttCode": "mr-IN",
+      "ttsCode": "mr-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "punjabi",
+      "displayName": "Punjabi",
+      "nativeName": "ਪੰਜਾਬੀ",
+      "sttCode": "pa-IN",
+      "ttsCode": "pa-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "tamil",
+      "displayName": "Tamil",
+      "nativeName": "தமிழ்",
+      "sttCode": "ta-IN",
+      "ttsCode": "ta-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    },
+    {
+      "id": "telugu",
+      "displayName": "Telugu",
+      "nativeName": "తెలుగు",
+      "sttCode": "te-IN",
+      "ttsCode": "te-IN",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"]
+    }
+  ],
+  "codeMixedModes": [
+    {
+      "id": "hinglish",
+      "displayName": "Hinglish (Hindi–English mix)",
+      "sttCode": "en-IN",
+      "ttsCode": "hi-en",
+      "capabilities": {
+        "documented": true,
+        "accountEnabled": false,
+        "conversationTested": false,
+        "assessmentValidated": false
+      },
+      "sourceRefs": ["stt-realtime", "tts-realtime"],
+      "notes": [
+        "Realtime STT describes Hindi–English mixed input under the English entry; the separate TTS code hi-en must not be sent to STT.",
+        "Treated as an additional code-mixed mode, not an eleventh independent language, and not a proven mixed-language scoring system."
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "interview",
+      "displayName": "Interview practice",
+      "description": "Answer common interview questions out loud, with coaching breaks between rounds."
+    },
+    {
+      "id": "workplace",
+      "displayName": "Workplace conversations",
+      "description": "Stand-ups, meetings and colleague conversations in a work setting."
+    },
+    {
+      "id": "everyday",
+      "displayName": "Everyday conversation",
+      "description": "Low-pressure daily situations: shops, neighbours, phone calls."
+    },
+    {
+      "id": "travel-social",
+      "displayName": "Travel and social",
+      "description": "Getting around, asking for help and making small talk while travelling."
+    }
+  ],
+  "levels": [
+    { "id": "beginner", "displayName": "Beginner" },
+    { "id": "intermediate", "displayName": "Intermediate" },
+    { "id": "advanced", "displayName": "Advanced" }
+  ]
+}

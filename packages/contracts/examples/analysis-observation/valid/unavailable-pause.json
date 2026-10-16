@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "pause.longest_ms",
+  "source": "measured",
+  "status": "unavailable",
+  "value": null,
+  "unit": null,
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "unknown",
+    "limitations": ["no speech-region detector exists in Phase 01"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:20Z"
+}

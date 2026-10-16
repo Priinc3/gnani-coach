@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/event-envelope/0.1.0",
+  "title": "Transient event envelope (draft v0.1)",
+  "description": "Envelope for transient control/text events between the browser, our voice service, and the session controller. Status: DRAFT v0.1 — not frozen. Two separate clocks: `sampleTimeMs` is the learner-audio sample clock position of the event content when known (null when not tied to audio), while `emittedAt` is the producer's wall clock when the envelope was sent. Server emission timestamps are NOT word timings and must never be presented as alignment. Binary audio travels as raw binary frames on its own channel; it must never be base64-embedded in these JSON envelopes. Text payloads carried here are transient and must not be copied into durable metrics, logs, caches or crash reports.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "envelopeVersion",
+    "type",
+    "sessionId",
+    "connectionId",
+    "roundId",
+    "turnId",
+    "sequence",
+    "sampleTimeMs",
+    "emittedAt",
+    "payload"
+  ],
+  "properties": {
+    "envelopeVersion": { "const": "0.1" },
+    "type": {
+      "type": "string",
+      "enum": [
+        "session.state",
+        "round.boundary",
+        "turn.transcript",
+        "coach.speech.request",
+        "audio.frame.descriptor",
+        "error"
+      ],
+      "description": "Draft event type allowlist. Phase 03 freezes the final protocol after provider observations."
+    },
+    "sessionId": { "$ref": "#/$defs/sessionId" },
+    "connectionId": {
+      "$ref": "#/$defs/connectionId",
+      "description": "Identifies one transport connection. Reconnects get a new connectionId so stale events can be fenced off."
+    },
+    "roundId": {
+      "anyOf": [{ "$ref": "#/$defs/roundId" }, { "type": "null" }],
+      "description": "Current coaching round, when known. Null before the first round boundary."
+    },
+    "turnId": {
+      "anyOf": [{ "$ref": "#/$defs/turnId" }, { "type": "null" }],
+      "description": "Turn the event belongs to, when it belongs to one. Null for session-level events."
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonic per-connection ordering counter. Ordering and duplicate suppression are enforced by the runtime, not this schema."
+    },
+    "sampleTimeMs": {
+      "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }],
+      "description": "Position on the learner-audio sample clock, in milliseconds, when the event's content occurred and that is known. Null when the event is not audio-anchored. Never synthesized from server emission time."
+    },
+    "emittedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Producer wall clock when the envelope was emitted. Do not treat as word timing or audio alignment."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-type-specific payload, further constrained below."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "audio.frame.descriptor" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/audioFrameDescriptor" } }
+      },
+      "else": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/textPayload" } }
+      }
+    }
+  ],
+  "$defs": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^ses_[a-z0-9]{6,40}$",
+      "description": "Opaque session id. Prefix identifies the kind; temporal staleness (an id from an ended session or connection) is a runtime identity check, not a schema check."
+    },
+    "connectionId": {
+      "type": "string",
+      "pattern": "^con_[a-z0-9]{6,40}$"
+    },
+    "roundId": {
+      "type": "string",
+      "pattern": "^rnd_[a-z0-9]{6,40}$"
+    },
+    "turnId": {
+      "type": "string",
+      "pattern": "^trn_[a-z0-9]{6,40}$"
+    },
+    "audioFrameDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Metadata-only descriptor correlating a binary audio frame that arrives on the separate binary channel. Audio bytes are never carried inside this JSON envelope.",
+      "required": ["sampleRateHz", "sampleFormat", "channels", "frameByteLength", "firstSampleIndex"],
+      "properties": {
+        "sampleRateHz": { "type": "integer", "minimum": 8000, "maximum": 48000 },
+        "sampleFormat": {
+          "const": "s16le",
+          "description": "Signed 16-bit little-endian PCM, mono."
+        },
+        "channels": { "const": 1 },
+        "frameByteLength": { "type": "integer", "minimum": 2, "maximum": 65536 },
+        "firstSampleIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index of the first sample in the frame on the learner-audio sample clock."
+        }
+      }
+    },
+    "textPayload": {
+      "type": "object",
+      "description": "Transient text/control payload. The explicit false schemas below reject the common convenience patterns of smuggling audio into JSON; transcripts and notes here are transient only.",
+      "properties": {
+        "text": { "type": "string", "maxLength": 4000 },
+        "state": { "type": "string", "maxLength": 80 },
+        "note": { "type": "string", "maxLength": 400 },
+        "audio": false,
+        "audioBase64": false,
+        "pcmBase64": false
+      },
+      "additionalProperties": true
+    }
+  }
+}

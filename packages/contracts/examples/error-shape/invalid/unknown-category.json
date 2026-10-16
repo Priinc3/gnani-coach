@@ -1,0 +1,9 @@
+{
+  "errorVersion": "0.1",
+  "code": "request.validation",
+  "category": "validation",
+  "message": "Some of the session settings were not understood.",
+  "retryable": false,
+  "correlationId": "cor_3c4d5e6f",
+  "occurredAt": "2026-10-16T09:49:00Z"
+}

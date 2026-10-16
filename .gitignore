@@ -1,0 +1,49 @@
+# Dependencies (installed from lockfiles; never committed)
+node_modules/
+
+# Build output
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Test / tool caches and reports
+.eslintcache
+.cache/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Python
+services/voice/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Real environment files (sanitized *.example files are committed instead)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Audio recordings and captures (privacy: user audio must never enter the repo).
+# Public foundation assets are exempted explicitly, but stay synthesized/licensed only.
+recordings/
+*.pcm
+*.raw
+*.wav
+*.mp3
+*.ogg
+*.flac
+!apps/web/public/**
+
+# macOS / editor noise
+.DS_Store

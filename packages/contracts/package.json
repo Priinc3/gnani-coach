@@ -1,0 +1,20 @@
+{
+  "name": "@gnani/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Draft v0.1 JSON Schema (2020-12) contracts and the shared language/scenario catalog, consumed by both the web app (Ajv) and the voice-service tests (Python jsonschema).",
+  "exports": {
+    ".": "./data/catalog.json",
+    "./data/catalog.json": "./data/catalog.json",
+    "./schemas/*": "./schemas/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "node scripts/test-examples.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "envelopeVersion": "0.1",
+  "type": "turn.transcript",
+  "sessionId": "ses_a1b2c3d4",
+  "connectionId": "con_e5f6a7b8",
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "sequence": -1,
+  "sampleTimeMs": 4500,
+  "emittedAt": "2026-10-16T09:31:02Z",
+  "payload": {
+    "text": "hello, I am ready to start"
+  }
+}

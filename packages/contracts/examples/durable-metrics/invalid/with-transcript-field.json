@@ -1,0 +1,26 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_a1b2c3d4",
+  "recordedAt": "2026-10-16T09:40:00Z",
+  "practiceLanguageId": "hindi",
+  "scenarioId": "everyday",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_a3b4c5d6",
+      "roundId": "rnd_c9d0e1f2",
+      "durationMs": 42000,
+      "observations": [
+        {
+          "metricKey": "pause.count",
+          "method": "energy-based speech regions, uncalibrated",
+          "status": "available",
+          "value": 3,
+          "unit": "count"
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 42000 },
+  "transcript": "so I said hello and then I asked about the train"
+}

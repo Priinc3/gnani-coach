@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 21 items
+
+services/voice/tests/foundation/test_contract_parity.py .....            [ 23%]
+services/voice/tests/foundation/test_privacy_shapes.py ......            [ 52%]
+services/voice/tests/foundation/test_service_health.py .....             [ 76%]
+services/voice/tests/foundation/test_settings_boundary.py .....          [100%]
+
+============================== 21 passed in 0.68s ==============================

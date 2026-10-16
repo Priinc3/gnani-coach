@@ -1,0 +1,28 @@
+[project]
+name = "gnani-coach"
+version = "0.1.0"
+description = "Speaking Coach voice-service skeleton (Phase 01 foundation): process health and the configuration boundary only. No live speech provider is implemented."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi==0.143.3",
+    "uvicorn==0.54.0",
+    "pydantic==2.14.1",
+    "pydantic-settings==2.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2==2.13.1",
+    "jsonschema[format-nongpl]==4.26.0",
+    "pytest==9.1.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.9,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "gnani_coach"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

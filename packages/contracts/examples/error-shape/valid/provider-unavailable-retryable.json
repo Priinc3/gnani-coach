@@ -1,0 +1,9 @@
+{
+  "errorVersion": "0.1",
+  "code": "provider.unavailable",
+  "category": "provider_unavailable",
+  "message": "The speech provider is not reachable right now. Nothing was recorded — please try again in a moment.",
+  "retryable": true,
+  "correlationId": "cor_1a2b3c4d",
+  "occurredAt": "2026-10-16T09:45:00Z"
+}

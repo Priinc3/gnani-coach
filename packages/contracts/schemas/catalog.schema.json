@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/catalog/0.1.0",
+  "title": "Language and scenario catalog (draft v0.1)",
+  "description": "Authoritative shape of packages/contracts/data/catalog.json. Status: DRAFT v0.1 — not frozen; finalized in Phase 03 after real provider observations. Capability states exist so that documentation alone never marks a language verified: only `documented` may be true in draft 0.1, and even that is documentation evidence, not runtime evidence. The sttCode/ttsCode allowlists mean an undocumented language (for example fr-FR) cannot enter the catalog without a schema change.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalogVersion", "checkedOn", "sources", "languages", "codeMixedModes", "scenarios", "levels"],
+  "properties": {
+    "catalogVersion": {
+      "const": "0.1",
+      "description": "Draft contract version. Bumped only through a Phase 03-style contract review."
+    },
+    "checkedOn": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the catalog was last checked against the reviewed provider documentation."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Language entries. The catalog data file is separately checked to list exactly the ten documented realtime languages.",
+      "items": { "$ref": "#/$defs/language" }
+    },
+    "codeMixedModes": {
+      "type": "array",
+      "description": "Code-mixed practice modes are separate from standalone languages, with their own documented codes.",
+      "items": { "$ref": "#/$defs/codeMixedMode" }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/scenario" }
+    },
+    "levels": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/level" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "description": "Stable lowercase identifier (ASCII). Display names may change; ids may not, once published."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "url", "checkedOn"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "url": { "type": "string", "format": "uri" },
+        "checkedOn": { "type": "string", "format": "date" }
+      }
+    },
+    "languageCode": {
+      "type": "string",
+      "enum": ["en-IN", "hi-IN", "bn-IN", "gu-IN", "kn-IN", "ml-IN", "mr-IN", "pa-IN", "ta-IN", "te-IN"],
+      "description": "BCP-47 style codes documented for the reviewed realtime STT/TTS endpoints (checked 2026-10-16)."
+    },
+    "ttsLanguageCode": {
+      "type": "string",
+      "enum": ["en-IN", "hi-IN", "bn-IN", "gu-IN", "kn-IN", "ml-IN", "mr-IN", "pa-IN", "ta-IN", "te-IN", "hi-en"],
+      "description": "TTS additionally documents the code-mixed Hinglish code hi-en. It must not be sent to STT."
+    },
+    "capabilityStates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["documented", "accountEnabled", "conversationTested", "assessmentValidated"],
+      "description": "Four independent capability states. Documentation listing is never proof of runtime capability: draft 0.1 requires the last three to be false until genuine checks pass.",
+      "properties": {
+        "documented": {
+          "type": "boolean",
+          "description": "The reviewed provider documentation lists this capability."
+        },
+        "accountEnabled": {
+          "type": "boolean",
+          "description": "A real provider account has been verified to have this capability enabled."
+        },
+        "conversationTested": {
+          "type": "boolean",
+          "description": "This app completed a genuine conversation-capability check for it."
+        },
+        "assessmentValidated": {
+          "type": "boolean",
+          "description": "This app validated measured-assessment quality (pause/filler/rate evidence) for it."
+        }
+      }
+    },
+    "language": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "nativeName", "sttCode", "ttsCode", "capabilities", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "nativeName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Name in the language's own script, so the UI can show readable Indic text."
+        },
+        "sttCode": { "$ref": "#/$defs/languageCode" },
+        "ttsCode": { "$ref": "#/$defs/languageCode" },
+        "capabilities": { "$ref": "#/$defs/capabilityStates" },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/id" },
+          "description": "Ids of entries in the top-level `sources` array."
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 400 }
+        }
+      }
+    },
+    "codeMixedMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "sttCode", "ttsCode", "capabilities", "sourceRefs", "notes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "sttCode": {
+          "$ref": "#/$defs/languageCode",
+          "description": "The STT code the mixed audio is sent under (for Hinglish, the English entry documents Hindi-English mixed input)."
+        },
+        "ttsCode": { "$ref": "#/$defs/ttsLanguageCode" },
+        "capabilities": { "$ref": "#/$defs/capabilityStates" },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "notes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "maxLength": 400 }
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "description"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 }
+      }
+    },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    }
+  }
+}

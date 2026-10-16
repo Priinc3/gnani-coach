@@ -1,0 +1,10 @@
+{
+  "errorVersion": "0.1",
+  "code": "provider.bad_response",
+  "category": "provider_unavailable",
+  "message": "The speech provider returned an unexpected response.",
+  "retryable": true,
+  "correlationId": "cor_2b3c4d5e",
+  "occurredAt": "2026-10-16T09:48:00Z",
+  "rawTranscript": "hello I wanted to ask about the bus timetable"
+}

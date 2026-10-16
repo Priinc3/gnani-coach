@@ -1,0 +1,13 @@
+Resolved 45 packages in 397ms
+   Building gnani-coach @ file:///Users/princegondaliya/Learning/Projects/temp/gnani/services/voice
+      Built gnani-coach @ file:///Users/princegondaliya/Learning/Projects/temp/gnani/services/voice
+Prepared 4 packages in 385ms
+Uninstalled 4 packages in 9ms
+Installed 4 packages in 3ms
+ - certifi==2026.7.22
+ ~ gnani-coach==0.1.0 (from file:///Users/princegondaliya/Learning/Projects/temp/gnani/services/voice)
+ - httpcore==1.0.9
+ + httpcore2==2.13.1
+ - httpx==0.28.1
+ + httpx2==2.13.1
+ + truststore==0.10.5

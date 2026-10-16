@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/durable-metrics/0.1.0",
+  "title": "Durable session metrics (draft v0.1)",
+  "description": "Numeric-only record that may outlive a session. Status: DRAFT v0.1 — not frozen. This shape is deliberately incapable of holding learner or model content: the property names set to `false` below reject transcripts, quoted mistakes, arbitrary model prose, audio references and embeddings, and every nested object rejects unknown fields. `method` is short provenance metadata about how a number was produced, never report text. Nullable values keep the unavailable-versus-zero distinction: unavailable is never written as 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metricsVersion",
+    "sessionId",
+    "recordedAt",
+    "practiceLanguageId",
+    "scenarioId",
+    "recordingId",
+    "turns",
+    "totals"
+  ],
+  "properties": {
+    "metricsVersion": { "const": "0.1" },
+    "sessionId": { "$ref": "#/$defs/sessionId" },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "practiceLanguageId": { "$ref": "#/$defs/catalogId" },
+    "scenarioId": { "$ref": "#/$defs/catalogId" },
+    "recordingId": {
+      "anyOf": [{ "$ref": "#/$defs/recordingId" }, { "type": "null" }],
+      "description": "Private opaque reference to an opted-in recording, or null. Never a URL, path or provider identifier."
+    },
+    "turns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/turn" }
+    },
+    "totals": { "$ref": "#/$defs/totals" },
+    "transcript": false,
+    "quotedMistakes": false,
+    "modelText": false,
+    "audioUrl": false,
+    "embedding": false
+  },
+  "$defs": {
+    "sessionId": { "type": "string", "pattern": "^ses_[a-z0-9]{6,40}$" },
+    "turnId": { "type": "string", "pattern": "^trn_[a-z0-9]{6,40}$" },
+    "roundId": { "type": "string", "pattern": "^rnd_[a-z0-9]{6,40}$" },
+    "recordingId": { "type": "string", "pattern": "^rec_[a-z0-9]{6,40}$" },
+    "catalogId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$",
+      "description": "Stable catalog id. Membership is a runtime check against data/catalog.json, not a schema check."
+    },
+    "metricKey": {
+      "type": "string",
+      "enum": [
+        "pause.longest_ms",
+        "pause.count",
+        "filler.count",
+        "speech.rate_wpm",
+        "speech.active_rate_wpm",
+        "turn.duration_ms"
+      ],
+      "description": "Allowlisted numeric metrics only. Transcription confidence is not a speaking score and is not a metric here."
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metricKey", "method", "status", "value", "unit"],
+      "properties": {
+        "metricKey": { "$ref": "#/$defs/metricKey" },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Short method/reliability note, e.g. 'energy-based speech regions, uncalibrated'. Metadata only, never learner or model prose."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["available", "unavailable", "insufficient_evidence"]
+        },
+        "value": {
+          "type": ["number", "null"],
+          "description": "0 is a measured value; null means the metric was not available."
+        },
+        "unit": {
+          "enum": ["milliseconds", "count", "words_per_minute", null]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": { "status": { "const": "available" } },
+            "required": ["status"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "value": { "type": "number" },
+              "unit": { "type": "string", "enum": ["milliseconds", "count", "words_per_minute"] }
+            }
+          },
+          "else": {
+            "type": "object",
+            "properties": {
+              "value": { "type": "null" },
+              "unit": { "type": "null" }
+            }
+          }
+        }
+      ]
+    },
+    "turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turnId", "roundId", "durationMs", "observations"],
+      "properties": {
+        "turnId": { "$ref": "#/$defs/turnId" },
+        "roundId": { "anyOf": [{ "$ref": "#/$defs/roundId" }, { "type": "null" }] },
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "observations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/observation" }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turnCount", "speakingTimeMs"],
+      "properties": {
+        "turnCount": { "type": "integer", "minimum": 0 },
+        "speakingTimeMs": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

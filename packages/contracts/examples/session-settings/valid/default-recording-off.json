@@ -1,0 +1,15 @@
+{
+  "settingsVersion": "0.1",
+  "practiceLanguageId": "tamil",
+  "coachingLanguageId": "tamil",
+  "scenarioId": "interview",
+  "level": "beginner",
+  "coachingRoundTurns": 4,
+  "sessionLimitSeconds": 300,
+  "recordingRetention": false,
+  "consent": {
+    "consentVersion": "0.1",
+    "recordingRetentionGranted": false,
+    "recordingRetentionGrantedAt": null
+  }
+}

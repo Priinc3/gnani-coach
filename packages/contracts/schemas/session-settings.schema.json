@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/session-settings/0.1.0",
+  "title": "Session settings (draft v0.1)",
+  "description": "Chosen settings for one practice session. Status: DRAFT v0.1 — not frozen. Language ids must exist in packages/contracts/data/catalog.json at runtime (schema checks shape; catalog membership is a runtime check). Consent boundary: recording retention is consent to save AUDIO only. It never implies permission to durably keep transcripts, quoted mistakes, or model-generated report text — those stay transient under every setting here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "settingsVersion",
+    "practiceLanguageId",
+    "coachingLanguageId",
+    "scenarioId",
+    "level",
+    "coachingRoundTurns",
+    "sessionLimitSeconds",
+    "recordingRetention",
+    "consent"
+  ],
+  "properties": {
+    "settingsVersion": { "const": "0.1" },
+    "practiceLanguageId": {
+      "$ref": "#/$defs/languageId",
+      "description": "Language the learner practices speaking, e.g. tamil."
+    },
+    "coachingLanguageId": {
+      "$ref": "#/$defs/languageId",
+      "description": "Language the coach explains in. Defaults to the practice language; the learner can choose another."
+    },
+    "scenarioId": {
+      "$ref": "#/$defs/scenarioId",
+      "description": "Scenario preset id from the catalog, e.g. interview."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"]
+    },
+    "coachingRoundTurns": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8,
+      "description": "Completed learner turns per coaching round. Plan default: 4. Counts conversational turns, never STT segments."
+    },
+    "sessionLimitSeconds": {
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 900,
+      "description": "Upper bound for one call. Plan default 5-10 minutes; the provider's realtime STT session cap is 15 minutes (900 s), so no schedule may exceed 900."
+    },
+    "recordingRetention": {
+      "type": "boolean",
+      "description": "Whether the learner opted in to saving the recording for replay. Default false. Audio only — never transcript retention."
+    },
+    "consent": { "$ref": "#/$defs/consent" }
+  },
+  "$defs": {
+    "languageId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$",
+      "description": "Stable catalog id. Structure only: membership is verified at runtime against data/catalog.json, and 'french' being well-formed here does not make it a known language."
+    },
+    "scenarioId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$",
+      "description": "Stable catalog scenario id; membership verified at runtime."
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consentVersion", "recordingRetentionGranted", "recordingRetentionGrantedAt"],
+      "description": "Versioned consent fields, captured at ingestion and re-checked at durable write time.",
+      "properties": {
+        "consentVersion": {
+          "const": "0.1",
+          "description": "Version of the consent wording the learner saw. Stored with the consent record."
+        },
+        "recordingRetentionGranted": {
+          "type": "boolean",
+          "description": "True only if the learner explicitly allowed saving the recording for replay."
+        },
+        "recordingRetentionGrantedAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When the recording-retention permission was granted; null while no permission exists."
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": { "recordingRetention": { "const": true } },
+        "required": ["recordingRetention"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "consent": {
+            "type": "object",
+            "properties": { "recordingRetentionGranted": { "const": true } },
+            "required": ["recordingRetentionGranted"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "consent": {
+            "type": "object",
+            "properties": { "recordingRetentionGranted": { "const": true } },
+            "required": ["recordingRetentionGranted"]
+          }
+        },
+        "required": ["consent"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "consent": {
+            "type": "object",
+            "properties": {
+              "recordingRetentionGrantedAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "consent": {
+            "type": "object",
+            "properties": { "recordingRetentionGrantedAt": { "type": "null" } }
+          }
+        }
+      }
+    }
+  ]
+}

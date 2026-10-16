@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "speech.rate_wpm",
+  "source": "measured",
+  "status": "available",
+  "value": null,
+  "unit": null,
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "medium",
+    "limitations": ["rate estimate uncalibrated"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:40Z"
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/analysis-observation/0.1.0",
+  "title": "Transient analysis observation (draft v0.1)",
+  "description": "One measured-or-inferred observation about a learner turn, transient by default. Status: DRAFT v0.1 — not frozen; no disfluency algorithm is chosen in Phase 01. Rules encoded here: status=available means value and unit are present, and value 0 is a real measured zero (for example, zero fillers); status=unavailable or insufficient_evidence means value is null — 'no fillers were measurable' must never be reported as zero or as a clean fluency bill. source separates `measured` (derived from the learner's own audio by a stated method) from `inferred` (a model's judgment), so inferred claims are never presented as measurements. Transcription confidence is not a speaking score and has no place in this shape.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observationVersion",
+    "metricKey",
+    "source",
+    "status",
+    "value",
+    "unit",
+    "evidenceSpan",
+    "reliability",
+    "roundId",
+    "turnId",
+    "observedAt"
+  ],
+  "properties": {
+    "observationVersion": { "const": "0.1" },
+    "metricKey": {
+      "type": "string",
+      "enum": [
+        "pause.longest_ms",
+        "pause.count",
+        "filler.count",
+        "speech.rate_wpm",
+        "speech.active_rate_wpm",
+        "turn.duration_ms"
+      ],
+      "description": "Draft metric allowlist; frozen in Phase 03."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["measured", "inferred"],
+      "description": "measured = derived from learner audio by the stated method; inferred = model judgment over audio/transcript evidence."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["available", "unavailable", "insufficient_evidence"],
+      "description": "available = a numeric value exists (0 is a value). unavailable = the signal could not be measured at all. insufficient_evidence = there was not enough speech to compute the metric."
+    },
+    "value": {
+      "type": ["number", "null"],
+      "description": "The measured or inferred value. null exactly when status is not `available`."
+    },
+    "unit": {
+      "type": ["string", "null"],
+      "enum": ["milliseconds", "count", "words_per_minute", null],
+      "description": "Unit of `value`; null exactly when status is not `available`."
+    },
+    "evidenceSpan": {
+      "anyOf": [{ "$ref": "#/$defs/span" }, { "type": "null" }],
+      "description": "Where in the learner's own audio this observation is anchored, on the learner-audio sample clock. Null when the metric is not audio-localized. These are estimated boundaries, not word timings."
+    },
+    "reliability": { "$ref": "#/$defs/reliability" },
+    "roundId": {
+      "anyOf": [{ "$ref": "#/$defs/roundId" }, { "type": "null" }]
+    },
+    "turnId": {
+      "anyOf": [{ "$ref": "#/$defs/turnId" }, { "type": "null" }]
+    },
+    "observedAt": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": { "status": { "const": "available" } },
+        "required": ["status"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "number" },
+          "unit": { "type": "string", "enum": ["milliseconds", "count", "words_per_minute"] }
+        }
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "null" },
+          "unit": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startMs", "endMs"],
+      "properties": {
+        "startMs": { "type": "integer", "minimum": 0 },
+        "endMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reliability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "limitations"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "limitations": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 300 },
+          "description": "Plain-word known limitations, e.g. 'estimated from speech-region detection; filler recognition not validated'."
+        }
+      }
+    },
+    "roundId": {
+      "type": "string",
+      "pattern": "^rnd_[a-z0-9]{6,40}$"
+    },
+    "turnId": {
+      "type": "string",
+      "pattern": "^trn_[a-z0-9]{6,40}$"
+    }
+  }
+}

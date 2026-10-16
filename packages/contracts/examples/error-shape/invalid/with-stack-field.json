@@ -1,0 +1,10 @@
+{
+  "errorVersion": "0.1",
+  "code": "internal.unexpected",
+  "category": "internal",
+  "message": "Something went wrong on our side.",
+  "retryable": false,
+  "correlationId": "cor_9c8b7a6d",
+  "occurredAt": "2026-10-16T09:47:00Z",
+  "stack": "Traceback (most recent call last):\n  File app/main.py, line 42, in handler\n    raise RuntimeError('boom')"
+}

@@ -1,0 +1,15 @@
+{
+  "settingsVersion": "0.1",
+  "practiceLanguageId": "hindi",
+  "coachingLanguageId": "hindi",
+  "scenarioId": "everyday",
+  "level": "intermediate",
+  "coachingRoundTurns": 4,
+  "sessionLimitSeconds": 600,
+  "recordingRetention": true,
+  "consent": {
+    "consentVersion": "0.1",
+    "recordingRetentionGranted": false,
+    "recordingRetentionGrantedAt": null
+  }
+}

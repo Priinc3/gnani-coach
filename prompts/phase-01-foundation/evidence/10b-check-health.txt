@@ -1,0 +1,5 @@
+
+> speaking-coach@0.1.0 check:health
+> node scripts/foundation/service-health-check.mjs
+
+PASS — http://127.0.0.1:8000/health matches the foundation health contract (process readiness only; no live provider claim)

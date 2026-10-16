@@ -1,0 +1,54 @@
+
+> speaking-coach@0.1.0 dev:web
+> npm run dev --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.4.2 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.0.0.2:3000
+✓ Ready in 219ms
+✓ Running next.config.ts took 62ms
+
+✓ Generated AGENTS.md for AI agents. Set `agentRules: false` in next.config to disable.
+ GET / 200 in 148ms (next.js: 83ms, application-code: 66ms)
+ GET / 200 in 12ms (next.js: 0.5ms, application-code: 12ms)
+ GET / 200 in 19ms (next.js: 0.8ms, application-code: 18ms)
+ GET / 200 in 14ms (next.js: 0.7ms, application-code: 14ms)
+ GET / 200 in 11ms (next.js: 0.4ms, application-code: 11ms)
+ GET / 200 in 89ms (next.js: 0.6ms, application-code: 89ms)
+ GET / 200 in 79ms (next.js: 0.6ms, application-code: 79ms)
+ GET / 200 in 71ms (next.js: 0.4ms, application-code: 70ms)
+ GET / 200 in 64ms (next.js: 0.4ms, application-code: 64ms)
+ GET / 200 in 51ms (next.js: 0.9ms, application-code: 50ms)
+ GET / 200 in 76ms (next.js: 0.6ms, application-code: 76ms)
+ GET / 200 in 57ms (next.js: 0.4ms, application-code: 57ms)
+ GET / 200 in 49ms (next.js: 0.3ms, application-code: 49ms)
+ GET / 200 in 43ms (next.js: 0.4ms, application-code: 43ms)
+ GET / 200 in 70ms (next.js: 1.1ms, application-code: 69ms)
+ GET / 200 in 60ms (next.js: 0.8ms, application-code: 59ms)
+ GET / 200 in 52ms (next.js: 0.4ms, application-code: 52ms)
+ GET / 200 in 13ms (next.js: 0.3ms, application-code: 13ms)
+ GET / 200 in 11ms (next.js: 0.3ms, application-code: 10ms)
+ GET / 200 in 81ms (next.js: 0.5ms, application-code: 80ms)
+ GET / 200 in 95ms (next.js: 0.5ms, application-code: 94ms)
+ GET / 200 in 85ms (next.js: 0.4ms, application-code: 85ms)
+ GET / 200 in 80ms (next.js: 0.4ms, application-code: 79ms)
+ GET / 200 in 90ms (next.js: 0.4ms, application-code: 90ms)
+ GET / 200 in 110ms (next.js: 0.4ms, application-code: 109ms)
+ GET / 200 in 89ms (next.js: 0.4ms, application-code: 88ms)
+ GET / 200 in 74ms (next.js: 0.4ms, application-code: 73ms)
+ GET / 200 in 60ms (next.js: 0.8ms, application-code: 60ms)
+ GET / 200 in 50ms (next.js: 0.4ms, application-code: 49ms)
+ GET / 200 in 49ms (next.js: 1.0ms, application-code: 48ms)
+ GET / 200 in 26ms (next.js: 0.4ms, application-code: 26ms)
+[?25h
+npm error Lifecycle script `dev` failed with error:
+npm error code 143
+npm error path /Users/princegondaliya/Learning/Projects/temp/gnani/apps/web
+npm error workspace @gnani/web@0.1.0
+npm error location /Users/princegondaliya/Learning/Projects/temp/gnani/apps/web
+npm error command failed
+npm error command sh -c next dev

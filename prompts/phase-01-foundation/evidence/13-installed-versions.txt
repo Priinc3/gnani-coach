@@ -1,0 +1,63 @@
+date: 2026-10-16T17:36:07Z
+
+--- npm ls (root + workspaces, depth 0)
+speaking-coach@0.1.0 /Users/princegondaliya/Learning/Projects/temp/gnani
+├─┬ @gnani/contracts@0.1.0 -> ./packages/contracts
+│ ├── ajv-formats@3.0.1
+│ └── ajv@8.20.0
+└─┬ @gnani/web@0.1.0 -> ./apps/web
+  ├── @gnani/contracts@0.1.0 deduped -> ./packages/contracts
+  ├── @types/node@26.6.5
+  ├── @types/react-dom@19.3.0
+  ├── @types/react@19.3.0
+  ├── eslint-config-next@16.4.2
+  ├── eslint@9.39.5
+  ├── next@16.4.2
+  ├── react-dom@19.3.1
+  ├── react@19.3.1
+  └── typescript@6.0.3
+
+
+--- uv pip list (selected)
+
+--- lockfiles
+-rw-r--r--@ 1 princegondaliya  staff  221190 16 Oct 22:30 package-lock.json
+-rw-r--r--@ 1 princegondaliya  staff   48743 16 Oct 22:31 services/voice/uv.lock
+
+--- playwright browsers
+chromium_headless_shell-1248
+chromium-1248
+ffmpeg-1013
+
+--- npm ls root only (depth 0)
+speaking-coach@0.1.0 /Users/princegondaliya/Learning/Projects/temp/gnani
+├─┬ @gnani/contracts@0.1.0 -> ./packages/contracts
+│ ├── ajv-formats@3.0.1
+│ └── ajv@8.20.0
+├─┬ @gnani/web@0.1.0 -> ./apps/web
+│ ├── @gnani/contracts@0.1.0 deduped -> ./packages/contracts
+│ ├── @types/node@26.6.5
+│ ├── @types/react-dom@19.3.0
+│ ├── @types/react@19.3.0
+│ ├── eslint-config-next@16.4.2
+│ ├── eslint@9.39.5
+│ ├── next@16.4.2
+│ ├── react-dom@19.3.1
+│ ├── react@19.3.1
+│ └── typescript@6.0.3
+└── @playwright/test@1.64.1
+
+
+--- uv pip list (selected, via venv python)
+(no pip in uv venv; using importlib.metadata instead)
+fastapi==0.143.3
+uvicorn==0.54.0
+pydantic==2.14.1
+pydantic-settings==2.16.0
+pytest==9.1.1
+httpx2==2.13.1
+jsonschema==4.26.0
+starlette==1.8.0
+anyio==4.15.1
+rfc3339-validator==0.1.4
+rfc3986-validator==0.1.1

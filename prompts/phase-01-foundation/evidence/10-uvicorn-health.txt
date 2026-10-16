@@ -1,0 +1,19 @@
+date: 2026-10-16T17:10:50Z
+--- curl -sS -D - GET http://127.0.0.1:8000/health
+HTTP/1.1 200 OK
+date: Fri, 16 Oct 2026 17:10:49 GMT
+server: uvicorn
+content-length: 206
+content-type: application/json
+
+{"status":"ok","service":"gnani-coach-voice","version":"0.1.0","phase":"foundation","liveCallingImplemented":false,"detail":"Process readiness only. No live provider connection is implemented or verified."}
+
+--- fail-closed probes (no live routes may exist)
+GET /stt -> 404
+GET /tts -> 404
+GET /ws -> 404
+GET /api -> 404
+GET /session -> 404
+GET /openapi.json -> 200
+--- openapi paths:
+['/health']

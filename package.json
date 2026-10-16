@@ -1,0 +1,25 @@
+{
+  "name": "speaking-coach",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Speaking Coach — live voice-conversation practice with audio-grounded coaching. Foundation build: no live providers yet.",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/web",
+    "packages/contracts"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @gnani/web",
+    "lint": "npm run lint --workspace @gnani/web",
+    "typecheck": "npm run typecheck --workspace @gnani/web",
+    "build": "npm run build --workspace @gnani/web",
+    "test:contracts": "npm run test --workspace @gnani/contracts",
+    "test:e2e": "playwright test",
+    "check:health": "node scripts/foundation/service-health-check.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}
