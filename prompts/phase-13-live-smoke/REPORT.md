@@ -149,6 +149,6 @@ No `apps/web/**` edit was needed. No `deploy/**`, `apps/mobile/**` or
 ## Commit hashes
 
 - Phase 13 build: `19be981`
-- Report hash: `<pending>`
+- Report hash: `b24551a`
 
 PHASE 13 BUILT — AWAITING B4 VERDICT
