@@ -1,58 +1,49 @@
 "use client";
 
 /**
- * Web authentication — **Phase 06 owns this tree**.
+ * Web authentication — the frozen seam.
  *
- * The frozen seam is this exact path and these exports:
+ * The frozen exports are `useSession()`, `signOut()`, `getAccessToken()`,
+ * `onSignOut()`, `setRecordingRetention()` and their types. They keep
+ * their names and shapes.
  *
- * - `useSession()` — the current session state;
- * - `signOut()` — end the session.
- *
- * Phase 06 replaces the guest stub with the real session and keeps both
- * names and both shapes. The guest state is still a supported state: the
- * app works without an account, and a guest has no saved history and no
- * retained audio.
- *
- * The additive exports:
- *
- * - `getAccessToken()` — the caller's own access token, or `null` for a
- *   guest (ADDENDUM §C). It is the token the browser sends to our own
- *   voice service in the first `start` event; the service verifies it
- *   again, so a forged token buys nothing.
- * - `onSignOut(handler)` — the registry hook Phase 04 subscribes to, so
- *   that a signed-out learner does not keep a live call connection
- *   open. The name is published in `prompts/parallel-G1/COMM.md`.
- * - `setRecordingRetention(granted)` — the recording-retention consent.
+ * The additive exports are `signIn()`, `signUp()` and `deleteAccount()`.
+ * They let the sign-in page drive the local email/password provider, and
+ * they let the settings screen delete an account with its password. The
+ * name `deleteAccount` is published in `prompts/parallel-G2/COMM.md`.
  *
  * The rules:
  *
- * - the **publishable key** and the project URL are read on the server
- *   and passed to the browser client as props. The service-role key
- *   never reaches the web app;
- * - the identity of the caller comes from `getClaims()`, which verifies
- *   the token. `getSession()` is used only to read the raw token to
- *   forward, and the voice service verifies that token again;
- * - the proxy (`src/proxy.ts`) refreshes the session and sets no-cache
- *   headers; it never guards `/`, because a guest may call.
+ * - the browser talks to our own voice service, never to a provider;
+ * - the bearer token is kept in `localStorage` because the web app and
+ *   the voice service are on different origins and the frozen CORS seam
+ *   has `allow_credentials=False`. The strict `script-src 'self'` CSP is
+ *   the XSS defence; the token is cleared on logout and on any `401`;
+ * - the service verifies the token again, so a forged token buys
+ *   nothing.
  */
 
 import { useSyncExternalStore } from "react";
 
 import {
+  deleteAccount as deleteAccountImpl,
   getAccessToken as getAccessTokenImpl,
   getServerSessionSnapshot,
   getSessionSnapshot,
   onSignOut as registerSignOutHandler,
   setRecordingRetention as setRecordingRetentionImpl,
+  signIn as signInImpl,
   signOut as signOutImpl,
+  signUp as signUpImpl,
   subscribeSession,
+  type AuthResult,
 } from "./browser";
 import type { SessionState, SessionStatus } from "./types";
 
 // Only the **types** are re-exported. A value re-export would become a
 // client reference in a server component, and the frozen seam never
 // exported one.
-export type { SessionState, SessionStatus };
+export type { AuthResult, SessionState, SessionStatus };
 
 /**
  * The current session state.
@@ -111,4 +102,35 @@ export function onSignOut(handler: () => void): () => void {
  */
 export async function setRecordingRetention(granted: boolean): Promise<void> {
   await setRecordingRetentionImpl(granted);
+}
+
+/**
+ * Create an account and sign in.
+ *
+ * The password is sent only to our own voice service, over HTTPS in a
+ * production deployment, and is never stored in the browser.
+ */
+export async function signUp(
+  email: string,
+  password: string,
+): Promise<AuthResult> {
+  return signUpImpl(email, password);
+}
+
+/** Sign in with an email and password. */
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<AuthResult> {
+  return signInImpl(email, password);
+}
+
+/**
+ * Delete the account, every row and every recording file.
+ *
+ * The password is required again, so a stolen token alone cannot erase
+ * the account. This is the helper the settings screen (Phase 10) calls.
+ */
+export async function deleteAccount(password: string): Promise<AuthResult> {
+  return deleteAccountImpl(password);
 }

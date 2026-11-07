@@ -11,22 +11,11 @@ export const metadata: Metadata = {
 /**
  * The sign-in page.
  *
- * It is a **server** component on purpose: the Supabase URL and the
- * publishable key are read from the server environment here and handed
- * to the client component as props, so neither is inlined into the
- * JavaScript bundle (ADDENDUM §E). The service-role key is never read
- * here and never leaves the Python service.
- *
- * The page is rendered per request, because the configuration is read at
- * request time.
+ * The page is a client-driven form now: there is no Supabase project and
+ * no server-side session to read. The browser talks to our own voice
+ * service, which owns the accounts and the SQLite database.
  */
-export const dynamic = "force-dynamic";
-
 export default function SignInPage() {
-  const supabaseUrl = process.env.SUPABASE_URL ?? "";
-  const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
-  const configured = supabaseUrl.length > 0 && publishableKey.length > 0;
-
   return (
     <main
       style={{
@@ -47,11 +36,7 @@ export default function SignInPage() {
         it, your recordings.
       </p>
 
-      <SignInPanel
-        supabaseUrl={supabaseUrl}
-        publishableKey={publishableKey}
-        configured={configured}
-      />
+      <SignInPanel />
     </main>
   );
 }

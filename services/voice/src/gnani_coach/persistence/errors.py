@@ -50,3 +50,11 @@ class RecordingFencedError(PersistenceError):
 
 class GuestWriteRefusedError(PersistenceError):
     """A guest tried to write. A guest has no history and no audio."""
+
+
+class RecordingTooLargeError(PersistenceError):
+    """A recording is larger than the per-file cap."""
+
+
+class StorageQuotaExceededError(PersistenceError):
+    """A recording would push its owner past the per-user cap."""

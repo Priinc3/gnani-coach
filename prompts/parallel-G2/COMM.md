@@ -3,5 +3,5 @@
 ## 07 00:00 — Phase 14 started; SQLite stores, local auth, web client
 INFO
 
-## 10 08:45 — Phase 10 done: phone layout, PWA manifest/icons, pre-call mic check; tsc and eslint exit 0
+## 07 20:30 — Phase 14 done; `deleteAccount(password)` exported from `@/lib/auth`
 INFO

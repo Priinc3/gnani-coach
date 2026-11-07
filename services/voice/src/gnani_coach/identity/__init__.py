@@ -32,11 +32,13 @@ Frozen contract: ``docs/contracts/seams.md``.
 
 from __future__ import annotations
 
+import os
+
 from gnani_coach.identity.verifier import (
     GuestIdentity,
     SupabaseIdentity,
     decode_claims,
-    get_identity,
+    get_identity as _get_supabase_identity,
     get_identity_for,
     publishable_key_from_environment,
     reset_identity_cache,
@@ -59,3 +61,26 @@ __all__ = [
     "token_fingerprint",
     "user_id_from_subject",
 ]
+
+
+def get_identity() -> IdentityPort:
+    """The identity port for the current process.
+
+    ``SPEAKING_COACH_STORAGE_BACKEND=sqlite`` selects the local
+    email/password provider, which shares the embedded database with the
+    stores. Any other value keeps today's behaviour: the Supabase
+    verifier when it is configured, and the anonymous guest otherwise.
+
+    The local provider **fails closed**: a database that cannot be opened
+    returns the guest identity, never an exception on the call path.
+
+    The local import is deliberately lazy: the persistence package
+    imports this package at module load, so a top-level import here would
+    close an import cycle.
+    """
+    backend = os.environ.get("SPEAKING_COACH_STORAGE_BACKEND", "").strip().lower()
+    if backend == "sqlite":
+        from gnani_coach.identity.local import local_identity_from_environment
+
+        return local_identity_from_environment()
+    return _get_supabase_identity()

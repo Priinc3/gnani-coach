@@ -138,6 +138,7 @@ app = FastAPI(
 # Frozen seams. The routers are mounted here and nowhere else.
 app.include_router(conversation_router)
 app.include_router(persistence_router)
+app.include_router(__import__("gnani_coach.identity.local_router", fromlist=["router"]).router)
 
 # The CORS middleware, configured with **exactly** the configured origin
 # allowlist — the same list the WebSocket handshake is checked against.
