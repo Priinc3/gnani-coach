@@ -63,6 +63,11 @@ test("the flow is complete with the keyboard alone", async ({ page }) => {
   const end = page.getByRole("button", { name: "End" });
   await end.focus();
   await page.keyboard.press("Enter");
+  // End is guarded: the learner confirms in the sheet.
+  const confirm = page.getByRole("button", { name: "End call now" });
+  await expect(confirm).toBeVisible();
+  await confirm.focus();
+  await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
 });
 
@@ -167,6 +172,7 @@ test("the transcript is not kept after the call ends", async ({ page }) => {
   await page.getByRole("button", { name: "Show the transcript" }).click();
   await expect(page.getByLabel("Live transcript")).toBeVisible();
   await page.getByRole("button", { name: "End" }).click();
+  await page.getByRole("button", { name: "End call now" }).click();
   await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
   // The transcript is gone: it is transient and is never persisted.
   await expect(page.getByLabel("Live transcript")).toHaveCount(0);

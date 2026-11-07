@@ -96,8 +96,9 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
   const choice = await server.waitFor("coaching_choice");
   expect((choice.payload as Record<string, unknown>).choice).toBe("keep_talking");
 
-  // Ending the call shows the summary.
+  // Ending the call shows the summary (End is confirm-guarded).
   await page.getByRole("button", { name: "End" }).click();
+  await page.getByRole("button", { name: "End call now" }).click();
   await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
   await expect(page.getByText("You opened with the outcome, which is easy to follow.")).toBeVisible();
   // No overall score, no confidence, no pronunciation grade.

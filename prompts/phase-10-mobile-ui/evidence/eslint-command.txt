@@ -1,0 +1,2 @@
+command: cd apps/web && npx eslint <touched files>
+exit: 0 (CSS files ignored by config)

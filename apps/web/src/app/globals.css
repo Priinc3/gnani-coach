@@ -82,8 +82,14 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -91,6 +97,14 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* The layout must be able to shrink inside a phone grid, never push the
+   page sideways. */
+.masthead-col,
+.studio-col,
+.page > * {
+  min-width: 0;
 }
 
 h1,
@@ -202,6 +216,9 @@ select,
   width: 100%;
   max-width: 460px;
   font: inherit;
+  /* 16 px or more stops iOS from zooming the page when a field is focused. */
+  font-size: max(16px, 1rem);
+  min-height: 48px;
   color: var(--ink);
   background: var(--panel);
   border: 1px solid var(--hairline);
@@ -450,7 +467,7 @@ input:focus-visible {
 
 @media (max-width: 480px) {
   .page {
-    padding: 32px 14px 56px;
+    padding: 32px 14px calc(56px + env(safe-area-inset-bottom, 0px));
   }
 
   .panel {
@@ -466,6 +483,25 @@ input:focus-visible {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    padding: 12px 2px;
+  }
+
+  /* One-hand targets: every option is a full-width row at least 48 px tall. */
+  .scenario-option,
+  .checkbox-field {
+    min-height: 52px;
+  }
+
+  .start-button {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  select,
+  .text-input {
+    max-width: 100%;
+    min-height: 52px;
+    font-size: 16px;
   }
 }
 

@@ -279,9 +279,8 @@ export function CallExperience({ catalog }: CallExperienceProps) {
           <div className={styles.headerActions}>
             <button
               type="button"
-              className={styles.primaryButton}
+              className={`${styles.primaryButton} ${styles.headerCta}`}
               onClick={() => navigate("scenarios")}
-              style={{ minHeight: 40, padding: "8px 18px" }}
             >
               Get started
             </button>
@@ -363,7 +362,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
         ) : null}
       </main>
 
-      <nav className={styles.bottomNav} aria-label="Main">
+      <nav className={styles.bottomNav} aria-label="Main" data-testid="bottom-tab-bar">
         <button
           type="button"
           className={`${styles.bottomNavItem} ${

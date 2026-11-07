@@ -16,6 +16,7 @@
 
 .shell {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--canvas);
@@ -94,14 +95,20 @@
   gap: 10px;
 }
 
+.headerCta {
+  min-height: 44px;
+  padding: 8px 18px;
+}
+
 .main {
   flex: 1;
+  min-width: 0;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 26px 20px 96px;
+  padding: 26px 20px calc(96px + env(safe-area-inset-bottom, 0px));
 }
 
 .containerNarrow {
@@ -115,7 +122,7 @@
   display: flex;
   justify-content: space-around;
   gap: 4px;
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
   background: var(--panel);
   border-top: 1px solid var(--hairline);
   box-shadow: var(--shadow-soft);
@@ -123,9 +130,11 @@
 
 .bottomNavItem {
   flex: 1;
+  min-height: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   padding: 6px 4px;
   border: 0;
@@ -572,6 +581,7 @@
   display: flex;
   align-items: flex-start;
   gap: 11px;
+  min-height: 48px;
   padding: 12px 14px;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
@@ -627,6 +637,8 @@
 .select,
 .textInput {
   font: inherit;
+  font-size: max(16px, 1rem);
+  min-height: 48px;
   color: var(--ink);
   background: var(--panel);
   border: 1px solid var(--hairline);
@@ -645,6 +657,7 @@
   display: flex;
   align-items: center;
   gap: 11px;
+  min-height: 48px;
   padding: 12px 14px;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
@@ -694,6 +707,7 @@
   display: flex;
   align-items: center;
   gap: 11px;
+  min-height: 48px;
   padding: 11px 14px;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
@@ -730,22 +744,122 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Pre-call microphone check                                          */
+/* ------------------------------------------------------------------ */
+
+.micCheck {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-md);
+  background: var(--panel-sunk);
+}
+
+.micCheckHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.micCheckIcon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--accent-tint);
+  color: var(--primary);
+}
+
+.micCheckTitle {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.micCheckActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.micCheckActions .secondaryButton {
+  min-height: 48px;
+}
+
+.micCheckOk,
+.micCheckProblem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-small);
+}
+
+.micCheckOk {
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-line);
+  color: var(--primary-strong);
+}
+
+.micCheckProblem {
+  background: #fdf1e6;
+  border: 1px solid #f3d9bd;
+  color: #7a4310;
+}
+
+.micCheckProblemTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.micCheckProblem .fieldHelp {
+  flex-basis: 100%;
+  color: inherit;
+}
+
+/* The primary action on a setup screen sits in thumb reach on a phone. */
+.stickyAction {
+  display: grid;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.stickyActionButton {
+  width: 100%;
+  min-height: 52px;
+  font-size: 1.02rem;
+}
+
+
+/* ------------------------------------------------------------------ */
 /* Call screen                                                        */
 /* ------------------------------------------------------------------ */
 
 .callScreen {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--canvas);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .callTop {
-  max-width: 720px;
   width: 100%;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 16px 18px;
-  display: flex;
+  padding: 14px 18px 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
 }
@@ -753,18 +867,55 @@
 .timer {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: var(--ink);
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--hairline);
   background: var(--panel);
 }
 
+.callStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(1.25rem, 5vw, 1.6rem);
+  font-weight: 750;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--ink);
+  text-align: center;
+}
+
+.callStatusIdle {
+  color: var(--ink-soft);
+}
+
+.callStatusLive {
+  color: var(--primary-strong);
+}
+
+.callStatusWarn {
+  color: #8a4b12;
+}
+
+.callStatusError {
+  color: #8c2f2f;
+}
+
+.callTopActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .endButton {
-  margin-left: auto;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font: inherit;
   font-weight: 700;
@@ -773,7 +924,7 @@
   border: 0;
   border-radius: var(--radius-pill);
   padding: 10px 18px;
-  min-height: 44px;
+  min-height: 48px;
   cursor: pointer;
 }
 
@@ -783,20 +934,23 @@
 
 .callBody {
   flex: 1;
+  min-height: 0;
   width: 100%;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 6px 18px 28px;
+  padding: 6px 18px 10px;
   display: grid;
-  gap: 18px;
-  align-content: start;
+  gap: 14px;
+  align-content: center;
+  align-content: safe center;
   justify-items: center;
+  overflow-y: auto;
 }
 
 .avatarStage {
   position: relative;
-  width: min(72vw, 260px);
-  height: min(72vw, 260px);
+  width: min(52vw, 240px);
+  height: min(52vw, 240px);
   display: grid;
   place-items: center;
 }
@@ -912,6 +1066,173 @@
   margin: 0;
   color: var(--ink-faint);
   font-style: italic;
+}
+
+.callSecondaryRow {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
+}
+
+.callSecondaryRow .ghostButton {
+  min-height: 44px;
+}
+
+/* The bottom control bar: Mute, Give me a moment, End. */
+.callControls {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 8px;
+  align-items: stretch;
+  padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--panel);
+  border-top: 1px solid var(--hairline);
+  box-shadow: 0 -16px 40px -32px rgba(27, 29, 31, 0.5);
+}
+
+.callControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 60px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.callControlIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--panel-sunk);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+}
+
+.callControlActive .callControlIcon {
+  background: var(--accent-tint);
+  border-color: var(--accent);
+  color: var(--primary-strong);
+}
+
+.callControlEnd {
+  color: #8c2f2f;
+}
+
+.callControlEnd .callControlIcon {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+}
+
+.callControlEnd:hover .callControlIcon {
+  background: #a5301f;
+}
+
+/* The transcript is a pull-up drawer on a phone and a normal panel on a
+   wide screen. The call page itself never scrolls. */
+.transcriptDrawer {
+  position: fixed;
+  z-index: 25;
+  left: 0;
+  right: 0;
+  bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: 8px;
+  max-height: min(58dvh, 420px);
+  padding: 8px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--panel);
+  border-top: 1px solid var(--hairline);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: 0 -24px 48px -32px rgba(27, 29, 31, 0.55);
+}
+
+.transcriptHandle {
+  width: 44px;
+  height: 5px;
+  margin: 2px auto 0;
+  border-radius: var(--radius-pill);
+  background: var(--hairline);
+}
+
+.transcriptScroll {
+  overflow-y: auto;
+  min-height: 0;
+  padding: 2px 2px 4px;
+  font-size: var(--text-small);
+  color: var(--ink-soft);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: rgba(27, 29, 31, 0.38);
+}
+
+.confirmSheet {
+  width: 100%;
+  max-width: 440px;
+  display: grid;
+  gap: 10px;
+  padding: 22px 20px;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px -24px rgba(27, 29, 31, 0.6);
+}
+
+.confirmTitle {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.confirmText {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--text-small);
+}
+
+.confirmActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.confirmActions .endButton {
+  margin-left: 0;
 }
 
 .controlRow {
@@ -1352,6 +1673,51 @@
   .statRow {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+
+  /* The call screen keeps its calm single column, but the transcript is a
+     panel and the controls are a normal row again. */
+  .callBody {
+    order: 1;
+    overflow: visible;
+    align-content: start;
+    padding-top: 18px;
+  }
+
+  .transcriptDrawer {
+    order: 2;
+    position: static;
+    width: calc(100% - 36px);
+    max-width: 724px;
+    max-height: 190px;
+    margin: 0 auto 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    box-shadow: none;
+  }
+
+  .transcriptHandle {
+    display: none;
+  }
+
+  .callControls {
+    order: 3;
+    max-width: 760px;
+    margin: 0 auto;
+    padding-bottom: 28px;
+    background: transparent;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .callControl {
+    min-height: 54px;
+  }
+
+  .callControlIcon {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 @media (min-width: 960px) {
@@ -1364,11 +1730,20 @@
   .heroArt {
     order: 2;
   }
+
+  .callStatus {
+    font-size: 1.75rem;
+  }
+
+  .avatarStage {
+    width: min(34vw, 280px);
+    height: min(34vw, 280px);
+  }
 }
 
 @media (max-width: 719px) {
   .container {
-    padding: 20px 16px 92px;
+    padding: 20px 16px calc(92px + env(safe-area-inset-bottom, 0px));
   }
 
   .headerInner {
@@ -1396,6 +1771,55 @@
   .breakActions .secondaryButton,
   .breakActions .ghostButton {
     width: 100%;
+  }
+
+  /* One hand, one screen: the call page itself never scrolls. */
+  .callScreen {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .callTop {
+    padding: 10px 14px 4px;
+    gap: 8px;
+  }
+
+  .callBody {
+    gap: 12px;
+    padding: 4px 14px 8px;
+  }
+
+  .avatarStage {
+    width: min(46vw, 196px);
+    height: min(46vw, 196px);
+  }
+
+  .coachBubble {
+    min-height: 62px;
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
+  .callSecondaryRow .ghostButton {
+    font-size: var(--text-small);
+    padding: 8px 10px;
+  }
+
+  .confirmOverlay {
+    align-items: flex-end;
+  }
+
+  /* The setup screens put the primary action in the thumb zone, just
+     above the fixed tab bar. */
+  .stickyAction {
+    position: sticky;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    z-index: 10;
+    margin: 4px -16px -4px;
+    padding: 12px 16px;
+    background: color-mix(in srgb, var(--canvas) 94%, transparent);
+    border-top: 1px solid var(--hairline);
+    backdrop-filter: blur(8px);
   }
 }
 

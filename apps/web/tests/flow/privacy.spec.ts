@@ -91,6 +91,7 @@ test("ending the call releases the socket and the microphone", async ({ page }) 
   await expect(page.getByTestId("call-status")).toContainText("Listening", { timeout: 10_000 });
 
   await page.getByRole("button", { name: "End" }).click();
+  await page.getByRole("button", { name: "End call now" }).click();
   await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
 
   // The client says goodbye in the frozen envelope.

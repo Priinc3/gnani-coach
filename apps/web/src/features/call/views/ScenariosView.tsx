@@ -152,10 +152,16 @@ export function ScenariosView({
         </section>
       ) : null}
 
-      <div className={styles.row} style={{ marginTop: 26 }}>
-        <button type="button" className={styles.primaryButton} onClick={onContinue}>
-          Continue to settings
-        </button>
+      <div className={styles.stickyAction}>
+        <div className={styles.row}>
+          <button
+            type="button"
+            className={`${styles.primaryButton} ${styles.stickyActionButton}`}
+            onClick={onContinue}
+          >
+            Continue to settings
+          </button>
+        </div>
       </div>
     </div>
   );

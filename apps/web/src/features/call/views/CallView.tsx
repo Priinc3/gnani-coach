@@ -1,9 +1,7 @@
 "use client";
 
 /**
- * The call screen — Phase 04.
- *
- * Mobile screen 4 of the reference flow, and the desktop equivalent.
+ * The call screen — Phase 04, reorganised for one hand in Phase 10.
  *
  * The rules this screen keeps:
  *
@@ -15,7 +13,15 @@
  *   stopped talking;
  * - the timer counts the call, the cap is ten minutes, and the warning
  *   comes at nine.
+ *
+ * Phone layout (below 720 px): the status is the largest text at the top,
+ * the coach fills the middle, and Mute / Give me a moment / End sit in a
+ * thumb-height bar at the bottom. End opens a confirmation sheet. The
+ * transcript lives in a pull-up drawer so the call page itself never
+ * scrolls.
  */
+
+import { useState } from "react";
 
 import styles from "../app.module.css";
 import { CoachAvatar } from "../components/CoachAvatar";
@@ -109,12 +115,13 @@ export function CallView({
   const speaking = state.status === "speaking" || state.status === "coaching";
   const thinking = state.status === "thinking";
   const showTranscript = state.transcriptVisible;
+  const [confirmingEnd, setConfirmingEnd] = useState(false);
   // "Try again" is offered only when the shape says retrying could work.
   const canRetry = state.error?.retryable === true || state.localError?.retryable === true;
 
   return (
     <div className={styles.callScreen}>
-      <div className={styles.callTop}>
+      <header className={styles.callTop}>
         <span
           className={styles.timer}
           data-testid="call-timer"
@@ -122,21 +129,49 @@ export function CallView({
         >
           {formatClock(state.elapsedMs)}
         </span>
-        <button type="button" className={styles.endButton} onClick={onEnd}>
-          <PhoneEndIcon size={18} />
-          End
-        </button>
-        {signedIn && onSignOut ? (
+        <p
+          className={`${styles.callStatus} ${styles[`callStatus${status.tone}`] ?? ""}`}
+          role="status"
+          aria-live="polite"
+          data-testid="call-status"
+        >
+          <span
+            className={`${styles.statusDot} ${
+              status.tone === "live"
+                ? styles.statusDotLive
+                : status.tone === "warn"
+                  ? styles.statusDotWarn
+                  : status.tone === "error"
+                    ? styles.statusDotError
+                    : ""
+            }`}
+            aria-hidden="true"
+          />
+          {status.text}
+        </p>
+        <div className={styles.callTopActions}>
           <button
             type="button"
-            className={styles.smallButton}
-            onClick={onSignOut}
-            data-testid="call-sign-out"
+            className={`${styles.iconButton} ${state.speakerOn ? "" : styles.iconButtonActive}`}
+            onClick={() => onSpeaker(!state.speakerOn)}
+            aria-pressed={!state.speakerOn}
+            aria-label={state.speakerOn ? "Turn the coach's voice off" : "Turn the coach's voice on"}
+            title={state.speakerOn ? "Speaker on" : "Speaker off"}
           >
-            Sign out
+            {state.speakerOn ? <SpeakerIcon size={20} /> : <SpeakerOffIcon size={20} />}
           </button>
-        ) : null}
-      </div>
+          {signedIn && onSignOut ? (
+            <button
+              type="button"
+              className={styles.smallButton}
+              onClick={onSignOut}
+              data-testid="call-sign-out"
+            >
+              Sign out
+            </button>
+          ) : null}
+        </div>
+      </header>
 
       <div className={styles.callBody}>
         {state.warning ? (
@@ -204,22 +239,6 @@ export function CallView({
           </div>
         </div>
 
-        <p className={styles.statusPill} role="status" aria-live="polite" data-testid="call-status">
-          <span
-            className={`${styles.statusDot} ${
-              status.tone === "live"
-                ? styles.statusDotLive
-                : status.tone === "warn"
-                  ? styles.statusDotWarn
-                  : status.tone === "error"
-                    ? styles.statusDotError
-                    : ""
-            }`}
-            aria-hidden="true"
-          />
-          {status.text}
-        </p>
-
         <div className={styles.coachBubble} aria-live="polite">
           {state.coachText ? (
             <p>{state.coachText}</p>
@@ -239,8 +258,70 @@ export function CallView({
           </p>
         ) : null}
 
-        {showTranscript ? (
-          <div className={styles.transcriptBox} aria-label="Live transcript">
+        <div className={styles.callSecondaryRow}>
+          <button type="button" className={styles.ghostButton} onClick={onCoachNow}>
+            <LightbulbIcon size={18} />
+            Coach me now
+          </button>
+          <button
+            type="button"
+            className={styles.ghostButton}
+            onClick={() => onTranscriptVisible(!showTranscript)}
+            aria-pressed={showTranscript}
+            aria-expanded={showTranscript}
+            aria-controls="live-transcript"
+          >
+            {showTranscript ? "Hide the transcript" : "Show the transcript"}
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.callControls} aria-label="Call controls">
+        <button
+          type="button"
+          className={`${styles.callControl} ${state.muted ? styles.callControlActive : ""}`}
+          onClick={() => onMute(!state.muted)}
+          aria-pressed={state.muted}
+        >
+          <span className={styles.callControlIcon} aria-hidden="true">
+            {state.muted ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
+          </span>
+          {state.muted ? "Microphone off" : "Mute"}
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.callControl} ${state.muted ? styles.callControlActive : ""}`}
+          onClick={() => onMute(!state.muted)}
+          aria-describedby="give-me-a-moment-help"
+        >
+          <span className={styles.callControlIcon} aria-hidden="true">
+            <LightbulbIcon size={22} />
+          </span>
+          Give me a moment
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.callControl} ${styles.callControlEnd}`}
+          onClick={() => setConfirmingEnd(true)}
+        >
+          <span className={styles.callControlIcon} aria-hidden="true">
+            <PhoneEndIcon size={22} />
+          </span>
+          End
+        </button>
+      </div>
+
+      <p className={styles.srOnly} id="give-me-a-moment-help">
+        &ldquo;Give me a moment&rdquo; turns your microphone off, so the coach cannot hear you while
+        you think. It is the same pause the mute control uses.
+      </p>
+
+      {showTranscript ? (
+        <aside className={styles.transcriptDrawer} id="live-transcript" aria-label="Live transcript">
+          <span className={styles.transcriptHandle} aria-hidden="true" />
+          <div className={styles.transcriptScroll}>
             {state.transcript.length === 0 && !state.partialTranscript ? (
               <p className={styles.transcriptLine}>Nothing has been said yet.</p>
             ) : null}
@@ -253,69 +334,55 @@ export function CallView({
               <p className={styles.transcriptPartial}>{state.partialTranscript}</p>
             ) : null}
           </div>
-        ) : null}
-
-        <div className={styles.controlRow}>
-          <button
-            type="button"
-            className={`${styles.controlButton} ${state.muted ? styles.controlButtonActive : ""}`}
-            onClick={() => onMute(!state.muted)}
-            aria-pressed={state.muted}
-          >
-            <span className={styles.controlButtonIcon} aria-hidden="true">
-              {state.muted ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
-            </span>
-            {state.muted ? "Microphone off" : "Mute"}
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.controlButton} ${state.speakerOn ? "" : styles.controlButtonActive}`}
-            onClick={() => onSpeaker(!state.speakerOn)}
-            aria-pressed={!state.speakerOn}
-          >
-            <span className={styles.controlButtonIcon} aria-hidden="true">
-              {state.speakerOn ? <SpeakerIcon size={22} /> : <SpeakerOffIcon size={22} />}
-            </span>
-            {state.speakerOn ? "Speaker on" : "Speaker off"}
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.controlButton} ${state.muted ? styles.controlButtonActive : ""}`}
-            onClick={() => onMute(!state.muted)}
-          >
-            <span className={styles.controlButtonIcon} aria-hidden="true">
-              <LightbulbIcon size={22} />
-            </span>
-            Give me a moment
-          </button>
-        </div>
-
-        <div className={styles.giveMeAMoment}>
-          <p className={styles.fieldHelp}>
-            &ldquo;Give me a moment&rdquo; turns your microphone off, so the coach cannot hear you
-            while you think. It is the same pause the mute control uses.
-          </p>
-        </div>
-
-        <div className={styles.giveMeAMoment}>
-          <button type="button" className={styles.ghostButton} onClick={onCoachNow}>
-            Coach me now
-          </button>
-        </div>
-
-        <div className={styles.giveMeAMoment}>
           <button
             type="button"
             className={styles.ghostButton}
-            onClick={() => onTranscriptVisible(!showTranscript)}
-            aria-pressed={showTranscript}
+            onClick={() => onTranscriptVisible(false)}
           >
-            {showTranscript ? "Hide the transcript" : "Show the transcript"}
+            Hide the transcript
           </button>
+        </aside>
+      ) : null}
+
+      {confirmingEnd ? (
+        <div className={styles.confirmOverlay}>
+          <div
+            className={styles.confirmSheet}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="end-call-title"
+            aria-describedby="end-call-text"
+          >
+            <h2 className={styles.confirmTitle} id="end-call-title">
+              End this call?
+            </h2>
+            <p className={styles.confirmText} id="end-call-text">
+              The call stops and your summary opens. Nothing is kept unless you turned on recording
+              and are signed in.
+            </p>
+            <div className={styles.confirmActions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => setConfirmingEnd(false)}
+              >
+                Stay in call
+              </button>
+              <button
+                type="button"
+                className={styles.endButton}
+                onClick={() => {
+                  setConfirmingEnd(false);
+                  onEnd();
+                }}
+              >
+                <PhoneEndIcon size={18} />
+                End call now
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

@@ -1,0 +1,2 @@
+command: cd apps/web && NODE_OPTIONS=--max-old-space-size=512 npx tsc --noEmit
+exit: 0

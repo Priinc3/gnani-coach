@@ -90,6 +90,7 @@ for (const viewport of VIEWPORTS) {
 
     // 5. The call screen, the coach speaking.
     await page.getByRole("button", { name: "End" }).click();
+    await page.getByRole("button", { name: "End call now" }).click();
     await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
     await capture(page, `summary-${viewport.name}`);
   });

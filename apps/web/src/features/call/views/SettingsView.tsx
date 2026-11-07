@@ -19,6 +19,7 @@
 
 import styles from "../app.module.css";
 import { ArrowLeftIcon, CheckIcon, MicIcon } from "../components/Icon";
+import { MicCheck } from "../components/MicCheck";
 import type { PracticeCatalog } from "../state/settings";
 
 export interface SettingsViewProps {
@@ -225,6 +226,8 @@ export function SettingsView({
             </div>
           </div>
 
+          <MicCheck />
+
           <p className={styles.planSummary} role="status">
             Plan: {planSummary}
           </p>
@@ -242,21 +245,23 @@ export function SettingsView({
             </div>
           ) : null}
 
-          <div className={styles.row}>
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={onStart}
-              disabled={problems.length > 0}
-            >
-              <MicIcon size={18} />
-              Start live practice call
-            </button>
+          <div className={styles.stickyAction}>
+            <div className={styles.row}>
+              <button
+                type="button"
+                className={`${styles.primaryButton} ${styles.stickyActionButton}`}
+                onClick={onStart}
+                disabled={problems.length > 0}
+              >
+                <MicIcon size={18} />
+                Start live practice call
+              </button>
+            </div>
+            <p className={styles.fieldHelp}>
+              <CheckIcon size={14} /> Your microphone is only asked for when you press start, and it
+              is released as soon as the call ends.
+            </p>
           </div>
-          <p className={styles.fieldHelp}>
-            <CheckIcon size={14} /> Your microphone is only asked for when you press start, and it
-            is released as soon as the call ends.
-          </p>
         </div>
       </section>
     </div>
