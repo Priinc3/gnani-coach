@@ -44,6 +44,7 @@ A standalone Capacitor 8 Android shell in `apps/mobile/` plus a `workflow_dispat
 - `prompts/phase-12-apk-ci/evidence/07-capacitor-source.txt` — Java 21 / SDK 36 lines and the audio permission handler.
 - `prompts/phase-12-apk-ci/evidence/08-readme.txt` — README line count (38) and contents.
 - `prompts/phase-12-apk-ci/evidence/09-npm-ci.txt` — `npm ci --include=dev` succeeds against the committed lockfile.
+- `prompts/phase-12-apk-ci/evidence/10-dispatch-attempt.txt` — one placeholder dispatch, actionlint result, and the queued run state.
 
 Local `npx cap add android`, `npx cap sync android`, config failure checks and `npm ci` all passed. No Gradle, Android SDK build or emulator was run here (box limits).
 
@@ -55,7 +56,9 @@ Local `npx cap add android`, `npx cap sync android`, config failure checks and `
 - Artifact upload and the sha256 summary output.
 - Microphone permission prompt on a real phone.
 
-The workflow was **not dispatched** from this box; the first real run (and the real `APP_URL`) is Phase 13's.
+## Dispatch attempt (placeholder only)
+
+I dispatched the workflow once with `https://example.com` (`gh workflow run android-apk.yml -f app_url=https://example.com`, run `42357747364`). The first attempt ended in `startup_failure` after 1s; the rerun stayed `queued` with zero jobs for more than 20 minutes and never started. `actionlint 1.7.12` reports no errors and Python YAML parses the file, so this looks like runner/billing capacity on the account rather than a workflow-syntax problem. I downloaded no artifact and did not run the real build; that remains Phase 13's job.
 
 ## What the user / Phase 13 must do
 
@@ -63,6 +66,7 @@ The workflow was **not dispatched** from this box; the first real run (and the r
 2. Set the repository variable `APP_URL` to the hosted https URL, or pass it explicitly: `gh workflow run android-apk.yml -f app_url=https://...`.
 3. Download `speaking-coach-debug-apk` from the run, or use the published `https://13-205-26-178.sslip.io/apk/speaking-coach.apk` after Phase 13 uploads it.
 4. Sideload the debug APK and allow "install unknown apps".
+5. If a run stays queued with no jobs, check the account's GitHub Actions minutes/spending limit; the workflow itself passed `actionlint` and Python YAML validation.
 
 ## Help needed
 

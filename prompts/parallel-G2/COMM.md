@@ -9,6 +9,9 @@ INFO
 ## 08 55 — Phase 12 started; Capacitor 8 shell + Android APK workflow
 INFO
 
+## 09 24 — Phase 12 done; placeholder dispatch queued, real build is Phase 13
+INFO
+
 ## 10 08:45 — Phase 10 done: phone layout, PWA manifest/icons, pre-call mic check; tsc and eslint exit 0
 INFO
 

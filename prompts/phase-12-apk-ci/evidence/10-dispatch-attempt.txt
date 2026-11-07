@@ -1,0 +1,13 @@
+$ gh workflow run android-apk.yml -f app_url=https://example.com
+(dispatched 2026-11-07T08:59:04Z; run 42357747364)
+
+$ gh run list --workflow=android-apk.yml --limit 3
+queued		Android APK	Android APK	main	workflow_dispatch	42357747364	24m31s	2026-11-07T09:00:08Z
+
+$ gh api repos/Priinc3/gnani-coach/actions/runs/42357747364 --jq ...
+{"conclusion":null,"created_at":"2026-11-07T08:59:04Z","run_started_at":"2026-11-07T09:00:08Z","status":"queued","updated_at":"2026-11-07T09:00:08Z"}
+
+$ /tmp/opencode/actionlint .github/workflows/android-apk.yml
+actionlint: OK (exit 0)
+
+First attempt was startup_failure (1s); rerun stayed queued with zero jobs for >20 minutes. No artifact was downloaded.
