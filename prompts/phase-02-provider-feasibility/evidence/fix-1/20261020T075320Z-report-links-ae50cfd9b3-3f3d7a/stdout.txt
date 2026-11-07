@@ -1,0 +1,7 @@
+  OK        ../../docs/feasibility/SETUP.md
+  OK        ../../docs/feasibility/CAPABILITIES.md
+  OK        ../../docs/feasibility/HANDOFF.md
+  OK        ../../docs/feasibility/DECISION.md
+
+links checked: 4  broken: 0
+every relative link in the report resolves

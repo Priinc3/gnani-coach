@@ -1,0 +1,138 @@
+ M .env.example
+ M .node-version
+ M README.md
+ M apps/web/.env.example
+ M apps/web/next.config.ts
+ M apps/web/package.json
+ M apps/web/src/app/globals.css
+ M apps/web/src/app/page.tsx
+ M docs/architecture.md
+ M docs/design-direction.md
+ M docs/toolchain.md
+ M package-lock.json
+ M package.json
+ M packages/contracts/README.md
+ M packages/contracts/data/catalog.json
+ M packages/contracts/examples/analysis-observation/valid/measured-zero-fillers.json
+ M packages/contracts/examples/durable-metrics/invalid/with-audio-url-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-embedding-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-model-text-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-quoted-mistakes-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-transcript-field.json
+ M packages/contracts/examples/durable-metrics/valid/numeric-only.json
+ M packages/contracts/examples/event-envelope/invalid/base64-audio-in-text-payload.json
+ M packages/contracts/examples/event-envelope/invalid/mismatched-prefixed-turn-id.json
+ M packages/contracts/examples/event-envelope/invalid/negative-sequence.json
+ M packages/contracts/examples/event-envelope/invalid/space-separated-emitted-at.json
+ M packages/contracts/examples/event-envelope/valid/audio-frame-descriptor.json
+ M packages/contracts/examples/event-envelope/valid/text-event.json
+ M packages/contracts/schemas/analysis-observation.schema.json
+ M packages/contracts/schemas/catalog.schema.json
+ M packages/contracts/schemas/durable-metrics.schema.json
+ M packages/contracts/schemas/error-shape.schema.json
+ M packages/contracts/schemas/event-envelope.schema.json
+ M packages/contracts/schemas/recording-metadata.schema.json
+ M packages/contracts/schemas/session-settings.schema.json
+ M packages/contracts/scripts/test-examples.mjs
+ M prompts/00-plan.md
+ M prompts/_tracker.md
+ M prompts/phase-01-foundation/REPORT.md
+ M prompts/research.md
+ M prompts/stack-decisions.md
+ M services/voice/.env.example
+ M services/voice/pyproject.toml
+ M services/voice/src/gnani_coach/main.py
+ M services/voice/src/gnani_coach/settings.py
+ M services/voice/tests/foundation/test_contract_parity.py
+ M services/voice/tests/foundation/test_privacy_shapes.py
+ M services/voice/uv.lock
+ M tests/foundation/starter-screen.spec.ts
+?? .nvmrc
+?? UI.png
+?? apps/web/src/app/auth/
+?? apps/web/src/features/
+?? apps/web/src/lib/
+?? apps/web/src/proxy.ts
+?? apps/web/tests/
+?? docs/contracts/
+?? docs/feasibility/
+?? docs/operations/
+?? fixtures/
+?? packages/contracts/data/capabilities.json
+?? packages/contracts/examples/analysis-observation/invalid/active-rate-with-overall-method.json
+?? packages/contracts/examples/analysis-observation/invalid/fractional-count.json
+?? packages/contracts/examples/analysis-observation/invalid/inferred-with-source-classification.json
+?? packages/contracts/examples/analysis-observation/invalid/mismatched-unit.json
+?? packages/contracts/examples/analysis-observation/invalid/negative-value.json
+?? packages/contracts/examples/analysis-observation/invalid/rate-with-wrong-denominator.json
+?? packages/contracts/examples/analysis-observation/invalid/rate-zero-with-missing-transcription.json
+?? packages/contracts/examples/analysis-observation/invalid/unknown-source-classification.json
+?? packages/contracts/examples/analysis-observation/valid/measured-fractional-rate.json
+?? packages/contracts/examples/analysis-observation/valid/missing-transcription-rate.json
+?? packages/contracts/examples/analysis-observation/valid/rate-with-denominator.json
+?? packages/contracts/examples/analysis-observation/valid/unvalidated-filler.json
+?? packages/contracts/examples/capability-state/
+?? packages/contracts/examples/durable-metrics/invalid/active-rate-with-overall-method.json
+?? packages/contracts/examples/durable-metrics/invalid/fractional-count.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-model-feedback.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-transcript.json
+?? packages/contracts/examples/durable-metrics/invalid/mismatched-unit.json
+?? packages/contracts/examples/durable-metrics/invalid/negative-count.json
+?? packages/contracts/examples/durable-metrics/invalid/pause-with-denominator.json
+?? packages/contracts/examples/durable-metrics/invalid/rate-with-wrong-denominator.json
+?? packages/contracts/examples/durable-metrics/invalid/rate-zero-with-missing-transcription.json
+?? packages/contracts/examples/durable-metrics/invalid/turn-duration-with-connection-timer.json
+?? packages/contracts/examples/durable-metrics/invalid/turn-without-recognition-status.json
+?? packages/contracts/examples/durable-metrics/invalid/unknown-source-classification.json
+?? packages/contracts/examples/durable-metrics/valid/controlled-provenance.json
+?? packages/contracts/examples/durable-metrics/valid/missing-transcription-rate.json
+?? packages/contracts/examples/durable-metrics/valid/split-rate-denominators.json
+?? packages/contracts/examples/error-shape/invalid/not-available-retryable.json
+?? packages/contracts/examples/error-shape/valid/not-available-stub.json
+?? packages/contracts/examples/event-envelope/invalid/server-event-without-session-id.json
+?? packages/contracts/examples/event-envelope/invalid/start-with-unknown-payload-key.json
+?? packages/contracts/examples/event-envelope/invalid/unknown-event-type.json
+?? packages/contracts/examples/event-envelope/invalid/wrong-direction-event.json
+?? packages/contracts/examples/event-envelope/valid/client-start-event.json
+?? packages/contracts/examples/event-envelope/valid/server-error-not-available.json
+?? packages/contracts/examples/event-envelope/valid/server-status-event.json
+?? packages/contracts/examples/session-settings/invalid/custom-topic-persisted.json
+?? packages/contracts/examples/session-settings/invalid/custom-topic-without-scenario.json
+?? packages/contracts/examples/session-settings/invalid/session-limit-over-ten-minutes.json
+?? packages/contracts/examples/session-settings/valid/custom-topic-transient.json
+?? packages/contracts/schemas/capability-state.schema.json
+?? playwright.integration.config.ts
+?? prompts/batch-B1-TEST.md
+?? prompts/batch-B2-TEST.md
+?? prompts/batch-B3-TEST.md
+?? prompts/parallel-G1/
+?? prompts/phase-01-foundation/FIX-1.md
+?? prompts/phase-01-foundation/VERIFY.md
+?? prompts/phase-01-foundation/evidence/fix-1/
+?? prompts/phase-02-provider-feasibility/
+?? prompts/phase-03-contract-freeze/
+?? prompts/phase-04-call-ui/
+?? prompts/phase-05-coaching-runtime/
+?? prompts/phase-06-private-history/
+?? prompts/phase-07-resilience/
+?? prompts/phase-08-language-acceptance/
+?? prompts/phase-09-release-package/
+?? prompts/provider-access.md
+?? prompts/waivers.md
+?? services/voice/src/gnani_coach/analysis/
+?? services/voice/src/gnani_coach/conversation/
+?? services/voice/src/gnani_coach/identity/
+?? services/voice/src/gnani_coach/observability/
+?? services/voice/src/gnani_coach/persistence/
+?? services/voice/src/gnani_coach/ports/
+?? services/voice/src/gnani_coach/providers/
+?? services/voice/src/gnani_coach/security.py
+?? services/voice/tests/analysis/
+?? services/voice/tests/conversation/
+?? services/voice/tests/identity/
+?? services/voice/tests/persistence/
+?? services/voice/tests/providers/
+?? services/voice/tests/test_resilience_guards.py
+?? supabase/
+?? tests/integration/
+?? tools/

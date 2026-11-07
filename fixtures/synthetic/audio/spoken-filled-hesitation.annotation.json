@@ -1,0 +1,27 @@
+{
+  "fixtureId": "spoken-filled-hesitation",
+  "kind": "human-reviewer annotation sidecar",
+  "audio": {
+    "path": "fixtures/synthetic/audio/spoken-filled-hesitation.wav",
+    "sha256": "82900f998131e7f512a2bee278e16f5bc849a5475510272ac5d321b53018ab56",
+    "sha256MatchesManifest": true,
+    "sha256VerifiedBy": "shasum -a 256 (recomputed before this sidecar was written; identical to fixtures/synthetic/manifest.json)",
+    "durationMs": 3680,
+    "sampleRate": 16000,
+    "channels": 1
+  },
+  "reviewer": "project owner (user)",
+  "date": "2026-10-20",
+  "um_present": true,
+  "uh_present": true,
+  "events": null,
+  "positions": null,
+  "positionsNote": "The reviewer reported presence only. No start/end positions were provided, so none are recorded here. They are not inferred, estimated or invented anywhere in this cycle.",
+  "note": "One clip. This is NOT the >=20 positive + >=20 negative labelled set the target requires, and it does not make precision/recall evaluable. It resolves one question only: the rendered audio in this clip does contain audible 'um' and 'uh', so the fillers that are absent from the recogniser's output were really spoken in the audio that was recognised.",
+  "scope": {
+    "audioAltered": false,
+    "capabilityFlagsChanged": false,
+    "fillerSupportedFlagChanged": false,
+    "note": "The WAV is untouched. This sidecar is an additional file next to it."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "runId": "20261020T073637Z-preflight-80e581abf8-ff5d7b",
+  "command": "preflight",
+  "argv": [
+    "preflight"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T07:36:37Z",
+  "finishedUtc": "2026-10-20T07:36:37Z",
+  "runtimeSeconds": 0.063,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "INCONCLUSIVE",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: preflight"
+  ]
+}

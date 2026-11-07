@@ -1,0 +1,23 @@
+==============================================================
+command : uv run --project services/voice python tools/probes/run.py analysis --allow-live
+cwd     : /Users/princegondaliya/Learning/Projects/temp/gnani
+utc     : 2026-10-18T16:46:30Z
+python  : Python 3.12.12
+node    : v26.7.0  npm: 11.19.0
+==============================================================
+
+
+== probe run ==
+  started_utc : 2026-10-18T16:46:30Z
+  python      : 3.12.12
+  cwd         : /Users/princegondaliya/Learning/Projects/temp/gnani
+  command     : run.py analysis
+[NOT RUN     ] audio-review — optional Gemini clip review is a separate explicit operation; this phase reports it as NOT RUN rather than billing for it
+
+== summary ==
+  overall     : INCONCLUSIVE
+  elapsed_s   : 0.028
+  run index   : 20 invocations recorded
+  index file  : tools/probes/.cache/runs.jsonl
+
+--- exit status: 0 ---

@@ -1,0 +1,62 @@
+{
+  "fixtureId": "clear-utterance",
+  "kind": "analytic",
+  "description": "One contiguous speech-shaped segment inside leading/trailing silence.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [
+    {
+      "tag": "silence",
+      "start_sample": 0,
+      "end_sample": 8000,
+      "start_ms": 0,
+      "end_ms": 500,
+      "duration_ms": 500
+    },
+    {
+      "tag": "speech",
+      "start_sample": 8000,
+      "end_sample": 40000,
+      "start_ms": 500,
+      "end_ms": 2500,
+      "duration_ms": 2000
+    },
+    {
+      "tag": "silence",
+      "start_sample": 40000,
+      "end_sample": 48000,
+      "start_ms": 2500,
+      "end_ms": 3000,
+      "duration_ms": 500
+    }
+  ],
+  "labels": [
+    {
+      "kind": "silence",
+      "startSample": 0,
+      "endSample": 8000,
+      "startMs": 0,
+      "endMs": 500,
+      "durationMs": 500,
+      "note": "exact by construction"
+    },
+    {
+      "kind": "silence",
+      "startSample": 40000,
+      "endSample": 48000,
+      "startMs": 2500,
+      "endMs": 3000,
+      "durationMs": 500,
+      "note": "exact by construction"
+    }
+  ],
+  "expectedScript": "(placeholder signal; no words)",
+  "labelProvenance": {
+    "origin": "synthetic-analytic",
+    "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+    "seed": 20261018,
+    "verified_by": null,
+    "review_state": "unreviewed-synthetic",
+    "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+  }
+}

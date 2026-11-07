@@ -1,0 +1,29 @@
+{
+  "runId": "20261020T093702Z-secret-scan-ed172a5c4d-fa9228",
+  "command": "secret-scan",
+  "argv": [
+    "uv",
+    "run",
+    "--project",
+    "services/voice",
+    "python",
+    "tools/probes/secret_scan.py"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T09:37:02Z",
+  "finishedUtc": "2026-10-20T09:37:03Z",
+  "runtimeSeconds": 1.029,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "PASSED",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: secret-scan",
+    "wall_clock_seconds: 1.029",
+    "offline: no inference call, no socket, no credential read"
+  ]
+}

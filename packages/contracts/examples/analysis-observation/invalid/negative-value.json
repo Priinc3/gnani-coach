@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "pause.longest_ms",
+  "source": "measured",
+  "status": "available",
+  "value": -250,
+  "unit": "milliseconds",
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "medium",
+    "limitations": ["estimated from speech-region detection; not a word timing"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:50Z"
+}

@@ -1,0 +1,247 @@
+=== pytest-integration ===
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0 -- /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani
+plugins: anyio-4.15.1
+collecting ... collected 42 items
+
+tests/integration/test_origins.py::test_the_default_allowlist_is_the_local_web_origin PASSED [  2%]
+tests/integration/test_origins.py::test_a_wildcard_allowlist_is_refused_while_the_settings_parse PASSED [  4%]
+tests/integration/test_origins.py::test_a_malformed_allowlist_is_refused_while_the_settings_parse PASSED [  7%]
+tests/integration/test_origins.py::test_the_allowlist_accepts_a_json_array_and_a_comma_separated_list PASSED [  9%]
+tests/integration/test_origins.py::test_the_allowlist_is_normalised PASSED [ 11%]
+tests/integration/test_origins.py::test_the_check_allows_the_configured_origin PASSED [ 14%]
+tests/integration/test_origins.py::test_the_check_refuses_a_foreign_origin PASSED [ 16%]
+tests/integration/test_origins.py::test_the_check_refuses_a_malformed_origin PASSED [ 19%]
+tests/integration/test_origins.py::test_the_check_allows_a_missing_origin PASSED [ 21%]
+tests/integration/test_origins.py::test_the_check_follows_the_configuration PASSED [ 23%]
+tests/integration/test_origins.py::test_an_allowed_origin_passes_the_cors_preflight PASSED [ 26%]
+tests/integration/test_origins.py::test_a_foreign_origin_fails_the_cors_preflight PASSED [ 28%]
+tests/integration/test_origins.py::test_a_foreign_origin_gets_no_cors_headers_on_a_simple_request FAILED [ 30%]
+tests/integration/test_origins.py::test_the_cors_middleware_does_not_send_credentials PASSED [ 33%]
+tests/integration/test_origins.py::test_an_allowed_origin_opens_the_call_socket FAILED [ 35%]
+tests/integration/test_origins.py::test_a_foreign_origin_is_refused_the_handshake PASSED [ 38%]
+tests/integration/test_origins.py::test_a_missing_origin_opens_the_call_socket FAILED [ 40%]
+tests/integration/test_origins.py::test_the_openapi_document_is_still_only_health PASSED [ 42%]
+tests/integration/test_seams.py::test_health_works_and_leaks_no_configuration PASSED [ 45%]
+tests/integration/test_seams.py::test_health_is_the_only_documented_route PASSED [ 47%]
+tests/integration/test_seams.py::test_history_route_answers_not_available FAILED [ 50%]
+tests/integration/test_seams.py::test_consent_route_answers_not_available FAILED [ 52%]
+tests/integration/test_seams.py::test_recording_routes_answer_not_available FAILED [ 54%]
+tests/integration/test_seams.py::test_a_recording_route_never_returns_audio FAILED [ 57%]
+tests/integration/test_seams.py::test_call_socket_closes_with_the_frozen_error FAILED [ 59%]
+tests/integration/test_seams.py::test_identity_port_is_the_anonymous_guest PASSED [ 61%]
+tests/integration/test_seams.py::test_analysis_port_reports_insufficient_evidence FAILED [ 64%]
+tests/integration/test_seams.py::test_phase_02_adapters_satisfy_the_ports PASSED [ 66%]
+tests/integration/test_seams.py::test_the_provider_package_does_not_depend_on_the_ports PASSED [ 69%]
+tests/integration/test_seams.py::test_readiness_never_reports_live_from_presence PASSED [ 71%]
+tests/integration/test_seams.py::test_readiness_is_unconfigured_without_credentials PASSED [ 73%]
+tests/integration/test_seams.py::test_the_frozen_model_default_is_dated PASSED [ 76%]
+tests/integration/test_seams.py::test_the_filler_capability_is_unvalidated PASSED [ 78%]
+tests/integration/test_seams.py::test_the_catalog_keeps_every_capability_flag_false PASSED [ 80%]
+tests/integration/test_voice_url.py::test_the_voice_url_module_exists_and_is_frozen PASSED [ 83%]
+tests/integration/test_voice_url.py::test_the_development_default_is_the_local_voice_service PASSED [ 85%]
+tests/integration/test_voice_url.py::test_the_env_examples_document_the_voice_url[relative0] PASSED [ 88%]
+tests/integration/test_voice_url.py::test_the_env_examples_document_the_voice_url[relative1] PASSED [ 90%]
+tests/integration/test_voice_url.py::test_the_service_env_example_has_no_public_variable PASSED [ 92%]
+tests/integration/test_voice_url.py::test_the_voice_url_is_the_only_public_variable PASSED [ 95%]
+tests/integration/test_voice_url.py::test_no_secret_uses_the_public_prefix PASSED [ 97%]
+tests/integration/test_voice_url.py::test_the_web_app_reads_no_other_environment_variable PASSED [100%]
+
+=================================== FAILURES ===================================
+________ test_a_foreign_origin_gets_no_cors_headers_on_a_simple_request ________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_a_foreign_origin_gets_no_cors_headers_on_a_simple_request(
+        client: TestClient,
+    ) -> None:
+        """The request still runs, but the browser is not allowed to read it."""
+        response = client.get("/api/history", headers={"Origin": FOREIGN_ORIGIN})
+>       assert response.status_code == 503
+E       assert 401 == 503
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests/integration/test_origins.py:163: AssertionError
+_________________ test_an_allowed_origin_opens_the_call_socket _________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_an_allowed_origin_opens_the_call_socket(client: TestClient) -> None:
+        """The frozen behaviour of the stub is unchanged for a trusted origin."""
+        with client.websocket_connect("/ws/call", headers={"origin": ALLOWED_ORIGIN}) as socket:
+            message = socket.receive_json()
+>       assert message["type"] == "error"
+E       AssertionError: assert 'status' == 'error'
+E         
+E         - error
+E         + status
+
+tests/integration/test_origins.py:188: AssertionError
+_________________ test_a_missing_origin_opens_the_call_socket __________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_a_missing_origin_opens_the_call_socket(client: TestClient) -> None:
+        """A non-browser client (no ``Origin`` header) is allowed."""
+        with client.websocket_connect("/ws/call") as socket:
+            message = socket.receive_json()
+>       assert message["type"] == "error"
+E       AssertionError: assert 'status' == 'error'
+E         
+E         - error
+E         + status
+
+tests/integration/test_origins.py:205: AssertionError
+___________________ test_history_route_answers_not_available ___________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_history_route_answers_not_available(client: TestClient) -> None:
+        response = client.get("/api/history")
+>       assert response.status_code == 503
+E       assert 401 == 503
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests/integration/test_seams.py:83: AssertionError
+___________________ test_consent_route_answers_not_available ___________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_consent_route_answers_not_available(client: TestClient) -> None:
+        response = client.post("/api/consent")
+>       assert response.status_code == 503
+E       assert 401 == 503
+E        +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests/integration/test_seams.py:89: AssertionError
+__________________ test_recording_routes_answer_not_available __________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_recording_routes_answer_not_available(client: TestClient) -> None:
+        for method in ("GET", "DELETE"):
+            response = client.request(method, "/api/recordings/rec_abc123")
+>           assert response.status_code == 503, method
+E           AssertionError: GET
+E           assert 401 == 503
+E            +  where 401 = <Response [401 Unauthorized]>.status_code
+
+tests/integration/test_seams.py:96: AssertionError
+__________________ test_a_recording_route_never_returns_audio __________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_a_recording_route_never_returns_audio(client: TestClient) -> None:
+        response = client.get("/api/recordings/rec_abc123")
+        assert response.headers["content-type"].startswith("application/json")
+>       assert_error_shape(response.json())
+
+tests/integration/test_seams.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+document = {'errorVersion': '0.1', 'code': 'unauthenticated', 'category': 'unauthenticated', 'message': 'Sign in to listen to a recording.', ...}
+
+    def assert_error_shape(document: dict[str, Any]) -> None:
+        """Assert the document is the frozen error shape for a stub seam."""
+        assert document["errorVersion"] == "0.1"
+>       assert document["code"] == NOT_AVAILABLE_CODE
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests/integration/seam_helpers.py:18: AssertionError
+________________ test_call_socket_closes_with_the_frozen_error _________________
+
+client = <starlette.testclient.TestClient object at 0x1091e6570>
+
+    def test_call_socket_closes_with_the_frozen_error(client: TestClient) -> None:
+        with client.websocket_connect("/ws/call") as socket:
+            message = socket.receive_json()
+        assert message["envelopeVersion"] == "0.1"
+        assert message["direction"] == "server_to_client"
+>       assert message["type"] == "error"
+E       AssertionError: assert 'status' == 'error'
+E         
+E         - error
+E         + status
+
+tests/integration/test_seams.py:116: AssertionError
+_______________ test_analysis_port_reports_insufficient_evidence _______________
+
+    def test_analysis_port_reports_insufficient_evidence() -> None:
+        async def check() -> None:
+            analysis = get_analysis()
+            assert isinstance(analysis, AnalysisPort)
+            result = await analysis.analyze(
+                AnalysisRequest(audio=b"\x00\x00" * 16000, sample_rate=16000)
+            )
+            assert result.recognition_status == "missing-transcription"
+            assert result.observations, "the stub must still report its metric keys"
+            for observation in result.observations:
+                assert observation.status == "insufficient_evidence"
+                assert observation.value is None
+    
+>       asyncio.run(check())
+
+tests/integration/test_seams.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/integration/test_seams.py:142: in check
+    result = await analysis.analyze(
+services/voice/src/gnani_coach/analysis/service.py:188: in analyze
+    measurement = await self.measure(request)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+services/voice/src/gnani_coach/analysis/service.py:249: in measure
+    observations = self._observations(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <gnani_coach.analysis.service.LearnerAudioAnalysis object at 0x109268140>
+request = AnalysisRequest(audio=b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x...', sample_rate=16000, turn_id=None, round_id=None, recognized_text=None, audio_source='learner-audio', synthetic=False)
+metrics = DeliveryMetrics(clip_span_ms=1000, speech_active_ms=0, recognized_word_count=None, recognition_status='missing-transcr... the recogniser returned nothing; missing-transcription = no transcript was obtained. Only 'measured' yields a rate."})
+span_ms = 1000, speech_active_ms = 0
+recognition_status = 'missing-transcription'
+pause_status = 'insufficient_evidence', pause_reason = 'too_little_speech'
+
+    def _observations(
+        self,
+        *,
+        request: AnalysisRequest,
+        metrics,
+        span_ms: int,
+        speech_active_ms: int,
+        recognition_status: RecognitionStatus,
+        pause_status: ObservationStatus,
+        pause_reason: UnavailabilityReason,
+    ) -> tuple[AnalysisObservation, ...]:
+        """Build the six observations, with their methods and denominators."""
+        limitations = (
+            "speech regions are an estimate from Silero VAD, validated against "
+            "synthetic signals only",
+        )
+>       rate_limitations = limitations + (
+            "; the word count comes from an imperfect recogniser"
+        )
+E       TypeError: can only concatenate tuple (not "str") to tuple
+
+services/voice/src/gnani_coach/analysis/service.py:284: TypeError
+=========================== short test summary info ============================
+FAILED tests/integration/test_origins.py::test_a_foreign_origin_gets_no_cors_headers_on_a_simple_request
+FAILED tests/integration/test_origins.py::test_an_allowed_origin_opens_the_call_socket
+FAILED tests/integration/test_origins.py::test_a_missing_origin_opens_the_call_socket
+FAILED tests/integration/test_seams.py::test_history_route_answers_not_available
+FAILED tests/integration/test_seams.py::test_consent_route_answers_not_available
+FAILED tests/integration/test_seams.py::test_recording_routes_answer_not_available
+FAILED tests/integration/test_seams.py::test_a_recording_route_never_returns_audio
+FAILED tests/integration/test_seams.py::test_call_socket_closes_with_the_frozen_error
+FAILED tests/integration/test_seams.py::test_analysis_port_reports_insufficient_evidence
+========================= 9 failed, 33 passed in 0.12s =========================
+--- exit code: 1 ---

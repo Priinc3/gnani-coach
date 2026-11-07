@@ -2,6 +2,8 @@
 
 Status: selected planning baseline; not installed or tested by the orchestrator. Exact release pins must be verified and recorded by Phase 01; live model access by Phase 02. These decisions follow web searches, not assumed API recollections.
 
+Review update (2026-10-18): FIX-1's inspected files and builder evidence support the corrected Node 24.22.0 LTS baseline, npm 11.19.1, closed durable provenance and metric-domain constraints. `phase-01-foundation/VERIFY.md` accepts those scoped corrections but does not declare batch verification. The braces development advisory and EOL ESLint 9 have separate short-lived dispositions in `waivers.md`, expiring at Phase 03 freeze or 2026-10-25. User-selected visual reference remains `UI.png`, detailed in `phase-04-call-ui/UI-REFERENCE.md`; it does not change this technology selection.
+
 ## Selected components
 
 | Area | Decision | Primary source and rationale |

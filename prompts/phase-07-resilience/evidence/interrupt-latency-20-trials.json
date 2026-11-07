@@ -1,0 +1,32 @@
+{
+  "label": "fake stack; not the real target",
+  "trials": 20,
+  "unit": "milliseconds",
+  "definition": "last coach audio byte read off the fake transport to the status listening that follows the interruption",
+  "samplesMs": [
+    4.4,
+    5.1,
+    3.6,
+    4.1,
+    4.6,
+    3.4,
+    5.4,
+    3.7,
+    3.8,
+    3.4,
+    5.9,
+    4.1,
+    3.2,
+    3.1,
+    3.5,
+    3.8,
+    3.6,
+    3.8,
+    6.4,
+    3.3
+  ],
+  "p50Ms": 3.8,
+  "p95Ms": 5.9,
+  "maxMs": 6.4,
+  "sanityCeilingMs": 5000
+}

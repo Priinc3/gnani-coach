@@ -1,0 +1,24 @@
+# The handshake, against the REAL uvicorn server (not the in-process test client).
+# 2026-10-20, node v24.22.0.
+
+$ uv run --project services/voice python -m uvicorn gnani_coach.main:app --host 127.0.0.1 --port 8123
+# (started in the background; the default allowlist applies: http://localhost:3000)
+
+$ uv run --project services/voice python ws_origin_probe.py   # a websockets client with an explicit Origin header
+origin='http://localhost:3000' -> ACCEPTED; first message type='error' code='not_available'
+   closed: code=1011 reason='not_available'
+origin='https://evil.example' -> REFUSED: InvalidStatus: server rejected WebSocket connection: HTTP 403
+
+# --- the uvicorn log of the same run ---
+INFO:     Started server process [59008]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8123 (Press CTRL+C to quit)
+INFO:     127.0.0.1:63598 - "WebSocket /ws/call" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:63599 - "WebSocket /ws/call" 403
+INFO:     connection rejected (403 Forbidden)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [59008]

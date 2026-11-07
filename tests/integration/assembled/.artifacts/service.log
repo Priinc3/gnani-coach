@@ -1,0 +1,55 @@
+DEBUG httpcore.connection connect_tcp.started host='127.0.0.1' port=8018 local_address=None timeout=5.0 socket_options=None
+DEBUG httpcore.connection connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x10cd49520>
+DEBUG httpcore.http11 send_request_headers.started request=<Request [b'GET']>
+DEBUG httpcore.http11 send_request_headers.complete
+DEBUG httpcore.http11 send_request_body.started request=<Request [b'GET']>
+DEBUG httpcore.http11 send_request_body.complete
+DEBUG httpcore.http11 receive_response_headers.started request=<Request [b'GET']>
+DEBUG httpcore.http11 receive_response_headers.complete return_value=(b'HTTP/1.0', 200, b'OK', [(b'Server', b'FakeSupabase/1.0 Python/3.12.12'), (b'Date', b'Fri, 23 Oct 2026 12:20:09 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'171')])
+INFO httpx HTTP Request: GET http://127.0.0.1:8018/auth/v1/user "HTTP/1.0 200 OK"
+DEBUG httpcore.http11 receive_response_body.started request=<Request [b'GET']>
+DEBUG httpcore.http11 receive_response_body.complete
+DEBUG httpcore.http11 response_closed.started
+DEBUG httpcore.http11 response_closed.complete
+INFO gnani_coach.conversation turn latency session=ses_a6471971ba8e0371 connection=con_81f842dd7b23ce54 turn=trn_249d5be78328fe94 turn_latency_ms=253
+ERROR gnani_coach.conversation call failed session=ses_a6471971ba8e0371 connection=con_81f842dd7b23ce54
+Traceback (most recent call last):
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/lib/python3.12/site-packages/starlette/websockets.py", line 92, in send
+    await self._send(message)
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_sansio_impl.py", line 436, in send
+    raise ClientDisconnected()
+uvicorn.protocols.utils.ClientDisconnected
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/src/gnani_coach/conversation/runtime.py", line 422, in run
+    await self._main_loop()
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/src/gnani_coach/conversation/runtime.py", line 628, in _main_loop
+    await self._send_status("ended", "the client left")
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/src/gnani_coach/conversation/runtime.py", line 404, in _send_status
+    await self._send("status", payload, turn_id=turn_id)
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/src/gnani_coach/conversation/runtime.py", line 365, in _send
+    await self._websocket.send_json(envelope)
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/lib/python3.12/site-packages/starlette/websockets.py", line 182, in send_json
+    await self.send({"type": "websocket.send", "text": text})
+  File "/Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/lib/python3.12/site-packages/starlette/websockets.py", line 95, in send
+    raise WebSocketDisconnect(code=1006)
+starlette.websockets.WebSocketDisconnect
+WARNING gnani_coach.conversation error envelope could not be sent session=ses_a6471971ba8e0371 reason=WebSocketDisconnected
+DEBUG httpcore.connection connect_tcp.started host='127.0.0.1' port=8018 local_address=None timeout=15.0 socket_options=None
+DEBUG httpcore.connection connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x10cd48740>
+DEBUG httpcore.http11 send_request_headers.started request=<Request [b'POST']>
+DEBUG httpcore.http11 send_request_headers.complete
+DEBUG httpcore.http11 send_request_body.started request=<Request [b'POST']>
+DEBUG httpcore.http11 send_request_body.complete
+DEBUG httpcore.http11 receive_response_headers.started request=<Request [b'POST']>
+DEBUG httpcore.http11 receive_response_headers.complete return_value=(b'HTTP/1.0', 201, b'Created', [(b'Server', b'FakeSupabase/1.0 Python/3.12.12'), (b'Date', b'Fri, 23 Oct 2026 12:20:12 GMT'), (b'Content-Length', b'0')])
+INFO httpx HTTP Request: POST http://127.0.0.1:8018/rest/v1/session_metrics?on_conflict=user_id%2Csession_id "HTTP/1.0 201 Created"
+DEBUG httpcore.http11 receive_response_body.started request=<Request [b'POST']>
+DEBUG httpcore.http11 receive_response_body.complete
+DEBUG httpcore.http11 response_closed.started
+DEBUG httpcore.http11 response_closed.complete
+INFO gnani_coach.conversation call ended session=ses_a6471971ba8e0371 connection=con_81f842dd7b23ce54 turns=1 duration_ms=3297 guest=0 recording=0 saved=1

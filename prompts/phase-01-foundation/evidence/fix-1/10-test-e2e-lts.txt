@@ -1,0 +1,11 @@
+## npm run test:e2e — Node v24.22.0 (Playwright starts its own dev server)
+$ npm run test:e2e
+  ✓   6 [chromium] › tests/foundation/starter-screen.spec.ts:84:5 › recording retention is off by default, explained, and keyboard-toggleable (630ms)
+  ✓   8 [chromium] › tests/foundation/starter-screen.spec.ts:112:5 › coaching language follows practice until changed manually (628ms)
+  ✓  10 [chromium] › tests/foundation/starter-screen.spec.ts:133:5 › sample preview is optional and clearly labeled (571ms)
+  ✓   7 [chromium] › tests/foundation/starter-screen.spec.ts:99:5 › practice language select is focusable, labeled, and updates the plan (638ms)
+  ✓  11 [chromium] › tests/foundation/starter-screen.spec.ts:141:5 › layout does not overflow a 360px-wide screen (290ms)
+  ✓  12 [chromium] › tests/foundation/starter-screen.spec.ts:153:5 › honours reduced-motion preference (291ms)
+
+  12 passed (3.4s)
+exit: 0

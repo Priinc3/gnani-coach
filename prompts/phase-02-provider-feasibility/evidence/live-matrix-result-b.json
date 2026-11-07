@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "id": "telugu",
+      "displayName": "Telugu",
+      "sttCode": "te-IN",
+      "ttsCode": "te-IN",
+      "documented": true,
+      "stt": "PASSED",
+      "tts": "PASSED",
+      "geminiLanguage": "PASSED",
+      "note": "API roundtrip only; human intelligibility and coaching quality NOT verified",
+      "recognizedChars": 60,
+      "voice": "Lavanya",
+      "ttsBytes": 71680,
+      "geminiModel": "gemini-3.8-flash",
+      "geminiReplyChars": 34
+    },
+    {
+      "id": "hinglish",
+      "displayName": "Hinglish (Hindi–English mix)",
+      "sttCode": "en-IN",
+      "ttsCode": "hi-en",
+      "documented": true,
+      "stt": "PASSED",
+      "tts": "PASSED",
+      "geminiLanguage": "PASSED",
+      "note": "Realtime STT describes Hindi–English mixed input under the English entry; the separate TTS code hi-en must not be sent to STT. API roundtrip only; human intelligibility and coaching quality NOT verified",
+      "recognizedChars": 55,
+      "voice": "Poorvi",
+      "ttsBytes": 61440,
+      "geminiModel": "gemini-3.8-flash",
+      "geminiReplyChars": 51
+    }
+  ],
+  "budget": {
+    "operations_used": 10,
+    "operations_limit": 40,
+    "stt_audio_seconds": 6.4,
+    "stt_audio_seconds_limit": 300.0,
+    "connections_used": 4,
+    "connections_limit": 40,
+    "retries": 0,
+    "max_retries_per_operation": 2,
+    "per_kind": {
+      "gemini:reply": 2,
+      "gnani-stt:connect": 2,
+      "gnani-stt:session": 2,
+      "gnani-tts:connect": 2,
+      "gnani-tts:synthesize": 2
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "capabilityVersion": "0.1",
+  "checkedOn": "2026-10-20",
+  "sources": [
+    {
+      "id": "feasibility-decision",
+      "label": "Phase 02 feasibility decision, reviewed 2026-10-20",
+      "path": "docs/feasibility/DECISION.md",
+      "checkedOn": "2026-10-20"
+    }
+  ],
+  "capabilities": {
+    "filler-localization": {
+      "id": "filler-localization",
+      "state": "unvalidated",
+      "renderedState": "insufficient_evidence",
+      "metrics": ["filler.count"],
+      "unavailabilityReason": "filler_detection_unvalidated",
+      "goal": "Audio-grounded filler localisation with a position.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": null,
+      "validatedBy": null,
+      "evidenceRefs": ["docs/feasibility/DECISION.md#q3"],
+      "notes": ["No filler route passed on 2026-10-20."]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+=== eslint-phase06-files ===
+no findings in the Phase 06 web files
+--- exit code: 0 ---

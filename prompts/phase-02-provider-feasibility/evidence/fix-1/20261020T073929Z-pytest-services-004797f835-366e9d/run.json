@@ -1,0 +1,32 @@
+{
+  "runId": "20261020T073929Z-pytest-services-004797f835-366e9d",
+  "command": "pytest-services",
+  "argv": [
+    "uv",
+    "run",
+    "--project",
+    "services/voice",
+    "python",
+    "-m",
+    "pytest",
+    "services/voice/tests",
+    "-v"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T07:39:29Z",
+  "finishedUtc": "2026-10-20T07:39:35Z",
+  "runtimeSeconds": 5.908,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "PASSED",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: pytest-services",
+    "wall_clock_seconds: 5.908",
+    "offline: no inference call, no socket, no credential read"
+  ]
+}

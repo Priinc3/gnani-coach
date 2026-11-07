@@ -1,0 +1,30 @@
+{
+  "runId": "20261020T075430Z-preflight-428e90440a-689ff0",
+  "command": "preflight",
+  "argv": [
+    "uv",
+    "run",
+    "--project",
+    "services/voice",
+    "python",
+    "tools/probes/run.py",
+    "preflight"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T07:54:30Z",
+  "finishedUtc": "2026-10-20T07:54:30Z",
+  "runtimeSeconds": 0.132,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "PASSED",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: preflight",
+    "wall_clock_seconds: 0.132",
+    "offline: no inference call, no socket, no credential read"
+  ]
+}

@@ -1,0 +1,23 @@
+# F04 runtime evidence — chosen LTS runtime
+command: nvm use 24.22.0 (shell-local; no default alias change)
+node: v24.22.0
+npm: 11.19.1
+which node: /Users/princegondaliya/.nvm/versions/node/v24.22.0/bin/node
+node executable: /Users/princegondaliya/.nvm/versions/node/v24.22.0/bin/node
+
+## npm install (regenerates package-lock.json after @types/node + engines change)
+$ npm install
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+exit: 0
+
+## lockfile diff summary (root package.json changed: engines; apps/web: @types/node)
+lockfileVersion: 3
+root engines: {"node":">=24.0.0 <25"}
+@types/node resolved: 24.19.2

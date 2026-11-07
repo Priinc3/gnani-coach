@@ -1,0 +1,26 @@
+{
+  "runId": "20261020T073935Z-test-contracts-51c2c4cae7-d8287e",
+  "command": "test-contracts",
+  "argv": [
+    "npm",
+    "run",
+    "test:contracts"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T07:39:35Z",
+  "finishedUtc": "2026-10-20T07:39:36Z",
+  "runtimeSeconds": 0.239,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "PASSED",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: test-contracts",
+    "wall_clock_seconds: 0.239",
+    "offline: no inference call, no socket, no credential read"
+  ]
+}

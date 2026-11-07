@@ -1,0 +1,15 @@
+{
+  "settingsVersion": "0.1",
+  "practiceLanguageId": "english",
+  "coachingLanguageId": "english",
+  "scenarioId": "interview",
+  "level": "beginner",
+  "coachingRoundTurns": 4,
+  "sessionLimitSeconds": 700,
+  "recordingRetention": false,
+  "consent": {
+    "consentVersion": "0.1",
+    "recordingRetentionGranted": false,
+    "recordingRetentionGrantedAt": null
+  }
+}

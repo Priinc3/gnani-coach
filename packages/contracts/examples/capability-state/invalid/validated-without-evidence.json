@@ -1,0 +1,27 @@
+{
+  "capabilityVersion": "0.1",
+  "checkedOn": "2026-10-20",
+  "sources": [
+    {
+      "id": "feasibility-decision",
+      "label": "Phase 02 feasibility decision, reviewed 2026-10-20",
+      "path": "docs/feasibility/DECISION.md",
+      "checkedOn": "2026-10-20"
+    }
+  ],
+  "capabilities": {
+    "filler-localization": {
+      "id": "filler-localization",
+      "state": "validated",
+      "renderedState": "available",
+      "metrics": ["filler.count"],
+      "goal": "Audio-grounded filler localisation with a position.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": null,
+      "validatedBy": null,
+      "evidenceRefs": [],
+      "notes": ["A validated state must carry the validation timestamp and who validated it."]
+    }
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "capabilityVersion": "0.1",
+  "checkedOn": "2026-10-20",
+  "sources": [
+    {
+      "id": "feasibility-decision",
+      "label": "Phase 02 feasibility decision (Q1-Q4), reviewed 2026-10-20",
+      "path": "docs/feasibility/DECISION.md",
+      "checkedOn": "2026-10-20"
+    },
+    {
+      "id": "feasibility-handoff",
+      "label": "Phase 02 handoff to the contract freeze, reviewed 2026-10-20",
+      "path": "docs/feasibility/HANDOFF.md",
+      "checkedOn": "2026-10-20"
+    },
+    {
+      "id": "phase-02-report",
+      "label": "Phase 02 FIX cycle 2 report (bounded filler experiment), reviewed 2026-10-20",
+      "path": "prompts/phase-02-provider-feasibility/REPORT.md",
+      "checkedOn": "2026-10-20"
+    },
+    {
+      "id": "stt-realtime",
+      "label": "Gnani realtime STT — supported languages and frame contract (reviewed 2026-10-18)",
+      "url": "https://docs.gnani.ai/api/STT/stt-websocket",
+      "checkedOn": "2026-10-18"
+    },
+    {
+      "id": "tts-realtime",
+      "label": "Gnani realtime TTS — models, voices and language parameters (reviewed 2026-10-18)",
+      "url": "https://docs.gnani.ai/api/TTS/tts-websocket",
+      "checkedOn": "2026-10-18"
+    }
+  ],
+  "capabilities": {
+    "filler-localization": {
+      "id": "filler-localization",
+      "state": "unvalidated",
+      "renderedState": "insufficient_evidence",
+      "metrics": ["filler.count"],
+      "unavailabilityReason": "filler_detection_unvalidated",
+      "goal": "Audio-grounded filler localisation: locate filled pauses in the learner's own audio, with a position, so the coach can point at the moment.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": null,
+      "validatedBy": null,
+      "evidenceRefs": [
+        "docs/feasibility/DECISION.md#q3",
+        "prompts/phase-02-provider-feasibility/REPORT.md",
+        "fixtures/synthetic/audio/spoken-filled-hesitation.annotation.json"
+      ],
+      "acceptance": {
+        "precisionMin": 0.9,
+        "recallMin": 0.8,
+        "boundaryP95ErrorMsMax": 300,
+        "minPositiveExamples": 20,
+        "minNegativeExamples": 20
+      },
+      "notes": [
+        "No filler route passed on 2026-10-20. The recogniser omitted both hesitations that the owner confirmed were audible in the reviewed clip, so transcript-based counting cannot be audio analysis.",
+        "The goal is preserved, not narrowed: this state is a data value, and the owner decides the scope. A later validated detector flips data only.",
+        "While this state stands, the UI and the coach render insufficient_evidence. A missing or unvalidated filler is never written as 0."
+      ]
+    },
+    "pause-detection": {
+      "id": "pause-detection",
+      "state": "validated_synthetic_only",
+      "renderedState": "available",
+      "metrics": ["pause.longest_ms", "pause.count"],
+      "unavailabilityReason": "too_little_speech",
+      "goal": "Estimate where the learner paused inside a turn, anchored to the learner's own audio clock.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": "2026-10-18",
+      "validatedBy": "Phase 02 offline probe: Silero VAD over ONNX Runtime against exact synthetic labels",
+      "evidenceRefs": [
+        "docs/feasibility/DECISION.md#q2",
+        "docs/feasibility/HANDOFF.md#3"
+      ],
+      "acceptance": {
+        "boundaryP95ErrorMsMax": 300,
+        "minPositiveExamples": 20,
+        "minNegativeExamples": 20
+      },
+      "notes": [
+        "Silero VAD over ONNX Runtime matched exact synthetic labels (worst boundary error 44 ms) on clear-utterance, one-word and known-internal-gap fixtures.",
+        "The check ran on generated signals only. It proves the mechanism and framing, not behaviour on natural learner speech.",
+        "The published baseline 44 ms figure is the synthetic worst case; the 300 ms target is the p95 target for natural speech and has not been measured."
+      ]
+    },
+    "speech-rate": {
+      "id": "speech-rate",
+      "state": "validated_synthetic_only",
+      "renderedState": "available",
+      "metrics": ["speech.rate_wpm"],
+      "unavailabilityReason": "stt_unavailable",
+      "goal": "Report the learner's overall speaking rate as recognised words over the elapsed learner-audio span.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": "2026-10-18",
+      "validatedBy": "Phase 02 offline probe: four-denominator metrics on synthetic fixtures",
+      "evidenceRefs": ["docs/feasibility/DECISION.md#q2", "docs/feasibility/HANDOFF.md#5.1"],
+      "acceptance": {
+        "minPositiveExamples": 20,
+        "minNegativeExamples": 20
+      },
+      "notes": [
+        "The denominator is the elapsed learner-audio span on the sample clock, never connection or session time.",
+        "The numerator comes from speech-to-text, so a recognition error changes the number. Only synthetic fixtures have been measured."
+      ]
+    },
+    "speech-active-rate": {
+      "id": "speech-active-rate",
+      "state": "validated_synthetic_only",
+      "renderedState": "available",
+      "metrics": ["speech.active_rate_wpm"],
+      "unavailabilityReason": "speech_analysis_unavailable",
+      "goal": "Report the learner's speaking rate over speech-active time only, so pauses do not distort it.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": "2026-10-18",
+      "validatedBy": "Phase 02 offline probe: four-denominator metrics on synthetic fixtures",
+      "evidenceRefs": ["docs/feasibility/DECISION.md#q2", "docs/feasibility/HANDOFF.md#5.1"],
+      "acceptance": {
+        "minPositiveExamples": 20,
+        "minNegativeExamples": 20
+      },
+      "notes": [
+        "Kept separate from the overall rate: the two are different quantities and may never share a method or a denominator.",
+        "Measured on synthetic fixtures only."
+      ]
+    },
+    "turn-duration": {
+      "id": "turn-duration",
+      "state": "validated_synthetic_only",
+      "renderedState": "available",
+      "metrics": ["turn.duration_ms"],
+      "unavailabilityReason": "too_little_speech",
+      "goal": "Report how long the learner's own audio ran in a turn, measured on the learner's sample clock.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": "2026-10-18",
+      "validatedBy": "Phase 02 offline probe: learner sample clock with padding kept separate",
+      "evidenceRefs": ["docs/feasibility/DECISION.md#q2", "docs/feasibility/HANDOFF.md#3"],
+      "acceptance": {
+        "boundaryP95ErrorMsMax": 300,
+        "minPositiveExamples": 20,
+        "minNegativeExamples": 20
+      },
+      "notes": [
+        "The anchor is the local sample clock: genuine samples submitted, with deliberate end padding counted separately and excluded.",
+        "Connection time and session time are never used as the duration."
+      ]
+    },
+    "conversation-coach": {
+      "id": "conversation-coach",
+      "state": "unvalidated",
+      "renderedState": "insufficient_evidence",
+      "metrics": [],
+      "unavailabilityReason": "stt_unavailable",
+      "goal": "Hold a natural spoken conversation and coach in the learner's language, with audio-grounded feedback.",
+      "goalPreserved": true,
+      "scopeChangeApproved": false,
+      "validatedAt": null,
+      "validatedBy": null,
+      "evidenceRefs": [
+        "docs/feasibility/DECISION.md#q1",
+        "docs/feasibility/DECISION.md#q4",
+        "docs/feasibility/CAPABILITIES.md#5"
+      ],
+      "notes": [
+        "One complete STT to Gemini to TTS turn succeeded, and Gemini answered 10 of 11 languages, then returned a bounded timeout for Tamil and later network-category failures from the same environment.",
+        "Nobody listened to any synthesised utterance and no reply was scored for teaching value, so intelligibility and coaching quality are unproven in every language.",
+        "The browser path, interruption and cancellation in a real call have never been run."
+      ]
+    }
+  }
+}

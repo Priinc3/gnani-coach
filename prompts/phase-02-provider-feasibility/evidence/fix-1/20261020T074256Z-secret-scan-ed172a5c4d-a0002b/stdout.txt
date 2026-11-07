@@ -1,0 +1,3 @@
+credential scan: 0 findings
+  scope: repository working tree, structural rules only
+  note: a clean scan does NOT erase any earlier exposure

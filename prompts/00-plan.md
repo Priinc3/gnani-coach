@@ -1,6 +1,6 @@
 # Speaking coach — discovery and brainstorm
 
-Status: **START REQUESTED — execution plan v1 frozen; Phase 01 prompt ready for you to run. No application has been built or verified yet.**
+Status: **2026-10-23: B2 TEST skipped by user order (W06); B1 and B2 NOT VERIFIED. B3 opened: BUILDs for 07, 08, 09 and `batch-B3-TEST.md` issued; the B3 TEST folds in the B1 and B2 checks and is the first independent test of the whole system. Contest deadline 2026-11-10. Filler = unvalidated; goal preserved. Phase map unchanged; Phase 08 gets a data-only grant on catalog capability flags.**
 
 Read `challenge.md` and checked current public documentation on 2026-10-16, including the live speech endpoints after your answers. Sources: [research.md](research.md). Language findings: [language-support.md](language-support.md). Product choices below are distinguished from recommendations and untested capabilities.
 
@@ -164,6 +164,8 @@ Record the consent state/version at ingestion and at durable write time. Later o
 
 ## 7. Scope to keep and scope to defer
 
+**Visual direction update:** the user supplied root `UI.png` and asked that the UI builder use it. See [Phase 04 UI reference](phase-04-call-ui/UI-REFERENCE.md): Speakify's illustrated, soft white/teal, bold sans-serif desktop/mobile design supersedes the Phase 01 starter look. Phase 03 must account for it before freezing shared UI seams; Phase 04 must open the actual image. This changes visual requirements, not phase types/ownership or privacy/scoring rules. Do not copy mock scores, retention-ON, or push-to-talk behavior as product requirements.
+
 **Launch direction:** call-first coach; all requested scenario categories through presets; user-selectable language catalog based on the ten documented languages; periodic coaching; audio evidence; retry comparison; opt-in recording and metrics-only history. Each enabled language/capability needs its own validation status, including coaching-language pairs. A failed language or detector requires a disclosed limitation and your scope decision—not a fabricated pass.
 
 **Proposed deferrals:** native apps if web-first is approved, unsupported languages, voice cloning, teacher dashboards, social feeds, subscription billing, fine-tuning, and certified pronunciation/proficiency scores. **Interruptible live calls are now part of the proposed core experience**, not silently deferred in favor of push-to-talk.
@@ -206,7 +208,7 @@ Paths are relative to the repository root. The table assigns exclusive write own
 | **08 language-acceptance** | `NORMAL` | B3 | Validate ten-language catalog, selected coaching pairs, evidence accuracy, accessibility and release capability states. `tests/acceptance/**`; `fixtures/evaluation/**`; `packages/contracts/data/capabilities.json`; `docs/evaluation/**`. Contract shape remains frozen; only capability data changes. |
 | **09 release-package** | `NORMAL` | B3 | Deployment configuration, reproducible release and honest contest handoff materials. `deploy/**`; `.github/**`; root `README.md`, `CHANGELOG.md`, `.env.example`; `docs/release/**`; `tests/release/**`; `scripts/release/**`. Do not publish, provision paid services, or post socially without user approval. |
 
-Only Phase 01 BUILD is issued now. Later prompts are written against actual reports, within this frozen map. Phase 02 is not allowed to silently invent a filler detector that works from cleaned text alone. If feasibility fails, stop before G1 and bring the user the cheapest options; do not hide the failure behind UI work.
+Phase 01 corrections remain reviewed with the scoped [waivers](waivers.md). Phase 02's [report review](phase-02-provider-feasibility/VERIFY.md) now preserves one chain milestone but identifies budget/lifecycle/matrix/evidence defects and a blocked filler-localization goal. [FIX-1](phase-02-provider-feasibility/FIX-1.md) is prepared for manual offline repairs; the [user decision](phase-02-provider-feasibility/DECISION-NEEDED.md) and [private provider-access handoff](provider-access.md) govern the next live/assessment work. Groq and hosted NIM are documented optional reasoning-comparison candidates following the user's provider list, not silent replacements or a new self-hosting phase. No Phase 03/G1 release, production model freeze or scope reduction occurs on this report alone.
 
 ### Batch schedule
 

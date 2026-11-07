@@ -1,0 +1,15 @@
+{
+  "envelopeVersion": "0.1",
+  "direction": "server_to_client",
+  "type": "heartbeat",
+  "sessionId": "ses_a1b2c3d4",
+  "connectionId": "con_e5f6a7b8",
+  "roundId": null,
+  "turnId": null,
+  "sequence": 4,
+  "sampleTimeMs": null,
+  "emittedAt": "2026-10-20T09:00:04Z",
+  "payload": {
+    "state": "heartbeat"
+  }
+}

@@ -52,10 +52,19 @@ phase after the transport contract is frozen.
 - **Transient vs durable.** Transcripts, quoted mistakes, model prose and
   audio references are rejected by name in the durable metrics shape
   (`transcript`, `quotedMistakes`, `modelText`, `audioUrl`, `embedding`).
-  They may exist only inside transient envelopes.
-- **Zero is not "unmeasurable".** `status: available` with `value: 0` is a
-  real measured zero (e.g. zero fillers). `unavailable` and
-  `insufficient_evidence` must carry `null` — never a fabricated number.
+  They may exist only inside transient envelopes. Durable provenance is
+  controlled: `method` is a closed identifier set (one method per metric
+  key) and `unavailabilityReason` is a closed reason-code set — a learner
+  transcript sentence or a model feedback sentence can no longer occupy
+  either field. Schema validation does **not** by itself police writers,
+  logs or caches: identifiers and catalog ids must come from trusted
+  application code, and display labels must come from trusted mappings.
+- **Numeric domains and units.** Metric values are nonnegative; `*.count`
+  and `*_ms` keys must be integers; `*_wpm` keys may be fractional; every
+  metric key is coupled to exactly one unit. `status: available` with
+  `value: 0` stays a real measured zero (e.g. zero fillers), and
+  `unavailable`/`insufficient_evidence` must carry `null` plus a reason
+  code — never a fabricated number.
 - **No word timings.** The reviewed Gnani realtime STT documentation provides
   emission timestamps and audio duration only — not word-level alignment.
   The contracts therefore contain **no word-timing field to fill by
@@ -81,12 +90,37 @@ phase after the transport contract is frozen.
 | Disfluency algorithm | Not chosen in Phase 01 (deliberate). |
 | Analysis measurements | Schema only. No metric has ever been produced. |
 | Identity / accounts | None. `usr_` references exist as schema shapes. |
+| Cross-field invariants **not** enforceable by JSON Schema 2020-12 | Carried to Phase 03 (see below). |
 | Storage | None. Supabase settings are a parsed-but-unused boundary. |
 | Retention/deletion mechanics | Metadata shape only; no storage, no deletion job. |
 | All-ten language support | Catalog lists ten documented languages; every capability state except `documented` is `false`. Hinglish is a separate code-mixed mode, also untested. |
 | Recording capture format | Drafted as wav/pcm_s16le for the stored profile; the real capture format is unresolved until Phase 02 probes. |
 | Coaching-language pairs | UI allows choosing any pair; no pair has been validated. |
 | Deployment | None. Local only, no remote, no CI. |
+
+### Cross-field/session-level invariants NOT enforced by these schemas
+
+JSON Schema 2020-12 cannot express these rules with the current vocabulary.
+They are **not yet enforced anywhere** and are listed for Phase 03 to
+implement at the writer boundary (validation layer or store logic):
+
+1. `evidenceSpan.startMs <= endMs` (both are independently nonnegative).
+2. At most one observation per metric key per turn (the schema allows the
+   same `metricKey` repeatedly within a turn's array).
+3. An `available` value of 0 for `*_wpm` keys with words/second-based
+   definitions (plausibility of a measured zero rate vs. an
+   `insufficient_evidence` result — semantic policy, not a domain).
+4. Session-level consistency: `totals.turnCount` matching `turns.length`,
+   `totals.speakingTimeMs` vs. the sum of `turns[].durationMs`, and
+   `turns[].durationMs` vs. `turn.duration_ms` observations on that turn.
+5. Duplicate turn/round/session identifiers within one record; identifier
+   freshness (belongs to a current session) is also runtime logic.
+6. `recordedAt` vs. turn-level timing plausibility; no comparison between
+   fields is possible in the schema.
+7. The 60–900s session cap and 1–8 turns live in `session-settings` only;
+   nothing ties a durable record's totals to those caps.
+8. Catalog membership for `practiceLanguageId`/`scenarioId` (shape only;
+   membership is a runtime check against `data/catalog.json`).
 
 ## Security posture in this phase
 

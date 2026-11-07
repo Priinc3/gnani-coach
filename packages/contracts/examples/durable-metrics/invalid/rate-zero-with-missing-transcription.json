@@ -1,0 +1,29 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_e5f6a7b8",
+  "recordedAt": "2026-10-20T08:25:00Z",
+  "practiceLanguageId": "english",
+  "scenarioId": "everyday",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_e7f8a9b0",
+      "roundId": null,
+      "durationMs": 12000,
+      "recognitionStatus": "missing-transcription",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "speech.rate_wpm",
+          "method": "stt_words_over_learner_span",
+          "denominator": "learner_span_ms",
+          "recognitionStatus": "missing-transcription",
+          "status": "available",
+          "value": 0,
+          "unit": "words_per_minute"
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 5000 }
+}

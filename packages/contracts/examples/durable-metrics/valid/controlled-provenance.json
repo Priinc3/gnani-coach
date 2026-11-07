@@ -1,0 +1,50 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_b2c3d4e5",
+  "recordedAt": "2026-10-16T10:05:00Z",
+  "practiceLanguageId": "english",
+  "scenarioId": "interview",
+  "recordingId": "rec_d4e5f6a7",
+  "turns": [
+    {
+      "turnId": "trn_b4c5d6e7",
+      "roundId": "rnd_d0e1f2a3",
+      "durationMs": 51000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "filler.count",
+          "unavailabilityReason": "filler_detection_unvalidated",
+          "status": "insufficient_evidence",
+          "value": null,
+          "unit": null
+        },
+        {
+          "metricKey": "speech.rate_wpm",
+          "method": "stt_words_over_learner_span",
+          "denominator": "learner_span_ms",
+          "status": "available",
+          "value": 112.4,
+          "unit": "words_per_minute"
+        },
+        {
+          "metricKey": "pause.longest_ms",
+          "method": "vad_speech_regions",
+          "status": "available",
+          "value": 1200,
+          "unit": "milliseconds"
+        },
+        {
+          "metricKey": "speech.active_rate_wpm",
+          "denominator": "speech_active_ms",
+          "unavailabilityReason": "too_little_speech",
+          "status": "insufficient_evidence",
+          "value": null,
+          "unit": null
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 48000 }
+}

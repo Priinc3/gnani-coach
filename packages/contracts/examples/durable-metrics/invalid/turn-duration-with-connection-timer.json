@@ -1,0 +1,27 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_b8c9d0e1",
+  "recordedAt": "2026-10-20T08:40:00Z",
+  "practiceLanguageId": "english",
+  "scenarioId": "everyday",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_b9c0d1e2",
+      "roundId": null,
+      "durationMs": 12000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "turn.duration_ms",
+          "method": "turn_connection_timer",
+          "status": "available",
+          "value": 12000,
+          "unit": "milliseconds"
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 9000 }
+}

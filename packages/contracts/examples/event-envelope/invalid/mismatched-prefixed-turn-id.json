@@ -1,6 +1,7 @@
 {
   "envelopeVersion": "0.1",
-  "type": "turn.transcript",
+  "direction": "server_to_client",
+  "type": "transcript_final",
   "sessionId": "ses_a1b2c3d4",
   "connectionId": "con_e5f6a7b8",
   "roundId": "rnd_c9d0e1f2",

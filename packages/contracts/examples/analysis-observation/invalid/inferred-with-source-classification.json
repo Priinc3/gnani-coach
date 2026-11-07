@@ -1,0 +1,18 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "filler.count",
+  "source": "inferred",
+  "method": "disfluency_recognition",
+  "audioSourceClassification": "learner-audio",
+  "status": "available",
+  "value": 3,
+  "unit": "count",
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "unknown",
+    "limitations": ["an inferred observation has no measured clip"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-20T09:32:25Z"
+}

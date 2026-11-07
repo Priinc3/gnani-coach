@@ -1,0 +1,116 @@
+$ npm run test:integration:web
+# Phase 03's smoke. NOT my file: tests/integration/** belongs to another phase.
+# repo root, 2026-10-22T08:46:50Z
+
+
+> speaking-coach@0.1.0 test:integration:web
+> playwright test --config=playwright.integration.config.ts
+
+[WebServer] INFO:     Started server process [57916]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+Running 5 tests using 5 workers
+
+  ✓  4 [chromium] › tests/integration/call-experience.spec.ts:51:5 › the voice service answers /health (15ms)
+  ✘  5 [chromium] › tests/integration/call-experience.spec.ts:59:5 › the history seam answers not_available (22ms)
+[WebServer] INFO:     127.0.0.1:60011 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+  ✓  3 [chromium] › tests/integration/call-experience.spec.ts:31:5 › the web page requests no microphone access (527ms)
+  ✘  2 [chromium] › tests/integration/call-experience.spec.ts:68:5 › the call socket sends the frozen error envelope and closes (552ms)
+  ✘  1 [chromium] › tests/integration/call-experience.spec.ts:17:5 › the home page renders the CallExperience mount point (5.5s)
+
+
+  1) [chromium] › tests/integration/call-experience.spec.ts:17:5 › the home page renders the CallExperience mount point 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Practice speaking, not just studying.' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Practice speaking, not just studying.' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Practice speaking, not just studying.' })
+
+
+      19 |   await expect(
+      20 |     page.getByRole("heading", { name: "Practice speaking, not just studying." }),
+    > 21 |   ).toBeVisible();
+         |     ^
+      22 |   // The stub is honest: the start action is visibly unavailable with a
+      23 |   // plain reason, and nothing pretends to be live.
+      24 |   const start = page.getByRole("button", { name: "Start live practice call" });
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/integration/call-experience.spec.ts:21:5
+
+    Error Context: test-results/call-experience-the-home-p-0c878--CallExperience-mount-point-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/call-experience-the-home-p-0c878--CallExperience-mount-point-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/call-experience-the-home-p-0c878--CallExperience-mount-point-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/integration/call-experience.spec.ts:59:5 › the history seam answers not_available 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 503
+    Received: 401
+
+      59 | test("the history seam answers not_available", async ({ request }) => {
+      60 |   const response = await request.get(`${serviceURL}/api/history`);
+    > 61 |   expect(response.status()).toBe(503);
+         |                             ^
+      62 |   const body = await response.json();
+      63 |   expect(body.code).toBe("not_available");
+      64 |   expect(body.category).toBe("not_available");
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/integration/call-experience.spec.ts:61:29
+
+    Error Context: test-results/call-experience-the-history-seam-answers-not-available-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/call-experience-the-history-seam-answers-not-available-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/call-experience-the-history-seam-answers-not-available-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/integration/call-experience.spec.ts:68:5 › the call socket sends the frozen error envelope and closes 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "error"
+    Received: "status"
+
+      93 |   expect(message.envelopeVersion).toBe("0.1");
+      94 |   expect(message.direction).toBe("server_to_client");
+    > 95 |   expect(message.type).toBe("error");
+         |                        ^
+      96 |   expect(message.payload.code).toBe("not_available");
+      97 |   expect(message.payload.category).toBe("not_available");
+      98 |   expect(message.payload.retryable).toBe(false);
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/integration/call-experience.spec.ts:95:24
+
+    Error Context: test-results/call-experience-the-call-s-1342a-n-error-envelope-and-closes-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/call-experience-the-call-s-1342a-n-error-envelope-and-closes-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/call-experience-the-call-s-1342a-n-error-envelope-and-closes-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/integration/call-experience.spec.ts:17:5 › the home page renders the CallExperience mount point 
+    [chromium] › tests/integration/call-experience.spec.ts:59:5 › the history seam answers not_available 
+    [chromium] › tests/integration/call-experience.spec.ts:68:5 › the call socket sends the frozen error envelope and closes 
+  2 passed (7.6s)
+
+exit code: 1

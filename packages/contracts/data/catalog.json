@@ -189,22 +189,44 @@
     {
       "id": "interview",
       "displayName": "Interview practice",
-      "description": "Answer common interview questions out loud, with coaching breaks between rounds."
+      "description": "Answer common interview questions out loud, with coaching breaks between rounds.",
+      "customTopic": { "required": false, "maxLength": 200, "persisted": false }
     },
     {
       "id": "workplace",
       "displayName": "Workplace conversations",
-      "description": "Stand-ups, meetings and colleague conversations in a work setting."
+      "description": "Stand-ups, meetings and colleague conversations in a work setting.",
+      "presets": [
+        {
+          "id": "workplace-team-meeting",
+          "displayName": "Team Meeting",
+          "description": "Learn to express ideas clearly in a team meeting."
+        },
+        {
+          "id": "workplace-office-communication",
+          "displayName": "Office Communication",
+          "description": "Improve day-to-day workplace conversations."
+        }
+      ],
+      "customTopic": { "required": false, "maxLength": 200, "persisted": false }
     },
     {
       "id": "everyday",
       "displayName": "Everyday conversation",
-      "description": "Low-pressure daily situations: shops, neighbours, phone calls."
+      "description": "Low-pressure daily situations: shops, neighbours, phone calls.",
+      "customTopic": { "required": false, "maxLength": 200, "persisted": false }
     },
     {
       "id": "travel-social",
       "displayName": "Travel and social",
-      "description": "Getting around, asking for help and making small talk while travelling."
+      "description": "Getting around, asking for help and making small talk while travelling.",
+      "customTopic": { "required": false, "maxLength": 200, "persisted": false }
+    },
+    {
+      "id": "custom",
+      "displayName": "Custom Topic",
+      "description": "Choose your own topic to practise. What you type is used for this call only and is never saved.",
+      "customTopic": { "required": true, "maxLength": 200, "persisted": false }
     }
   ],
   "levels": [

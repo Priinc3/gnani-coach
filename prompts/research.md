@@ -64,4 +64,10 @@ Before BUILD prompts, revisit the selected technologies' primary docs and conver
 
 See [stack-decisions.md](stack-decisions.md) for newly searched primary sources covering Next.js, FastAPI, uv, Node LTS, npm workspaces, AudioWorklet, Supabase SSR/RLS/private storage, shared-schema validators, pytest and Playwright. Several searches briefly returned 429; required validator/test/runtime lookups subsequently succeeded. Package versions and compatibility still require builder evidence.
 
-Phase 01 is ready for manual execution, not executed. No service, account, inference job, database, recording, test run or public deployment was created by the orchestrator.
+At initial issuance, Phase 01 was ready, not executed. It was subsequently built and corrected by the user's engineer; see its current REPORT/VERIFY and tracker. No service, account, inference job, database, recording, test run or public deployment was created by the orchestrator.
+
+## 7. Phase 02 prompt preparation — 2026-10-18
+
+Fresh speech/SDK/model/VAD/data-terms searches and primary Gnani/Silero reads are summarized in [phase-02-provider-feasibility/SOURCES.md](phase-02-provider-feasibility/SOURCES.md). Current local settings were inspected: the foundation's aggregate readiness includes Supabase, but individual speech/LLM settings are available and are the proper inputs for Phase 02. No Supabase setup or modification of shared settings is needed for these probes.
+
+The user's `next` authorized preparation of Phase 02's manual BUILD inside B1. No inference or probe was executed by the CEO; account access, audio feasibility and language quality remain to be established by reported evidence.

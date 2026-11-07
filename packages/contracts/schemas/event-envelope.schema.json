@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.speaking-coach.example/event-envelope/0.1.0",
-  "title": "Transient event envelope (draft v0.1)",
-  "description": "Envelope for transient control/text events between the browser, our voice service, and the session controller. Status: DRAFT v0.1 — not frozen. Two separate clocks: `sampleTimeMs` is the learner-audio sample clock position of the event content when known (null when not tied to audio), while `emittedAt` is the producer's wall clock when the envelope was sent. Server emission timestamps are NOT word timings and must never be presented as alignment. Binary audio travels as raw binary frames on its own channel; it must never be base64-embedded in these JSON envelopes. Text payloads carried here are transient and must not be copied into durable metrics, logs, caches or crash reports.",
+  "title": "Call transport event envelope (frozen v0.1)",
+  "description": "Envelope for every JSON control event on the single browser-to-voice WebSocket, and the transient contract for the events that carry content. Status: FROZEN v0.1 (Phase 03, 2026-10-20) — the transport is fixed; see docs/contracts/call-transport.md for the sequence, ids, heartbeat, stale-turn suppression and caps. One socket carries both directions: the client sends binary PCM16 audio frames plus the JSON control events start/mute/end/interrupt/retry/coaching_choice, and the server sends the JSON events status/transcript_partial/transcript_final/coach_text/round_feedback/error plus binary TTS audio chunks, each run of chunks tagged with its turn id by an audio.frame.descriptor event. `direction` states which side produced the event, and a type may only travel in its own direction. Two separate clocks: `sampleTimeMs` is the learner-audio sample clock position of the event content when known (null when not tied to audio), while `emittedAt` is the producer's wall clock when the envelope was sent. Server emission timestamps are NOT word timings and must never be presented as alignment; a client's `emittedAt` is informational only and is never trusted. Binary audio travels as raw binary frames on the same socket and must never be base64-embedded in these JSON envelopes. Text payloads carried here are transient and must not be copied into durable metrics, logs, caches or crash reports.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "envelopeVersion",
+    "direction",
     "type",
     "sessionId",
     "connectionId",
@@ -19,22 +20,37 @@
   ],
   "properties": {
     "envelopeVersion": { "const": "0.1" },
+    "direction": {
+      "type": "string",
+      "enum": ["client_to_server", "server_to_client"],
+      "description": "Which side produced this envelope. A type may only travel in its own direction."
+    },
     "type": {
       "type": "string",
       "enum": [
-        "session.state",
-        "round.boundary",
-        "turn.transcript",
-        "coach.speech.request",
-        "audio.frame.descriptor",
-        "error"
+        "start",
+        "mute",
+        "end",
+        "interrupt",
+        "retry",
+        "coaching_choice",
+        "status",
+        "transcript_partial",
+        "transcript_final",
+        "coach_text",
+        "round_feedback",
+        "error",
+        "audio.frame.descriptor"
       ],
-      "description": "Draft event type allowlist. Phase 03 freezes the final protocol after provider observations."
+      "description": "Frozen event-type allowlist. client_to_server: start, mute, end, interrupt, retry, coaching_choice. server_to_client: status, transcript_partial, transcript_final, coach_text, round_feedback, error, audio.frame.descriptor."
     },
-    "sessionId": { "$ref": "#/$defs/sessionId" },
+    "sessionId": {
+      "anyOf": [{ "$ref": "#/$defs/sessionId" }, { "type": "null" }],
+      "description": "Opaque session id. Assigned by the server; a client_to_server event may carry null until the server has answered. Temporal staleness (an id from an ended session or connection) is a runtime identity check, not a schema check."
+    },
     "connectionId": {
-      "$ref": "#/$defs/connectionId",
-      "description": "Identifies one transport connection. Reconnects get a new connectionId so stale events can be fenced off."
+      "anyOf": [{ "$ref": "#/$defs/connectionId" }, { "type": "null" }],
+      "description": "Identifies one transport connection. Reconnects get a new connectionId so stale events can be fenced off. A server_to_client event always carries it; a client_to_server event may carry null."
     },
     "roundId": {
       "anyOf": [{ "$ref": "#/$defs/roundId" }, { "type": "null" }],
@@ -42,12 +58,12 @@
     },
     "turnId": {
       "anyOf": [{ "$ref": "#/$defs/turnId" }, { "type": "null" }],
-      "description": "Turn the event belongs to, when it belongs to one. Null for session-level events."
+      "description": "Turn the event belongs to, when it belongs to one. Null for session-level events. A turn is a conversational turn, not a speech-to-text segment: one sentence can be split into several segments, so turn grouping is the application's own and is never taken from provider segment boundaries."
     },
     "sequence": {
       "type": "integer",
       "minimum": 0,
-      "description": "Monotonic per-connection ordering counter. Ordering and duplicate suppression are enforced by the runtime, not this schema."
+      "description": "Monotonic per-connection ordering counter, incremented by the producer for every envelope it sends. Ordering and duplicate suppression are enforced by the runtime, not this schema."
     },
     "sampleTimeMs": {
       "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }],
@@ -56,14 +72,188 @@
     "emittedAt": {
       "type": "string",
       "format": "date-time",
-      "description": "Producer wall clock when the envelope was emitted. Do not treat as word timing or audio alignment."
+      "description": "Producer wall clock when the envelope was emitted. Do not treat as word timing or audio alignment; a client-supplied value is informational only."
     },
     "payload": {
       "type": "object",
-      "description": "Event-type-specific payload, further constrained below."
+      "description": "Event-type-specific payload, constrained below. Unknown payload keys are rejected, so an added field needs a contract change rather than a guess."
     }
   },
   "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": { "direction": { "const": "client_to_server" } },
+        "required": ["direction"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "start",
+              "mute",
+              "end",
+              "interrupt",
+              "retry",
+              "coaching_choice"
+            ]
+          }
+        },
+        "required": ["type"]
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "status",
+              "transcript_partial",
+              "transcript_final",
+              "coach_text",
+              "round_feedback",
+              "error",
+              "audio.frame.descriptor"
+            ]
+          },
+          "sessionId": { "$ref": "#/$defs/sessionId" },
+          "connectionId": { "$ref": "#/$defs/connectionId" }
+        },
+        "required": ["type", "sessionId", "connectionId"]
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "start" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/startPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "mute" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/mutePayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "end" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/endPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "interrupt" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/interruptPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "retry" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/retryPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "coaching_choice" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/coachingChoicePayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "status" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/statusPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "transcript_partial" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/transcriptPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "transcript_final" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/transcriptPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "coach_text" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/coachTextPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "round_feedback" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/roundFeedbackPayload" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "type": { "const": "error" } },
+        "required": ["type"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "payload": { "$ref": "#/$defs/errorPayload" } }
+      }
+    },
     {
       "if": {
         "type": "object",
@@ -72,19 +262,18 @@
       },
       "then": {
         "type": "object",
-        "properties": { "payload": { "$ref": "#/$defs/audioFrameDescriptor" } }
-      },
-      "else": {
-        "type": "object",
-        "properties": { "payload": { "$ref": "#/$defs/textPayload" } }
+        "properties": {
+          "turnId": { "$ref": "#/$defs/turnId" },
+          "payload": { "$ref": "#/$defs/audioFrameDescriptor" }
+        },
+        "required": ["turnId"]
       }
     }
   ],
   "$defs": {
     "sessionId": {
       "type": "string",
-      "pattern": "^ses_[a-z0-9]{6,40}$",
-      "description": "Opaque session id. Prefix identifies the kind; temporal staleness (an id from an ended session or connection) is a runtime identity check, not a schema check."
+      "pattern": "^ses_[a-z0-9]{6,40}$"
     },
     "connectionId": {
       "type": "string",
@@ -98,11 +287,308 @@
       "type": "string",
       "pattern": "^trn_[a-z0-9]{6,40}$"
     },
+    "startPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The first event on every call. It declares the audio format, the session settings and the caller's credential. The settings object is the session-settings v0.1 shape (packages/contracts/schemas/session-settings.schema.json is authoritative; the service validates this payload against it). The token is the caller's OWN short-lived access token, sent in the message body and never in a URL; a guest call may omit it.",
+      "required": ["audio", "settings"],
+      "properties": {
+        "audio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sampleRateHz", "channels", "sampleFormat"],
+          "properties": {
+            "sampleRateHz": { "type": "integer", "enum": [8000, 16000, 44100, 48000] },
+            "channels": { "const": 1 },
+            "sampleFormat": { "const": "s16le" }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Session settings v0.1 fields. Required key set is pinned here; the authoritative shape and its cross-field rules live in session-settings.schema.json.",
+          "required": [
+            "settingsVersion",
+            "practiceLanguageId",
+            "coachingLanguageId",
+            "scenarioId",
+            "level",
+            "coachingRoundTurns",
+            "sessionLimitSeconds",
+            "recordingRetention",
+            "consent"
+          ],
+          "properties": {
+            "settingsVersion": { "const": "0.1" },
+            "practiceLanguageId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,31}$" },
+            "coachingLanguageId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,31}$" },
+            "scenarioId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,31}$" },
+            "scenarioPresetId": {
+              "anyOf": [
+                { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,31}$" },
+                { "type": "null" }
+              ]
+            },
+            "level": { "type": "string", "enum": ["beginner", "intermediate", "advanced"] },
+            "coachingRoundTurns": { "type": "integer", "minimum": 1, "maximum": 8 },
+            "sessionLimitSeconds": { "type": "integer", "minimum": 60, "maximum": 600 },
+            "recordingRetention": { "type": "boolean" },
+            "consent": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "consentVersion",
+                "recordingRetentionGranted",
+                "recordingRetentionGrantedAt"
+              ],
+              "properties": {
+                "consentVersion": { "const": "0.1" },
+                "recordingRetentionGranted": { "type": "boolean" },
+                "recordingRetentionGrantedAt": {
+                  "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+                }
+              }
+            }
+          }
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["token"],
+          "description": "The caller's own short-lived access token. Absent for a guest call. Provider and service-role credentials never travel here — they stay server-side.",
+          "properties": {
+            "token": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          }
+        }
+      }
+    },
+    "mutePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["muted"],
+      "properties": {
+        "muted": { "type": "boolean" }
+      }
+    },
+    "endPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": ["learner_ended", "time_limit", "client_gone"]
+        }
+      }
+    },
+    "interruptPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The learner started speaking while the coach was playing. The server stops the coach's playback and fences the coach turn; no later audio for that turn may be played.",
+      "properties": {
+        "reason": { "type": "string", "enum": ["learner_speech"] }
+      }
+    },
+    "retryPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Ask to repeat or reframe one answer. The retry uses the same metric definition and a comparable prompt; no improvement is guaranteed.",
+      "required": ["turnId"],
+      "properties": {
+        "turnId": { "$ref": "#/$defs/turnId" },
+        "focus": { "type": "string", "maxLength": 400 }
+      }
+    },
+    "coachingChoicePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["choice"],
+      "properties": {
+        "choice": {
+          "type": "string",
+          "enum": ["keep_talking", "coach_now", "skip_feedback"]
+        }
+      }
+    },
+    "statusPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Connection and call state. `heartbeat` is an application-level keepalive; it carries no measurement.",
+      "required": ["state"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "connecting",
+            "ready",
+            "listening",
+            "thinking",
+            "speaking",
+            "coaching",
+            "heartbeat",
+            "reconnecting",
+            "ended",
+            "error"
+          ]
+        },
+        "detail": { "type": "string", "maxLength": 200 },
+        "elapsedMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "transcriptPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Recognised learner speech. Transient only: a transcript is never written to durable metrics, logs or caches.",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "maxLength": 4000 },
+        "segmentId": { "type": "string", "maxLength": 80 }
+      }
+    },
+    "coachTextPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The coach's spoken line as text, so the UI can show what was said. Transient only.",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "maxLength": 4000 }
+      }
+    },
+    "roundFeedbackPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One coaching break: at most one strength and at most two priority changes, each tied to real observations. When the evidence is missing, the observation states insufficient evidence — the feedback never invents a number.",
+      "required": ["strengths", "improvements"],
+      "properties": {
+        "strengths": {
+          "type": "array",
+          "maxItems": 1,
+          "items": { "type": "string", "maxLength": 400 }
+        },
+        "improvements": {
+          "type": "array",
+          "maxItems": 2,
+          "items": { "type": "string", "maxLength": 400 }
+        },
+        "languageNotes": {
+          "type": "array",
+          "maxItems": 1,
+          "items": { "type": "string", "maxLength": 400 }
+        },
+        "evidence": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["metricKey", "status"],
+            "properties": {
+              "metricKey": {
+                "type": "string",
+                "enum": [
+                  "pause.longest_ms",
+                  "pause.count",
+                  "filler.count",
+                  "speech.rate_wpm",
+                  "speech.active_rate_wpm",
+                  "turn.duration_ms"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["available", "unavailable", "insufficient_evidence"]
+              },
+              "value": { "type": ["number", "null"] },
+              "unit": {
+                "type": ["string", "null"],
+                "enum": ["milliseconds", "count", "words_per_minute", null]
+              }
+            }
+          }
+        }
+      }
+    },
+    "errorPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The error-shape v0.1 object, inlined because the contract runner forbids cross-file references. `not_available` is the code a frozen-but-unimplemented seam answers with.",
+      "required": [
+        "errorVersion",
+        "code",
+        "category",
+        "message",
+        "retryable",
+        "correlationId",
+        "occurredAt"
+      ],
+      "properties": {
+        "errorVersion": { "const": "0.1" },
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*){0,3}$",
+          "maxLength": 80
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "invalid_request",
+            "unauthenticated",
+            "forbidden",
+            "not_found",
+            "conflict",
+            "rate_limited",
+            "provider_unavailable",
+            "timeout",
+            "cancelled",
+            "not_available",
+            "internal"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "retryable": { "type": "boolean" },
+        "correlationId": { "type": "string", "pattern": "^cor_[a-z0-9]{6,40}$" },
+        "occurredAt": { "type": "string", "format": "date-time" },
+        "stack": false,
+        "rawProviderResponse": false,
+        "rawTranscript": false,
+        "secret": false
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "enum": [
+                  "invalid_request",
+                  "unauthenticated",
+                  "forbidden",
+                  "not_found",
+                  "conflict",
+                  "not_available"
+                ]
+              }
+            },
+            "required": ["category"]
+          },
+          "then": {
+            "type": "object",
+            "properties": { "retryable": { "const": false } }
+          }
+        }
+      ]
+    },
     "audioFrameDescriptor": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Metadata-only descriptor correlating a binary audio frame that arrives on the separate binary channel. Audio bytes are never carried inside this JSON envelope.",
-      "required": ["sampleRateHz", "sampleFormat", "channels", "frameByteLength", "firstSampleIndex"],
+      "description": "Metadata-only descriptor that tags the run of binary audio frames that follows it with a turn id. Audio bytes are never carried inside this JSON envelope.",
+      "required": [
+        "sampleRateHz",
+        "sampleFormat",
+        "channels",
+        "frameByteLength",
+        "firstSampleIndex"
+      ],
       "properties": {
         "sampleRateHz": { "type": "integer", "minimum": 8000, "maximum": 48000 },
         "sampleFormat": {
@@ -114,22 +600,9 @@
         "firstSampleIndex": {
           "type": "integer",
           "minimum": 0,
-          "description": "Index of the first sample in the frame on the learner-audio sample clock."
+          "description": "Index of the first sample of the run on the learner-audio sample clock."
         }
       }
-    },
-    "textPayload": {
-      "type": "object",
-      "description": "Transient text/control payload. The explicit false schemas below reject the common convenience patterns of smuggling audio into JSON; transcripts and notes here are transient only.",
-      "properties": {
-        "text": { "type": "string", "maxLength": 4000 },
-        "state": { "type": "string", "maxLength": 80 },
-        "note": { "type": "string", "maxLength": 400 },
-        "audio": false,
-        "audioBase64": false,
-        "pcmBase64": false
-      },
-      "additionalProperties": true
     }
   }
 }

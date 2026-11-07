@@ -1,0 +1,74 @@
+==============================================================
+command : uv run --project services/voice python tools/probes/run.py analysis --offline
+cwd     : /Users/princegondaliya/Learning/Projects/temp/gnani
+utc     : 2026-10-18T16:46:30Z
+python  : Python 3.12.12
+node    : v26.7.0  npm: 11.19.0
+==============================================================
+
+
+== probe run ==
+  started_utc : 2026-10-18T16:46:30Z
+  python      : 3.12.12
+  cwd         : /Users/princegondaliya/Learning/Projects/temp/gnani
+  command     : run.py analysis
+
+== fixture inventory ==
+[PASSED      ] analytic-fixtures — 9 prepared and hash-verified
+[PASSED      ] spoken-fixtures — all prepared
+
+== model asset ==
+[PASSED      ] silero-vad-onnx — sha256=2623a2953f6ff3d2…
+
+== speech-region estimates and boundary error ==
+  silence-3s: labelled=0 detected=0 matched=0 missed=0 extra=0 worst_boundary_error_ms=n/a p95=None
+  noise-2s: labelled=0 detected=0 matched=0 missed=0 extra=0 worst_boundary_error_ms=n/a p95=None
+  clear-utterance: labelled=1 detected=1 matched=1 missed=0 extra=0 worst_boundary_error_ms=44 p95=44.0
+  one-word: labelled=1 detected=1 matched=1 missed=0 extra=0 worst_boundary_error_ms=16 p95=16.0
+  known-internal-gap: labelled=2 detected=2 matched=2 missed=0 extra=0 worst_boundary_error_ms=44 p95=44.0
+  repetition: labelled=2 detected=1 matched=0 missed=2 extra=1 worst_boundary_error_ms=n/a p95=None
+  filled-hesitation: labelled=3 detected=1 matched=0 missed=3 extra=1 worst_boundary_error_ms=n/a p95=None
+  lexical-like-vs-filler-like: labelled=2 detected=1 matched=0 missed=2 extra=1 worst_boundary_error_ms=n/a p95=None
+  code-mixed-en-in: labelled=0 detected=1 matched=0 missed=0 extra=1 worst_boundary_error_ms=n/a p95=None
+
+== delivery denominators (kept separate) ==
+  silence-3s: clip_span_ms=3000 speech_active_ms=0 regions=0 internal_pauses_ms=[]
+  noise-2s: clip_span_ms=3000 speech_active_ms=0 regions=0 internal_pauses_ms=[]
+  clear-utterance: clip_span_ms=3000 speech_active_ms=1984 regions=1 internal_pauses_ms=[]
+  one-word: clip_span_ms=1250 speech_active_ms=224 regions=1 internal_pauses_ms=[]
+  known-internal-gap: clip_span_ms=4600 speech_active_ms=2368 regions=2 internal_pauses_ms=[1216]
+  repetition: clip_span_ms=2850 speech_active_ms=2080 regions=1 internal_pauses_ms=[]
+  filled-hesitation: clip_span_ms=2680 speech_active_ms=1856 regions=1 internal_pauses_ms=[]
+  lexical-like-vs-filler-like: clip_span_ms=2960 speech_active_ms=2208 regions=1 internal_pauses_ms=[]
+  code-mixed-en-in: clip_span_ms=2850 speech_active_ms=2080 regions=1 internal_pauses_ms=[]
+
+  rate_wpm        = recognized_words / clip_span_ms      (elapsed learner audio)
+  active_rate_wpm = recognized_words / speech_active_ms   (VAD speech-active)
+  never used as a denominator: connection time, session time, assistant audio,
+                       network round trips, provider emission timestamps
+[PASSED      ] denominator-separation — draft v0.1 uses one method description for both rates; Phase 03 must split them
+[NOT RUN     ] word-count — requires real STT output; an analytic fixture has no recognised words
+
+== filler-localization candidate ==
+  VAD merge-threshold sweep (the provider's documented x-min-silence-ms range is 100-2000 ms; this sweep uses 120/200/300)
+    min_silence_ms=120: total_candidates=2 lexical-like-vs-filler-like=1 repetition=1
+    min_silence_ms=200: total_candidates=1 repetition=1
+    min_silence_ms=300: total_candidates=0 
+
+  default (min_silence_ms=300) candidate total: 0
+  FINDING: at the probe's default merge threshold every inserted burst is absorbed into the surrounding speech region, so a short hesitation is never separable as its own candidate. The sweep above shows how much of that is a threshold artefact rather than a signal failure.
+[INCONCLUSIVE] candidate-detector — 0 candidates at the default threshold; see the threshold sweep
+[INCONCLUSIVE] event-status — every event is a candidate; none is a confirmed filled pause
+  precision/recall : No human-reviewed filler labels exist for the synthetic fixtures. A forced aligner or the candidate detector's own output cannot substitute for a reviewer who listened. Precision/recall are NOT EVALUABLE, and the >=90% precision / >=80% recall / p95<=300ms target is neither met nor failed.
+[NOT RUN     ] precision-recall — NOT EVALUABLE - no human-reviewed filler labels exist (needs 20 positive + 20 negative per enabled filler mode)
+  transcript baseline (comparison only, NOT audio analysis): {'um': 1, 'uh': 0, 'like': 1}
+[NOT RUN     ] forced-alignment — deliberately not used: it aligns supplied text and cannot recover an omitted filler
+  calibration/holdout split: {"calibration": ["clear-utterance", "known-internal-gap", "filled-hesitation"], "holdout": ["repetition", "lexical-like-vs-filler-like", "code-mixed-en-in", "one-word"], "required_positive_per_mode": 20, "required_negative_per_mode": 20, "status": "INSUFFICIENT \u2014 the split exists but is far below the required size"}
+
+== summary ==
+  overall     : INCONCLUSIVE
+  elapsed_s   : 0.302
+  run index   : 20 invocations recorded
+  index file  : tools/probes/.cache/runs.jsonl
+
+--- exit status: 0 ---

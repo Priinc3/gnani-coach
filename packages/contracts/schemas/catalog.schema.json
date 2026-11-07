@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.speaking-coach.example/catalog/0.1.0",
-  "title": "Language and scenario catalog (draft v0.1)",
-  "description": "Authoritative shape of packages/contracts/data/catalog.json. Status: DRAFT v0.1 — not frozen; finalized in Phase 03 after real provider observations. Capability states exist so that documentation alone never marks a language verified: only `documented` may be true in draft 0.1, and even that is documentation evidence, not runtime evidence. The sttCode/ttsCode allowlists mean an undocumented language (for example fr-FR) cannot enter the catalog without a schema change.",
+  "title": "Language and scenario catalog (frozen v0.1)",
+  "description": "Authoritative shape of packages/contracts/data/catalog.json. Status: FROZEN v0.1 (Phase 03, 2026-10-20) — the shape is fixed; only capability DATA may change later (Phase 08, and only through a reviewed data change, never a silent flag flip). Capability states exist so that documentation alone never marks a language verified: only `documented` may be true, and even that is documentation evidence, not runtime evidence. The sttCode/ttsCode allowlists mean an undocumented language (for example fr-FR) cannot enter the catalog without a schema change. A scenario may declare named `presets` (for example Team Meeting and Office Communication under the workplace scenario) and, for the `custom` scenario, a transient `customTopic` field that is never persisted.",
   "type": "object",
   "additionalProperties": false,
   "required": ["catalogVersion", "checkedOn", "sources", "languages", "codeMixedModes", "scenarios", "levels"],
@@ -154,7 +154,32 @@
       "properties": {
         "id": { "$ref": "#/$defs/id" },
         "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
-        "description": { "type": "string", "minLength": 1, "maxLength": 240 }
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "presets": {
+          "type": "array",
+          "description": "Named starting points under this scenario. A preset is chosen instead of the bare scenario and is carried in the session settings as `scenarioPresetId`.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "displayName", "description"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "description": { "type": "string", "minLength": 1, "maxLength": 240 }
+            }
+          }
+        },
+        "customTopic": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "maxLength", "persisted"],
+          "description": "Whether this scenario needs a transient learner-written topic, and how long it may be. `persisted` is always false: the text is never stored in metrics, logs or caches.",
+          "properties": {
+            "required": { "type": "boolean" },
+            "maxLength": { "type": "integer", "minimum": 1, "maximum": 500 },
+            "persisted": { "const": false }
+          }
+        }
       }
     },
     "level": {

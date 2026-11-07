@@ -1,0 +1,15 @@
+{
+  "envelopeVersion": "0.1",
+  "direction": "server_to_client",
+  "type": "status",
+  "sessionId": null,
+  "connectionId": "con_e5f6a7b8",
+  "roundId": null,
+  "turnId": null,
+  "sequence": 1,
+  "sampleTimeMs": null,
+  "emittedAt": "2026-10-20T09:00:01Z",
+  "payload": {
+    "state": "ready"
+  }
+}

@@ -1,0 +1,51 @@
+# F05 audit evidence — 2026-10-16T18:05:53Z
+## 1) npm audit --json
+$ npm audit --json
+exit: 1
+stderr:
+--- summary (vulnerabilities + metadata) ---
+{
+  "vulns": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 5,
+    "critical": 0,
+    "total": 5
+  },
+  "total": [
+    "@next/eslint-plugin-next",
+    "braces",
+    "eslint-config-next",
+    "fast-glob",
+    "micromatch"
+  ]
+}
+
+## 2) npm audit --omit=dev --json
+$ npm audit --omit=dev --json
+exit: 0
+stderr:
+--- full output ---
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 29,
+      "dev": 350,
+      "optional": 66,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 417
+    }
+  }
+}

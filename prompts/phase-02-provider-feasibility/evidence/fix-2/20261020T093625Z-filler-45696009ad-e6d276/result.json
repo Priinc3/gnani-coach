@@ -1,0 +1,392 @@
+{
+  "clip": {
+    "fixtureId": "spoken-filled-hesitation",
+    "sha256": "82900f998131e7f512a2bee278e16f5bc849a5475510272ac5d321b53018ab56",
+    "durationMs": 3680,
+    "sampleRate": 16000
+  },
+  "negative": {
+    "fixtureId": "spoken-clear-sentence",
+    "sha256": "4f27d1f8b25e2054f2421faab5f9f27e71f0f4180ba6cb32370443597fb94340",
+    "durationMs": 2560
+  },
+  "sttLanguage": {
+    "id": "english",
+    "sttCode": "en-IN"
+  },
+  "routes": [
+    {
+      "route": "E3",
+      "variant": "inside-region-scan-filled-hesitation",
+      "status": "FAILED",
+      "settings": {
+        "scan": "inside VAD speech regions",
+        "detectorParams": {
+          "scan": "inside VAD speech regions",
+          "min_event_ms": 150,
+          "max_event_ms": 800,
+          "frame_ms": 25,
+          "hop_ms": 10,
+          "min_rms_ratio": 0.15,
+          "max_rms_ratio": 1.2,
+          "voicing_ratio_min": 0.5,
+          "low_band_hz": 500.0,
+          "max_mean_spectral_change": 0.3,
+          "window_source": "inside a VAD speech region",
+          "note": "parameters are stated a priori and reported with every result; an event is a candidate, never a confirmed filled pause"
+        },
+        "vadModel": "2623a2953f6ff3d2…",
+        "fixtureId": "spoken-filled-hesitation",
+        "fixtureSha256": "82900f998131e7f512a2bee278e16f5bc849a5475510272ac5d321b53018ab56",
+        "role": "positive",
+        "lowEnergyStretches": [
+          {
+            "start_ms": 160,
+            "end_ms": 230
+          },
+          {
+            "start_ms": 490,
+            "end_ms": 520
+          },
+          {
+            "start_ms": 820,
+            "end_ms": 960
+          },
+          {
+            "start_ms": 1060,
+            "end_ms": 1130
+          },
+          {
+            "start_ms": 1300,
+            "end_ms": 1380
+          },
+          {
+            "start_ms": 2010,
+            "end_ms": 2160
+          },
+          {
+            "start_ms": 2400,
+            "end_ms": 2520
+          },
+          {
+            "start_ms": 3020,
+            "end_ms": 3060
+          },
+          {
+            "start_ms": 3070,
+            "end_ms": 3170
+          },
+          {
+            "start_ms": 3360,
+            "end_ms": 3515
+          }
+        ],
+        "lowEnergyStretchCount": 10
+      },
+      "detail": "1 inside-region candidate event(s); two are required",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [
+        {
+          "status": "candidate",
+          "start_ms": 2260,
+          "end_ms": 2415,
+          "duration_ms": 155,
+          "rms_ratio": 0.9303,
+          "voicing_ratio": 0.5815,
+          "peak_dbfs": -8.85,
+          "window_source": "inside a VAD speech region",
+          "mean_spectral_change": 0.0189,
+          "dominant_hz_min": 200.0,
+          "dominant_hz_max": 200.0,
+          "confidence": null,
+          "confidence_note": "no calibrated confidence is published"
+        }
+      ],
+      "positions": [
+        {
+          "start_ms": 2260,
+          "end_ms": 2415,
+          "duration_ms": 155,
+          "source": "inside a VAD speech region"
+        }
+      ],
+      "wireAttempts": 0,
+      "notes": [
+        "the VAD found 1 speech region(s) in this clip",
+        "the clip's internal low-energy stretches are reported as a description of the signal only; a low-energy stretch is not a filled pause and is never counted as a candidate"
+      ]
+    },
+    {
+      "route": "E3",
+      "variant": "inside-region-scan-clear-sentence",
+      "status": "PASSED",
+      "settings": {
+        "scan": "inside VAD speech regions",
+        "detectorParams": {
+          "scan": "inside VAD speech regions",
+          "min_event_ms": 150,
+          "max_event_ms": 800,
+          "frame_ms": 25,
+          "hop_ms": 10,
+          "min_rms_ratio": 0.15,
+          "max_rms_ratio": 1.2,
+          "voicing_ratio_min": 0.5,
+          "low_band_hz": 500.0,
+          "max_mean_spectral_change": 0.3,
+          "window_source": "inside a VAD speech region",
+          "note": "parameters are stated a priori and reported with every result; an event is a candidate, never a confirmed filled pause"
+        },
+        "vadModel": "2623a2953f6ff3d2…",
+        "fixtureId": "spoken-clear-sentence",
+        "fixtureSha256": "4f27d1f8b25e2054f2421faab5f9f27e71f0f4180ba6cb32370443597fb94340",
+        "role": "negative",
+        "lowEnergyStretches": [
+          {
+            "start_ms": 610,
+            "end_ms": 670
+          },
+          {
+            "start_ms": 990,
+            "end_ms": 1080
+          },
+          {
+            "start_ms": 1340,
+            "end_ms": 1460
+          },
+          {
+            "start_ms": 1690,
+            "end_ms": 1810
+          },
+          {
+            "start_ms": 2210,
+            "end_ms": 2425
+          }
+        ],
+        "lowEnergyStretchCount": 5
+      },
+      "detail": "no candidate event on the clean-speech clip",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": [
+        "the VAD found 1 speech region(s) in this clip",
+        "the clip's internal low-energy stretches are reported as a description of the signal only; a low-energy stretch is not a filled pause and is never counted as a candidate"
+      ]
+    },
+    {
+      "route": "E1",
+      "variant": "verbatim-min-silence-500",
+      "status": "BLOCKED",
+      "settings": {
+        "lang_code": "en-IN",
+        "x-sample-rate": 16000,
+        "x-format": "verbatim",
+        "x-vad-threshold": 0.7,
+        "x-min-silence-ms": 500,
+        "x-min-speech-ms": 100,
+        "x-min-segment-ms": 120,
+        "x-enable-substitution": false,
+        "x-bias-list": [],
+        "x-bias-score": null,
+        "pacing": "real-time",
+        "why": "the documented default silence window: the Phase 02 baseline"
+      },
+      "detail": "GNANI_API_KEY is not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E1",
+      "variant": "verbatim-min-silence-300",
+      "status": "BLOCKED",
+      "settings": {
+        "lang_code": "en-IN",
+        "x-sample-rate": 16000,
+        "x-format": "verbatim",
+        "x-vad-threshold": 0.7,
+        "x-min-silence-ms": 300,
+        "x-min-speech-ms": 100,
+        "x-min-segment-ms": 120,
+        "x-enable-substitution": false,
+        "x-bias-list": [],
+        "x-bias-score": null,
+        "pacing": "real-time",
+        "why": "a shorter silence window, so VAD splits less and swallows less"
+      },
+      "detail": "GNANI_API_KEY is not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E1",
+      "variant": "transcribe-min-silence-300",
+      "status": "BLOCKED",
+      "settings": {
+        "lang_code": "en-IN",
+        "x-sample-rate": 16000,
+        "x-format": "transcribe",
+        "x-vad-threshold": 0.7,
+        "x-min-silence-ms": 300,
+        "x-min-speech-ms": 100,
+        "x-min-segment-ms": 120,
+        "x-enable-substitution": false,
+        "x-bias-list": [],
+        "x-bias-score": null,
+        "pacing": "real-time",
+        "why": "the same window with ITN enabled, for the format comparison"
+      },
+      "detail": "GNANI_API_KEY is not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E1",
+      "variant": "verbatim-min-silence-300-bias-1.0",
+      "status": "BLOCKED",
+      "settings": {
+        "lang_code": "en-IN",
+        "x-sample-rate": 16000,
+        "x-format": "verbatim",
+        "x-vad-threshold": 0.7,
+        "x-min-silence-ms": 300,
+        "x-min-speech-ms": 100,
+        "x-min-segment-ms": 120,
+        "x-enable-substitution": false,
+        "x-bias-list": [
+          "um",
+          "uh"
+        ],
+        "x-bias-score": 1.0,
+        "pacing": "real-time",
+        "why": "word boosting at the documented starting strength"
+      },
+      "detail": "GNANI_API_KEY is not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E1",
+      "variant": "verbatim-min-silence-300-bias-2.0",
+      "status": "BLOCKED",
+      "settings": {
+        "lang_code": "en-IN",
+        "x-sample-rate": 16000,
+        "x-format": "verbatim",
+        "x-vad-threshold": 0.7,
+        "x-min-silence-ms": 300,
+        "x-min-speech-ms": 100,
+        "x-min-segment-ms": 120,
+        "x-enable-substitution": false,
+        "x-bias-list": [
+          "um",
+          "uh"
+        ],
+        "x-bias-score": 2.0,
+        "pacing": "real-time",
+        "why": "word boosting at the maximum documented strength"
+      },
+      "detail": "GNANI_API_KEY is not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E2",
+      "variant": "audio-review-filled-hesitation",
+      "status": "BLOCKED",
+      "settings": {
+        "model": "(unset)",
+        "role": "positive"
+      },
+      "detail": "GEMINI_API_KEY, GEMINI_MODEL not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    },
+    {
+      "route": "E2",
+      "variant": "audio-review-clear-sentence",
+      "status": "BLOCKED",
+      "settings": {
+        "model": "(unset)",
+        "role": "negative"
+      },
+      "detail": "GEMINI_API_KEY, GEMINI_MODEL not configured (name only; no value read)",
+      "observedText": null,
+      "umPresent": null,
+      "uhPresent": null,
+      "events": [],
+      "positions": [],
+      "wireAttempts": 0,
+      "notes": []
+    }
+  ],
+  "routeStatus": {
+    "E3": "FAILED",
+    "E1": "BLOCKED",
+    "E2": "BLOCKED"
+  },
+  "passedRoutes": [],
+  "failedRoutes": [
+    "E3"
+  ],
+  "blockedRoutes": [
+    "E1",
+    "E2"
+  ],
+  "overall": "FAILED",
+  "passRule": "a route passes when it reports both fillers on the hesitation clip and reports none on the clean-speech clip",
+  "budget": {
+    "wire_attempts_used": 0,
+    "wire_attempts_limit": 16,
+    "wire_attempts_source": "measured",
+    "logical_calls_used": 0,
+    "connections_used": 0,
+    "connections_limit": 40,
+    "retries": 0,
+    "max_retries_per_operation": 2,
+    "stt_audio_seconds": 0.0,
+    "stt_audio_seconds_limit": 300.0,
+    "reserved_operations": 0,
+    "reserved_audio_seconds": 0.0,
+    "overruns": [],
+    "per_kind": {},
+    "attempts_per_kind": {},
+    "retries_per_kind": {},
+    "retry_authority": "adapter boundary; the SDK is configured with no internal retry"
+  },
+  "caveat": "one clip is a smoke signal only; it does not meet precision >=90% / recall >=80% / p95 boundary <=300 ms and must not be written up as meeting them"
+}

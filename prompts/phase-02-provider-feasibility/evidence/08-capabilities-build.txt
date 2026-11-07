@@ -1,0 +1,12 @@
+==============================================================
+command : uv run --project services/voice python tools/probes/capabilities.py
+cwd     : /Users/princegondaliya/Learning/Projects/temp/gnani
+utc     : 2026-10-18T16:46:33Z
+python  : Python 3.12.12
+node    : v26.7.0  npm: 11.19.0
+==============================================================
+
+wrote docs/feasibility/capabilities.json: 11 entries
+  stt=11/11 tts=11/11 gemini=10/11
+
+--- exit status: 0 ---

@@ -1,0 +1,2347 @@
+{
+  "manifestVersion": "0.1",
+  "status": "DRAFT - Phase 02 feasibility, not an evaluation set",
+  "generatedBy": "gnani-coach-phase02-fixture-generator@1.0.0",
+  "audioPolicy": "Generated audio is ignored by the repository's existing *.wav rule. The manifest and recipes are the committed artefacts. Root ignore rules were not amended and no audio was force-added.",
+  "honestyRules": [
+    "Analytic fixtures are generated signals, not speech.",
+    "Silence and gap labels are exact by construction; natural speech onset labels are not.",
+    "A TTS input script is not proof the rendered audio contains a hesitation.",
+    "Filler labels require a named human reviewer who listened; none are recorded yet.",
+    "The candidate detector's own prediction is never treated as ground truth."
+  ],
+  "fixtures": [
+    {
+      "fixtureId": "silence-3s",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "3 s of digital silence; must yield zero speech regions.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/silence-3s.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 48000,
+        "durationMs": 3000,
+        "sha256": "d303811b8c84619667cd0501342f84ec6cbe69f7aa3856dcf52fabda374c92b8",
+        "bytes": 96044,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 48000,
+          "start_ms": 0,
+          "end_ms": 3000,
+          "duration_ms": 3000
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 48000,
+          "startMs": 0,
+          "endMs": 3000,
+          "durationMs": 3000,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "noise-2s",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Seeded pseudo-noise between silences; must not be scored as fluent speech.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/noise-2s.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 48000,
+        "durationMs": 3000,
+        "sha256": "7115d920a7b8fc5a39d866abefbbd9dc47fcd673d82b5d54ae79f570cbd040ae",
+        "bytes": 96044,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "noise",
+          "start_sample": 6400,
+          "end_sample": 41600,
+          "start_ms": 400,
+          "end_ms": 2600,
+          "duration_ms": 2200
+        },
+        {
+          "tag": "silence",
+          "start_sample": 41600,
+          "end_sample": 48000,
+          "start_ms": 2600,
+          "end_ms": 3000,
+          "duration_ms": 400
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 41600,
+          "endSample": 48000,
+          "startMs": 2600,
+          "endMs": 3000,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "clear-utterance",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "One contiguous speech-shaped segment inside leading/trailing silence.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/clear-utterance.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 48000,
+        "durationMs": 3000,
+        "sha256": "bf4f3f78ea9e011d2e9d0d75895a17a0db3cb294d619ce8d31cfed615195fe82",
+        "bytes": 96044,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 8000,
+          "start_ms": 0,
+          "end_ms": 500,
+          "duration_ms": 500
+        },
+        {
+          "tag": "speech",
+          "start_sample": 8000,
+          "end_sample": 40000,
+          "start_ms": 500,
+          "end_ms": 2500,
+          "duration_ms": 2000
+        },
+        {
+          "tag": "silence",
+          "start_sample": 40000,
+          "end_sample": 48000,
+          "start_ms": 2500,
+          "end_ms": 3000,
+          "duration_ms": 500
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 8000,
+          "startMs": 0,
+          "endMs": 500,
+          "durationMs": 500,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 40000,
+          "endSample": 48000,
+          "startMs": 2500,
+          "endMs": 3000,
+          "durationMs": 500,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "(placeholder signal; no words)",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "one-word",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Single short utterance; probes x-min-segment-ms short-answer behaviour.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/one-word.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 20000,
+        "durationMs": 1250,
+        "sha256": "95d832555d0559d5da7c989ebda121d1947d6fa23e66b1e2690d691e334a5861",
+        "bytes": 40044,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "speech",
+          "start_sample": 6400,
+          "end_sample": 10400,
+          "start_ms": 400,
+          "end_ms": 650,
+          "duration_ms": 250
+        },
+        {
+          "tag": "silence",
+          "start_sample": 10400,
+          "end_sample": 20000,
+          "start_ms": 650,
+          "end_ms": 1250,
+          "duration_ms": 600
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 10400,
+          "endSample": 20000,
+          "startMs": 650,
+          "endMs": 1250,
+          "durationMs": 600,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "(placeholder signal; no words)",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "known-internal-gap",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "1200 ms internal silence between two speech segments; the pause label is exact.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/known-internal-gap.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 73600,
+        "durationMs": 4600,
+        "sha256": "596882c9faad4ff8f0dab1ebb6b7fc05ad6bcc26d3f18b2ac1f8eb66cfaee016",
+        "bytes": 147244,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 8000,
+          "start_ms": 0,
+          "end_ms": 500,
+          "duration_ms": 500
+        },
+        {
+          "tag": "speech",
+          "start_sample": 8000,
+          "end_sample": 27200,
+          "start_ms": 500,
+          "end_ms": 1700,
+          "duration_ms": 1200
+        },
+        {
+          "tag": "silence",
+          "start_sample": 27200,
+          "end_sample": 46400,
+          "start_ms": 1700,
+          "end_ms": 2900,
+          "duration_ms": 1200
+        },
+        {
+          "tag": "speech",
+          "start_sample": 46400,
+          "end_sample": 65600,
+          "start_ms": 2900,
+          "end_ms": 4100,
+          "duration_ms": 1200
+        },
+        {
+          "tag": "silence",
+          "start_sample": 65600,
+          "end_sample": 73600,
+          "start_ms": 4100,
+          "end_ms": 4600,
+          "duration_ms": 500
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 8000,
+          "startMs": 0,
+          "endMs": 500,
+          "durationMs": 500,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 27200,
+          "endSample": 46400,
+          "startMs": 1700,
+          "endMs": 2900,
+          "durationMs": 1200,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 65600,
+          "endSample": 73600,
+          "startMs": 4100,
+          "endMs": 4600,
+          "durationMs": 500,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "repetition",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Two near-identical speech segments; probes duplicate detection and index order.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/repetition.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 45600,
+        "durationMs": 2850,
+        "sha256": "208f47856c988a3d0a4ee5ae2cfa38878d042aaaf80a8d1c3e72b396b48374c2",
+        "bytes": 91244,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "speech",
+          "start_sample": 6400,
+          "end_sample": 20800,
+          "start_ms": 400,
+          "end_ms": 1300,
+          "duration_ms": 900
+        },
+        {
+          "tag": "silence",
+          "start_sample": 20800,
+          "end_sample": 24800,
+          "start_ms": 1300,
+          "end_ms": 1550,
+          "duration_ms": 250
+        },
+        {
+          "tag": "speech",
+          "start_sample": 24800,
+          "end_sample": 39200,
+          "start_ms": 1550,
+          "end_ms": 2450,
+          "duration_ms": 900
+        },
+        {
+          "tag": "silence",
+          "start_sample": 39200,
+          "end_sample": 45600,
+          "start_ms": 2450,
+          "end_ms": 2850,
+          "duration_ms": 400
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 20800,
+          "endSample": 24800,
+          "startMs": 1300,
+          "endMs": 1550,
+          "durationMs": 250,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 39200,
+          "endSample": 45600,
+          "startMs": 2450,
+          "endMs": 2850,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+      }
+    },
+    {
+      "fixtureId": "filled-hesitation",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Short low-energy burst between two speech segments. The BURST is exact; whether a listener would call it a filled pause is UNVERIFIED.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/filled-hesitation.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 42880,
+        "durationMs": 2680,
+        "sha256": "55740ac1eebe368340781aa58aa42c8694f22098bde21aacc38c3d93a7767a7e",
+        "bytes": 85804,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "speech",
+          "start_sample": 6400,
+          "end_sample": 19200,
+          "start_ms": 400,
+          "end_ms": 1200,
+          "duration_ms": 800
+        },
+        {
+          "tag": "filled_hesitation",
+          "start_sample": 19200,
+          "end_sample": 22080,
+          "start_ms": 1200,
+          "end_ms": 1380,
+          "duration_ms": 180
+        },
+        {
+          "tag": "speech",
+          "start_sample": 22080,
+          "end_sample": 36480,
+          "start_ms": 1380,
+          "end_ms": 2280,
+          "duration_ms": 900
+        },
+        {
+          "tag": "silence",
+          "start_sample": 36480,
+          "end_sample": 42880,
+          "start_ms": 2280,
+          "end_ms": 2680,
+          "duration_ms": 400
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 36480,
+          "endSample": 42880,
+          "startMs": 2280,
+          "endMs": 2680,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "UNVERIFIED-FILLER-LABEL",
+        "note": "The inserted burst has exact sample indices. That is not the same as a confirmed filled pause: no listener has judged it. This fixture may be used for boundary-preservation mechanics, never as filler ground truth."
+      }
+    },
+    {
+      "fixtureId": "lexical-like-vs-filler-like",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Two acoustically distinct tokens in the same position. Which one a listener would call a lexical 'like' and which a filler is UNVERIFIED; this fixture exists to keep both classes in the evaluation set.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/lexical-like-vs-filler-like.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 47360,
+        "durationMs": 2960,
+        "sha256": "e69128fd5838512208bc3ef193fb7a23169e8d7c54f082746ec0120ffd80c221",
+        "bytes": 94764,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "speech",
+          "start_sample": 6400,
+          "end_sample": 17600,
+          "start_ms": 400,
+          "end_ms": 1100,
+          "duration_ms": 700
+        },
+        {
+          "tag": "like_a_lexical",
+          "start_sample": 17600,
+          "end_sample": 22080,
+          "start_ms": 1100,
+          "end_ms": 1380,
+          "duration_ms": 280
+        },
+        {
+          "tag": "silence",
+          "start_sample": 22080,
+          "end_sample": 25280,
+          "start_ms": 1380,
+          "end_ms": 1580,
+          "duration_ms": 200
+        },
+        {
+          "tag": "speech",
+          "start_sample": 25280,
+          "end_sample": 36480,
+          "start_ms": 1580,
+          "end_ms": 2280,
+          "duration_ms": 700
+        },
+        {
+          "tag": "like_b_disputed",
+          "start_sample": 36480,
+          "end_sample": 40960,
+          "start_ms": 2280,
+          "end_ms": 2560,
+          "duration_ms": 280
+        },
+        {
+          "tag": "silence",
+          "start_sample": 40960,
+          "end_sample": 47360,
+          "start_ms": 2560,
+          "end_ms": 2960,
+          "duration_ms": 400
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 22080,
+          "endSample": 25280,
+          "startMs": 1380,
+          "endMs": 1580,
+          "durationMs": 200,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 40960,
+          "endSample": 47360,
+          "startMs": 2560,
+          "endMs": 2960,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "UNVERIFIED-FILLER-LABEL",
+        "note": "A forced aligner would map whichever token is in the supplied text. It cannot decide which token was a filler. Do not score this fixture with filler precision/recall until a reviewer labels it.",
+        "classes_present": [
+          "lexical-like",
+          "disputed-filler-like"
+        ]
+      }
+    },
+    {
+      "fixtureId": "code-mixed-en-in",
+      "kind": "analytic",
+      "syntheticOrigin": "generated-no-real-audio",
+      "description": "Two-pitch code-mix pattern; exercises segment continuity across a language switch.",
+      "languageId": "hinglish",
+      "languageCode": "hi-en",
+      "audio": {
+        "path": "audio/code-mixed-en-in.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 45600,
+        "durationMs": 2850,
+        "sha256": "8e228ff986288e6e1a0778c57ce18ef5b989fdd4aa8e577caa5788e04b671185",
+        "bytes": 91244,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-coach-phase02-fixture-generator",
+        "version": "1.0.0",
+        "seed": 20261018,
+        "deterministic": true
+      },
+      "segments": [
+        {
+          "tag": "silence",
+          "start_sample": 0,
+          "end_sample": 6400,
+          "start_ms": 0,
+          "end_ms": 400,
+          "duration_ms": 400
+        },
+        {
+          "tag": "english_part",
+          "start_sample": 6400,
+          "end_sample": 19200,
+          "start_ms": 400,
+          "end_ms": 1200,
+          "duration_ms": 800
+        },
+        {
+          "tag": "indic_part",
+          "start_sample": 19200,
+          "end_sample": 28000,
+          "start_ms": 1200,
+          "end_ms": 1750,
+          "duration_ms": 550
+        },
+        {
+          "tag": "english_part_2",
+          "start_sample": 28000,
+          "end_sample": 39200,
+          "start_ms": 1750,
+          "end_ms": 2450,
+          "duration_ms": 700
+        },
+        {
+          "tag": "silence",
+          "start_sample": 39200,
+          "end_sample": 45600,
+          "start_ms": 2450,
+          "end_ms": 2850,
+          "duration_ms": 400
+        }
+      ],
+      "labels": [
+        {
+          "kind": "silence",
+          "startSample": 0,
+          "endSample": 6400,
+          "startMs": 0,
+          "endMs": 400,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        },
+        {
+          "kind": "silence",
+          "startSample": 39200,
+          "endSample": 45600,
+          "startMs": 2450,
+          "endMs": 2850,
+          "durationMs": 400,
+          "note": "exact by construction",
+          "boundaryExactness": "exact-by-construction"
+        }
+      ],
+      "expectedScript": "",
+      "labelProvenance": {
+        "origin": "synthetic-analytic",
+        "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+        "seed": 20261018,
+        "verified_by": null,
+        "review_state": "unreviewed-synthetic",
+        "note": "STT takes en-IN for Hindi-English mixed input; hi-en is a TTS-only code and must never be sent to STT."
+      }
+    },
+    {
+      "fixtureId": "spoken-clear-sentence",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "One clear sentence, no internal pause, to establish a recognition baseline.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-clear-sentence.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 40960,
+        "durationMs": 2560,
+        "sha256": "4f27d1f8b25e2054f2421faab5f9f27e71f0f4180ba6cb32370443597fb94340",
+        "bytes": 81964,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Kaveri",
+        "language": "en-IN",
+        "synthesis_parts": [
+          56
+        ],
+        "inserted_gap_ms": [],
+        "notes": []
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 40960,
+          "startMs": 0,
+          "endMs": 2560,
+          "durationMs": 2560
+        }
+      ],
+      "labels": [],
+      "expectedScript": "I have been working on this project for about two years.",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "SCRIPT-AND-AUDIO-BOTH-KNOWN-NO-HUMAN-REVIEW",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 81920,
+            "first_nonempty_chunk_ms_backend": 706.57,
+            "chunk_count": 45,
+            "container_observation": {
+              "chunk_count": 45,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4608,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 8704,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 13312,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2560,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 16896,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2048,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 19456,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2048,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 21504,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 22016,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 24064,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 56
+          }
+        ]
+      }
+    },
+    {
+      "fixtureId": "spoken-known-gap",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "One sentence with a deliberate 1.2 s mid-sentence pause.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-known-gap.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 65280,
+        "durationMs": 4080,
+        "sha256": "771b003110ad5da0528c40a560a3b624070cd55118ecad0317ea77f721d00589",
+        "bytes": 130604,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Kaveri",
+        "language": "en-IN",
+        "synthesis_parts": [
+          25,
+          28
+        ],
+        "inserted_gap_ms": [
+          1200
+        ],
+        "notes": [
+          "Timbre v2.5 has no audio tags, so the pause is a concatenation boundary, not a rendered hesitation."
+        ]
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 23040,
+          "startMs": 0,
+          "endMs": 1440,
+          "durationMs": 1440
+        },
+        {
+          "tag": "speech",
+          "startSample": 42240,
+          "endSample": 65280,
+          "startMs": 2640,
+          "endMs": 4080,
+          "durationMs": 1440
+        }
+      ],
+      "labels": [
+        {
+          "kind": "inserted_silence",
+          "startSample": 23040,
+          "endSample": 42240,
+          "startMs": 1440,
+          "durationMs": 1200,
+          "boundaryExactness": "exact-by-construction-synthetic",
+          "note": "concatenation boundary, not a natural speech onset"
+        }
+      ],
+      "expectedScript": "I think the main issue is we did not test it properly.",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "SCRIPT-AND-AUDIO-BOTH-KNOWN-NO-HUMAN-REVIEW",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 46080,
+            "first_nonempty_chunk_ms_backend": 843.84,
+            "chunk_count": 26,
+            "container_observation": {
+              "chunk_count": 26,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2560,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 6656,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 9216,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13312,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 14848,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 19968,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 24064,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 24576,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 25088,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 25
+          },
+          {
+            "bytes": 46080,
+            "first_nonempty_chunk_ms_backend": 787.98,
+            "chunk_count": 30,
+            "container_observation": {
+              "chunk_count": 30,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 9728,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 13312,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 18432,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 19968,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 21504,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 22528,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 24064,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 1,
+            "text_chars": 28
+          }
+        ]
+      }
+    },
+    {
+      "fixtureId": "spoken-one-word",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "A single-word answer.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-one-word.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 10240,
+        "durationMs": 640,
+        "sha256": "b12787febd79cd7aa2f48bb7e1c2e767a4be4d628fd27047eb548398ede4786b",
+        "bytes": 20524,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Kaveri",
+        "language": "en-IN",
+        "synthesis_parts": [
+          4
+        ],
+        "inserted_gap_ms": [],
+        "notes": []
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 10240,
+          "startMs": 0,
+          "endMs": 640,
+          "durationMs": 640
+        }
+      ],
+      "labels": [],
+      "expectedScript": "Yes.",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "SCRIPT-AND-AUDIO-BOTH-KNOWN-NO-HUMAN-REVIEW",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 20480,
+            "first_nonempty_chunk_ms_backend": 529.96,
+            "chunk_count": 9,
+            "container_observation": {
+              "chunk_count": 9,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 512,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 9216,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 17920,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2560,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": false
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 4
+          }
+        ]
+      }
+    },
+    {
+      "fixtureId": "spoken-filled-hesitation",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "A sentence containing at least two genuine filled pauses ('um', 'uh').",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-filled-hesitation.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 58880,
+        "durationMs": 3680,
+        "sha256": "82900f998131e7f512a2bee278e16f5bc849a5475510272ac5d321b53018ab56",
+        "bytes": 117804,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Kaveri",
+        "language": "en-IN",
+        "synthesis_parts": [
+          55
+        ],
+        "inserted_gap_ms": [],
+        "notes": [
+          "The script contains 'um' and 'uh'. Text normalisation may remove them. This fixture is NOT filler ground truth until a named reviewer confirms the sounds are audible."
+        ]
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 58880,
+          "startMs": 0,
+          "endMs": 3680,
+          "durationMs": 3680
+        }
+      ],
+      "labels": [],
+      "expectedScript": "So um I think the timeline is, uh, probably next month.",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "UNVERIFIED-FILLER-LABEL",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 117760,
+            "first_nonempty_chunk_ms_backend": 668.84,
+            "chunk_count": 71,
+            "container_observation": {
+              "chunk_count": 71,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4608,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 8704,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 13312,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 17408,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 19456,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 24064,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 28160,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 28672,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 55
+          }
+        ]
+      }
+    },
+    {
+      "fixtureId": "spoken-lexical-like-vs-filler-like",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "One sentence with a lexical 'like' and one with a filler 'like'.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-lexical-like-vs-filler-like.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 101120,
+        "durationMs": 6320,
+        "sha256": "eba12085db1ebf81b903fe5f4bf0f574df7700b318fab5236e169b98cc56cba1",
+        "bytes": 202284,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Kaveri",
+        "language": "en-IN",
+        "synthesis_parts": [
+          52,
+          43
+        ],
+        "inserted_gap_ms": [
+          400
+        ],
+        "notes": [
+          "A forced aligner can time whichever 'like' is in the text; it cannot decide which usage was intended."
+        ]
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 48640,
+          "startMs": 0,
+          "endMs": 3040,
+          "durationMs": 3040
+        },
+        {
+          "tag": "speech",
+          "startSample": 55040,
+          "endSample": 101120,
+          "startMs": 3440,
+          "endMs": 6320,
+          "durationMs": 2880
+        }
+      ],
+      "labels": [
+        {
+          "kind": "inserted_silence",
+          "startSample": 48640,
+          "endSample": 55040,
+          "startMs": 3040,
+          "durationMs": 400,
+          "boundaryExactness": "exact-by-construction-synthetic",
+          "note": "concatenation boundary, not a natural speech onset"
+        }
+      ],
+      "expectedScript": "It is like a small library, with shelves everywhere. It is like, I am not sure, a small library.",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "UNVERIFIED-FILLER-LABEL",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 97280,
+            "first_nonempty_chunk_ms_backend": 509.49,
+            "chunk_count": 55,
+            "container_observation": {
+              "chunk_count": 55,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 9216,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 18432,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 19456,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2048,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 21504,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 22016,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 24064,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 28160,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 52
+          },
+          {
+            "bytes": 92160,
+            "first_nonempty_chunk_ms_backend": 2351.32,
+            "chunk_count": 46,
+            "container_observation": {
+              "chunk_count": 46,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 7680,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 8704,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 18432,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 19456,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 24576,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 28160,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1536,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 29696,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 2560,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 1,
+            "text_chars": 43
+          }
+        ]
+      }
+    },
+    {
+      "fixtureId": "spoken-code-mixed",
+      "kind": "spoken",
+      "syntheticOrigin": "gnani-timbre-tts-synthetic-nonpersonal",
+      "description": "One Hindi-English mixed sentence.",
+      "languageId": "english",
+      "languageCode": "en-IN",
+      "audio": {
+        "path": "audio/spoken-code-mixed.wav",
+        "container": "wav",
+        "encoding": "pcm_s16le",
+        "sampleRate": 16000,
+        "channels": 1,
+        "sampleWidth": 2,
+        "sampleCount": 35840,
+        "durationMs": 2240,
+        "sha256": "099ebf5a5db01b567b32b14ec87235a2218a633c5f0b4c02bc64e3bca9733541",
+        "bytes": 71724,
+        "gitIgnored": true
+      },
+      "generator": {
+        "name": "gnani-timbre-tts",
+        "model": "timbre-v2.5",
+        "voice": "Poorvi",
+        "language": "hi-en",
+        "synthesis_parts": [
+          39
+        ],
+        "inserted_gap_ms": [],
+        "notes": [
+          "STT takes en-IN for Hindi-English mixed input. The TTS code hi-en must never be sent to STT."
+        ]
+      },
+      "segments": [
+        {
+          "tag": "speech",
+          "startSample": 0,
+          "endSample": 35840,
+          "startMs": 0,
+          "endMs": 2240,
+          "durationMs": 2240
+        }
+      ],
+      "labels": [],
+      "expectedScript": "Main office se aap late kyun aaye, sir?",
+      "labelProvenance": {
+        "origin": "gnani-timbre-tts-synthetic-nonpersonal",
+        "verified_by": null,
+        "filler_labels_verified": false,
+        "review_state": "SCRIPT-AND-AUDIO-BOTH-KNOWN-NO-HUMAN-REVIEW",
+        "note": "Synthetic speech rendered by the project's own TTS. A TTS input script is NOT proof that a rendered hesitation is audible. Filler labels stay unverified until a named human reviewer listens.",
+        "speech_source_parts": [
+          {
+            "bytes": 71680,
+            "first_nonempty_chunk_ms_backend": 437.87,
+            "chunk_count": 39,
+            "container_observation": {
+              "chunk_count": 39,
+              "riff_header_count": 0,
+              "repeated_header_per_chunk": false,
+              "chunks": [
+                {
+                  "chunk_index": 0,
+                  "byte_offset": 0,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 1,
+                  "byte_offset": 3584,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 2,
+                  "byte_offset": 4096,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 3,
+                  "byte_offset": 8192,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 4,
+                  "byte_offset": 9216,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3584,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 5,
+                  "byte_offset": 12800,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 6,
+                  "byte_offset": 13824,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 7,
+                  "byte_offset": 14336,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 4096,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 8,
+                  "byte_offset": 18432,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 9,
+                  "byte_offset": 18944,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 10,
+                  "byte_offset": 19456,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 11,
+                  "byte_offset": 22528,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 12,
+                  "byte_offset": 23552,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 13,
+                  "byte_offset": 24576,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 512,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 14,
+                  "byte_offset": 25088,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 3072,
+                  "declared_data_bytes": null
+                },
+                {
+                  "chunk_index": 15,
+                  "byte_offset": 28160,
+                  "riff": false,
+                  "header_bytes": 0,
+                  "payload_bytes": 1024,
+                  "declared_data_bytes": null
+                }
+              ],
+              "truncated": true
+            },
+            "resample_method": "none",
+            "resample_source_offset_samples": 0,
+            "part_index": 0,
+            "text_chars": 39
+          }
+        ]
+      }
+    }
+  ]
+}

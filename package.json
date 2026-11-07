@@ -4,7 +4,7 @@
   "private": true,
   "description": "Speaking Coach — live voice-conversation practice with audio-grounded coaching. Foundation build: no live providers yet.",
   "engines": {
-    "node": ">=22"
+    "node": ">=24.0.0 <25"
   },
   "workspaces": [
     "apps/web",
@@ -17,6 +17,10 @@
     "build": "npm run build --workspace @gnani/web",
     "test:contracts": "npm run test --workspace @gnani/contracts",
     "test:e2e": "playwright test",
+    "test:integration": "npm run test:integration:service && npm run test:integration:web",
+    "test:integration:service": "uv run --project services/voice python -m pytest tests/integration --ignore=tests/integration/assembled -v",
+    "test:integration:web": "playwright test --config=playwright.integration.config.ts",
+    "test:assembled": "uv run --project services/voice python -m pytest tests/integration/assembled -v --confcutdir=tests/integration/assembled && playwright test --config=tests/integration/assembled/playwright.config.ts",
     "check:health": "node scripts/foundation/service-health-check.mjs"
   },
   "devDependencies": {

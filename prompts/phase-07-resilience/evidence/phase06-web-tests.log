@@ -1,0 +1,19 @@
+
+Running 14 tests using 5 workers
+
+  ✓   5 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:85:7 › the frozen seam › the exports are there and the names did not change (13ms)
+  ✓   6 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:95:7 › the frozen seam › useSession keeps its shape (5ms)
+  ✓   7 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:107:7 › the frozen seam › the sign-out runs the handlers even when the sign-out fails (12ms)
+  ✓   8 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:116:7 › the frozen seam › the guest state is a supported state, not an error (3ms)
+  ✓   9 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:123:7 › the proxy › it refreshes the session with getClaims (4ms)
+  ✓  10 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:129:7 › the proxy › it sets no-cache headers (4ms)
+  ✓  11 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:135:7 › the proxy › it never guards a route (7ms)
+  ✓  12 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:145:7 › the credentials › the service-role key never reaches the web app (63ms)
+  ✓   4 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:56:7 › the guest experience › the session endpoint answers a guest (374ms)
+  ✓  13 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:154:7 › the credentials › no public Supabase variable exists (77ms)
+  ✓  14 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:163:7 › the credentials › the server reads the publishable key and the URL (25ms)
+  ✓   1 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:50:7 › the guest experience › the root page is never guarded: a guest may call (1.1s)
+  ✓   3 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:66:7 › the guest experience › the sign-in page renders the session state (1.9s)
+  ✓   2 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:75:7 › the guest experience › the sign-out page ends the session and says so (2.0s)
+
+  14 passed (6.2s)

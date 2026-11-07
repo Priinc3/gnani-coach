@@ -1,0 +1,78 @@
+{
+  "fixtureId": "filled-hesitation",
+  "kind": "analytic",
+  "description": "Short low-energy burst between two speech segments. The BURST is exact; whether a listener would call it a filled pause is UNVERIFIED.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [
+    {
+      "tag": "silence",
+      "start_sample": 0,
+      "end_sample": 6400,
+      "start_ms": 0,
+      "end_ms": 400,
+      "duration_ms": 400
+    },
+    {
+      "tag": "speech",
+      "start_sample": 6400,
+      "end_sample": 19200,
+      "start_ms": 400,
+      "end_ms": 1200,
+      "duration_ms": 800
+    },
+    {
+      "tag": "filled_hesitation",
+      "start_sample": 19200,
+      "end_sample": 22080,
+      "start_ms": 1200,
+      "end_ms": 1380,
+      "duration_ms": 180
+    },
+    {
+      "tag": "speech",
+      "start_sample": 22080,
+      "end_sample": 36480,
+      "start_ms": 1380,
+      "end_ms": 2280,
+      "duration_ms": 900
+    },
+    {
+      "tag": "silence",
+      "start_sample": 36480,
+      "end_sample": 42880,
+      "start_ms": 2280,
+      "end_ms": 2680,
+      "duration_ms": 400
+    }
+  ],
+  "labels": [
+    {
+      "kind": "silence",
+      "startSample": 0,
+      "endSample": 6400,
+      "startMs": 0,
+      "endMs": 400,
+      "durationMs": 400,
+      "note": "exact by construction"
+    },
+    {
+      "kind": "silence",
+      "startSample": 36480,
+      "endSample": 42880,
+      "startMs": 2280,
+      "endMs": 2680,
+      "durationMs": 400,
+      "note": "exact by construction"
+    }
+  ],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-analytic",
+    "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+    "seed": 20261018,
+    "verified_by": null,
+    "review_state": "UNVERIFIED-FILLER-LABEL",
+    "note": "The inserted burst has exact sample indices. That is not the same as a confirmed filled pause: no listener has judged it. This fixture may be used for boundary-preservation mechanics, never as filler ground truth."
+  }
+}

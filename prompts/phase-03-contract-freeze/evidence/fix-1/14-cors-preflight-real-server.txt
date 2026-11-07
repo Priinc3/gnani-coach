@@ -1,0 +1,40 @@
+# The CORS middleware, against the REAL uvicorn server.
+# 2026-10-20.
+
+$ uv run --project services/voice python -m uvicorn gnani_coach.main:app --host 127.0.0.1 --port 8124
+# (started in the background; the default allowlist applies: http://localhost:3000)
+
+$ curl -si -X OPTIONS http://127.0.0.1:8124/api/history -H 'Origin: http://localhost:3000' -H 'Access-Control-Request-Method: GET'
+HTTP/1.1 200 OK
+date: Tue, 20 Oct 2026 12:26:42 GMT
+server: uvicorn
+vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Request-Private-Network
+access-control-allow-methods: GET, POST, DELETE, OPTIONS
+access-control-max-age: 600
+access-control-allow-headers: Accept, Accept-Language, Authorization, Content-Language, Content-Type
+access-control-allow-origin: http://localhost:3000
+content-length: 2
+content-type: text/plain; charset=utf-8
+
+OK
+$ curl -si -X OPTIONS http://127.0.0.1:8124/api/history -H 'Origin: https://evil.example' -H 'Access-Control-Request-Method: GET'
+HTTP/1.1 400 Bad Request
+date: Tue, 20 Oct 2026 12:26:42 GMT
+server: uvicorn
+vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Request-Private-Network
+access-control-allow-methods: GET, POST, DELETE, OPTIONS
+access-control-max-age: 600
+access-control-allow-headers: Accept, Accept-Language, Authorization, Content-Language, Content-Type
+content-length: 22
+content-type: text/plain; charset=utf-8
+
+Disallowed CORS origin
+$ curl -si http://127.0.0.1:8124/api/history -H 'Origin: https://evil.example'   # a simple request from a foreign origin
+HTTP/1.1 503 Service Unavailable
+date: Tue, 20 Oct 2026 12:26:42 GMT
+server: uvicorn
+content-length: 266
+content-type: application/json
+vary: Origin
+
+{"errorVersion":"0.1","code":"not_available","category":"not_available","message":"This part of the service is not available yet. Nothing was saved.","retryable":false,"correlationId":"cor_274284e76dca4af4ac9ff96bb3cb6962","occurredAt":"2026-10-20T12:26:43.702741Z"}

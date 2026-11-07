@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "pause.count",
+  "source": "measured",
+  "status": "available",
+  "value": 2.5,
+  "unit": "count",
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "low",
+    "limitations": ["estimated from speech-region detection; filler recognition not validated"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:25Z"
+}

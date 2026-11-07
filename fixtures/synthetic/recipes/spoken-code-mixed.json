@@ -1,0 +1,18 @@
+{
+  "fixtureId": "spoken-code-mixed",
+  "kind": "spoken",
+  "description": "One Hindi-English mixed sentence.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [],
+  "labels": [],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-spoken-pending",
+    "generator": null,
+    "verified_by": null,
+    "review_state": "MISSING-REQUIRED-SPEECH-SOURCE",
+    "smallest_user_action": "The user reads a code-mixed sentence naturally.",
+    "note": "Real spoken fixtures are required before any filler or boundary claim can be made. Synthetic analytic fixtures cannot substitute for them."
+  }
+}

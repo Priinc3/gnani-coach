@@ -1,0 +1,77 @@
+
+== probe run ==
+  run_id       : 20261020T092922Z-filler-45696009ad-3a0eed
+  started_utc  : 2026-10-20T09:29:22Z
+  python       : 3.12.12
+  cwd          : /Users/princegondaliya/Learning/Projects/temp/gnani
+  command      : run.py filler
+  exact argv   : ['filler', '--allow-live', '--max-requests', '16']
+  inference calls are made only by an explicit --allow-live command
+
+== bounded filler experiment (Phase 02, FIX cycle 2) ==
+
+== configuration (names only, no values) ==
+[missing     ] GNANI_API_KEY — value never printed
+[missing     ] GEMINI_API_KEY — value never printed
+[missing     ] GEMINI_MODEL — no model id is defaulted by design
+[PASSED      ] SUPABASE_* — not required for any speech or reasoning probe
+[NOT RUN     ] provider_readiness() — deliberately unavailable; unused by probes
+[NOT RUN     ] env file — process environment only
+
+== intended endpoints and model selection ==
+  STT websocket : wss://api.vachana.ai/stt/v3/stream
+  TTS websocket : wss://api.vachana.ai/api/v1/tts
+  Gemini model  : (unset)
+  documented Gemini candidates: gemini-3.8-flash, gemini-3.5-flash-lite, gemini-3.6-flash
+  inference calls made by preflight: 0
+  missing names : GNANI_API_KEY, GEMINI_API_KEY, GEMINI_MODEL
+
+== plan (one shared budget for the whole step) ==
+  clip under review : spoken-filled-hesitation sha256=82900f998131e7f5…
+  negative control  : spoken-clear-sentence sha256=4f27d1f8b25e2054…
+  stt language      : english -> en-IN
+  E1 variants       : 5 x 2 wire attempts
+  E2 reviews        : 2 x 1 wire attempt (the clip and the negative)
+  E3                : 0 wire attempts (offline)
+  negative controls : up to 2 more STT runs, for the E1 variants that report both fillers
+
+== E3 — offline acoustic scan inside the VAD speech regions ==
+  E3 [REDACTED]     status=FAILED   events=1 wire_attempts=0
+      event start_ms=2260 end_ms=2415 duration_ms=155 voicing=0.5815 change=0.0189 dominant_hz=200.0..200.0
+  E3 [REDACTED]        status=PASSED   events=0 wire_attempts=0
+
+== E1 — Gnani realtime STT, one run per variant ==
+  E1 verbatim-min-silence-500           status=BLOCKED  (GNANI_API_KEY is not configured (name only; no value read))
+  E1 verbatim-min-silence-300           status=BLOCKED  (GNANI_API_KEY is not configured (name only; no value read))
+  E1 transcribe-min-silence-300         status=BLOCKED  (GNANI_API_KEY is not configured (name only; no value read))
+  E1 verbatim-min-silence-300-bias-1.0  status=BLOCKED  (GNANI_API_KEY is not configured (name only; no value read))
+  E1 verbatim-min-silence-300-bias-2.0  status=BLOCKED  (GNANI_API_KEY is not configured (name only; no value read))
+
+== E2 — Gemini audio review of the clip ==
+  E2 audio-review-filled-hesitation     status=BLOCKED  (GEMINI_API_KEY, GEMINI_MODEL not configured (name only; no value read))
+  E2 audio-review-clear-sentence        status=BLOCKED  (GEMINI_API_KEY, GEMINI_MODEL not configured (name only; no value read))
+
+== negative controls — the clean-speech clip ==
+  no E1 variant reported both fillers; no control is needed
+
+== route summary ==
+  E1: BLOCKED
+  E2: BLOCKED
+  E3: FAILED
+
+  routes passed    : (none)
+  routes failed    : E3
+  routes blocked   : E1, E2
+  routes not run   : (none)
+  routes inconclusive: (none)
+  ONE CLIP PASSING IS A SMOKE SIGNAL ONLY. It is not precision >=90%, not recall >=80% and not a p95 boundary error <=300 ms.
+[FAILED      ] routes — passed=(none) failed=['E3'] blocked=['E1', 'E2']
+
+== summary ==
+  overall     : FAILED
+  exit_code   : 1
+  elapsed_s   : 0.135
+  run id      : 20261020T092922Z-filler-45696009ad-3a0eed
+  evidence    : prompts/phase-02-provider-feasibility/evidence/fix-2/20261020T092922Z-filler-45696009ad-3a0eed
+  run index   : 59 invocations recorded
+  index file  : tools/probes/.cache/runs.jsonl

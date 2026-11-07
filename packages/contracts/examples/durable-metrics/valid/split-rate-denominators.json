@@ -1,0 +1,45 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_d4e5f6a7",
+  "recordedAt": "2026-10-20T08:20:00Z",
+  "practiceLanguageId": "english",
+  "scenarioId": "workplace",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_d6e7f8a9",
+      "roundId": "rnd_e1f2a3b4",
+      "durationMs": 30000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "speech.rate_wpm",
+          "method": "stt_words_over_learner_span",
+          "denominator": "learner_span_ms",
+          "recognitionStatus": "measured",
+          "status": "available",
+          "value": 118.0,
+          "unit": "words_per_minute"
+        },
+        {
+          "metricKey": "speech.active_rate_wpm",
+          "method": "stt_words_over_speech_active",
+          "denominator": "speech_active_ms",
+          "recognitionStatus": "measured",
+          "status": "available",
+          "value": 141.5,
+          "unit": "words_per_minute"
+        },
+        {
+          "metricKey": "turn.duration_ms",
+          "method": "learner_audio_sample_clock",
+          "status": "available",
+          "value": 30000,
+          "unit": "milliseconds"
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 25400 }
+}

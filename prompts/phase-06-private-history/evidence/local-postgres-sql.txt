@@ -1,0 +1,133 @@
+=== local-postgres-sql ===
+NOTICE:  database "gnani_phase06_check_4369" does not exist, skipping
+== stubs for the Supabase-managed objects ==
+== applying the migrations ==
+-- 20261020190000_private_history_tables.sql
+-- 20261020190100_private_recordings_bucket.sql
+-- 20261020190200_expired_recording_cleanup.sql
+-- 20261020190300_expired_recording_schedule.sql SKIPPED (pg_cron is Supabase-managed)
+== the default grants (Supabase grants the roles on the tables; row-level security is the gate) ==
+== row-level security is enabled on every table ==
+   table_name    | rls_enabled 
+-----------------+-------------
+ consent         | t
+ consent_events  | t
+ recordings      | t
+ session_metrics | t
+(4 rows)
+
+== the policies ==
+         policyname          |      roles      |                                            qual                                             |                                         with_check                                          
+-----------------------------+-----------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------
+ consent_events_owner_insert | {authenticated} |                                                                                             | (auth.uid() = user_id)
+ consent_events_owner_select | {authenticated} | (auth.uid() = user_id)                                                                      | 
+ consent_owner_all           | {authenticated} | (auth.uid() = user_id)                                                                      | (auth.uid() = user_id)
+ recordings_owner_all        | {authenticated} | (auth.uid() = user_id)                                                                      | (auth.uid() = user_id)
+ recordings_owner_delete     | {authenticated} | ((bucket_id = 'recordings'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text)) | 
+ recordings_owner_insert     | {authenticated} |                                                                                             | ((bucket_id = 'recordings'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))
+ recordings_owner_select     | {authenticated} | ((bucket_id = 'recordings'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text)) | 
+ recordings_owner_update     | {authenticated} | ((bucket_id = 'recordings'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text)) | ((bucket_id = 'recordings'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))
+ session_metrics_owner_all   | {authenticated} | (auth.uid() = user_id)                                                                      | (auth.uid() = user_id)
+(9 rows)
+
+== the bucket is private ==
+     id     |    name    | public 
+------------+------------+--------
+ recordings | recordings | f
+(1 row)
+
+== the two accounts ==
+== a durable record may not carry a content key ==
+ERROR:  new row for relation "session_metrics" violates check constraint "session_metrics_no_content"
+DETAIL:  Failing row contains (1e4a7be7-2688-41e3-a83b-9cb4d74288e1, 11111111-1111-4111-8111-111111111111, ses_abc123, 2026-10-20 20:03:08.829744+05:30, english, job-interview, null, 0, 0, 0.1, {"transcript": "the learners own words", "metricsVersion": "0.1"..., 2026-10-20 20:03:08.829744+05:30).
+OK: the check constraint refused the content key
+== a durable record without content is accepted ==
+OK: the metrics-only record was accepted
+== owner isolation: user B cannot read, update or delete user A's row ==
+-- user A reads its own row:
+BEGIN
+SET
+SET
+ rows_visible_to_a 
+-------------------
+                 1
+(1 row)
+
+COMMIT
+-- user B reads the same table:
+BEGIN
+SET
+SET
+ rows_visible_to_b 
+-------------------
+                 0
+(1 row)
+
+COMMIT
+-- user B tries to delete user A's row:
+BEGIN
+SET
+SET
+DELETE 0
+COMMIT
+-- the row is still there (the delete was refused):
+ rows_left 
+-----------
+         1
+(1 row)
+
+-- the guest role sees nothing:
+BEGIN
+SET
+ rows_visible_to_anon 
+----------------------
+                    0
+(1 row)
+
+COMMIT
+== the storage policies are owner-scoped ==
+BEGIN
+SET
+SET
+ objects_visible_to_a 
+----------------------
+                    1
+(1 row)
+
+COMMIT
+BEGIN
+SET
+SET
+ objects_visible_to_b 
+----------------------
+                    0
+(1 row)
+
+COMMIT
+== the expiry sweep marks the expired recording as deleted ==
+ purge_expired_recordings 
+--------------------------
+ 
+(1 row)
+
+ recording_id |  state  | has_deleted_at | expired 
+--------------+---------+----------------+---------
+ rec_abc123   | deleted | t              | t
+(1 row)
+
+ objects_left 
+--------------
+            0
+(1 row)
+
+== the service role bypasses row-level security (why the service scopes its own queries) ==
+BEGIN
+SET
+ rows_visible_to_the_service_role 
+----------------------------------
+                                0
+(1 row)
+
+COMMIT
+== done ==
+--- exit code: 0 ---

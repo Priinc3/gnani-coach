@@ -1,0 +1,21 @@
+=== playwright-phase06 ===
+
+Running 14 tests using 5 workers
+
+  ✓   2 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:85:7 › the frozen seam › the exports are there and the names did not change (3ms)
+  ✓   6 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:95:7 › the frozen seam › useSession keeps its shape (1ms)
+  ✓   7 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:107:7 › the frozen seam › the sign-out runs the handlers even when the sign-out fails (1ms)
+  ✓   8 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:116:7 › the frozen seam › the guest state is a supported state, not an error (0ms)
+  ✓   9 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:123:7 › the proxy › it refreshes the session with getClaims (0ms)
+  ✓  10 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:129:7 › the proxy › it sets no-cache headers (0ms)
+  ✓  11 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:135:7 › the proxy › it never guards a route (1ms)
+  ✓  12 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:145:7 › the credentials › the service-role key never reaches the web app (12ms)
+  ✓  13 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:154:7 › the credentials › no public Supabase variable exists (17ms)
+  ✓   1 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:56:7 › the guest experience › the session endpoint answers a guest (101ms)
+  ✓  14 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:163:7 › the credentials › the server reads the publishable key and the URL (0ms)
+  ✓   5 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:50:7 › the guest experience › the root page is never guarded: a guest may call (435ms)
+  ✓   3 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:66:7 › the guest experience › the sign-in page renders the session state (695ms)
+  ✓   4 [chromium] › prompts/phase-06-private-history/web-tests/auth.spec.ts:75:7 › the guest experience › the sign-out page ends the session and says so (777ms)
+
+  14 passed (2.5s)
+--- exit code: 0 ---

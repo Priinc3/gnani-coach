@@ -1,0 +1,339 @@
+$ npm run test:e2e
+# Phase 01's foundation e2e. NOT my file: tests/foundation/** belongs to another phase.
+# repo root, 2026-10-22T08:48:09Z
+
+
+> speaking-coach@0.1.0 test:e2e
+> playwright test
+
+
+Running 12 tests using 5 workers
+
+  ✓   5 [chromium] › tests/foundation/starter-screen.spec.ts:42:5 › does not offer French or any french language code (948ms)
+  ✓   1 [chromium] › tests/foundation/starter-screen.spec.ts:22:5 › lists all ten catalog languages with honest verification badges (1.0s)
+  ✘   2 [chromium] › tests/foundation/starter-screen.spec.ts:13:5 › shows the honest headline and no fake data visuals (6.0s)
+  ✘   4 [chromium] › tests/foundation/starter-screen.spec.ts:49:5 › start call is visibly unavailable with a plain reason (6.0s)
+  ✘   6 [chromium] › tests/foundation/starter-screen.spec.ts:84:5 › recording retention is off by default, explained, and keyboard-toggleable (5.4s)
+  ✘   3 [chromium] › tests/foundation/starter-screen.spec.ts:61:5 › requests no microphone access on load, even after interaction (30.0s)
+  ✘   7 [chromium] › tests/foundation/starter-screen.spec.ts:99:5 › practice language select is focusable, labeled, and updates the plan (30.0s)
+  ✘  11 [chromium] › tests/foundation/starter-screen.spec.ts:141:5 › layout does not overflow a 360px-wide screen (5.3s)
+  ✘   9 [chromium] › tests/foundation/starter-screen.spec.ts:112:5 › coaching language follows practice until changed manually (30.1s)
+  ✘   8 [chromium] › tests/foundation/starter-screen.spec.ts:124:5 › scenario radios are keyboard operable (30.1s)
+  ✘  10 [chromium] › tests/foundation/starter-screen.spec.ts:133:5 › sample preview is optional and clearly labeled (30.0s)
+  ✘  12 [chromium] › tests/foundation/starter-screen.spec.ts:153:5 › honours reduced-motion preference (30.0s)
+
+
+  1) [chromium] › tests/foundation/starter-screen.spec.ts:13:5 › shows the honest headline and no fake data visuals 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Practice speaking, not just studying.' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Practice speaking, not just studying.' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Practice speaking, not just studying.' })
+
+
+      15 |   await expect(
+      16 |     page.getByRole("heading", { name: "Practice speaking, not just studying." }),
+    > 17 |   ).toBeVisible();
+         |     ^
+      18 |   await expect(page.getByText("Foundation build", { exact: false }).first()).toBeVisible();
+      19 |   expect(await page.locator("main canvas, main progress, main meter").count()).toBe(0);
+      20 | });
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:17:5
+
+    Error Context: test-results/starter-screen-shows-the-h-b8e96-ne-and-no-fake-data-visuals-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-shows-the-h-b8e96-ne-and-no-fake-data-visuals-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-shows-the-h-b8e96-ne-and-no-fake-data-visuals-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/foundation/starter-screen.spec.ts:49:5 › start call is visibly unavailable with a plain reason 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator: getByRole('button', { name: 'Start live practice call' })
+    Expected: disabled
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('button', { name: 'Start live practice call' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start live practice call' })
+
+
+      50 |   await page.goto("/");
+      51 |   const start = page.getByRole("button", { name: "Start live practice call" });
+    > 52 |   await expect(start).toBeDisabled();
+         |                       ^
+      53 |   await expect(start).toHaveAttribute("aria-describedby", "start-reason");
+      54 |   await expect(
+      55 |     page.getByText("Live calling will be enabled after speech-provider setup."),
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:52:23
+
+    Error Context: test-results/starter-screen-start-call--5feb4-ailable-with-a-plain-reason-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-start-call--5feb4-ailable-with-a-plain-reason-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-start-call--5feb4-ailable-with-a-plain-reason-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/foundation/starter-screen.spec.ts:61:5 › requests no microphone access on load, even after interaction 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('What language do you want to practise?')
+
+
+      74 |   // Exercise the interactive screen to prove hydration happened without any
+      75 |   // microphone request.
+    > 76 |   await page.getByLabel("What language do you want to practise?").selectOption("hindi");
+         |                                                                   ^
+      77 |   await expect(page.getByRole("status")).toContainText("practising Hindi");
+      78 |   const requests = await page.evaluate(
+      79 |     () => (window as unknown as { __micRequests: number }).__micRequests,
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:76:67
+
+    Error Context: test-results/starter-screen-requests-no-0702e-load-even-after-interaction-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-requests-no-0702e-load-even-after-interaction-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-requests-no-0702e-load-even-after-interaction-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/foundation/starter-screen.spec.ts:84:5 › recording retention is off by default, explained, and keyboard-toggleable 
+
+    Error: expect(locator).not.toBeChecked() failed
+
+    Locator: getByRole('checkbox', { name: 'Save the session recording for replay' })
+    Expected: not checked
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "not toBeChecked" getByRole('checkbox', { name: 'Save the session recording for replay' }) with timeout 5000ms
+      - waiting for getByRole('checkbox', { name: 'Save the session recording for replay' })
+
+
+      87 |   await page.goto("/");
+      88 |   const checkbox = page.getByRole("checkbox", { name: "Save the session recording for replay" });
+    > 89 |   await expect(checkbox).not.toBeChecked();
+         |                              ^
+      90 |   const status = page.getByRole("status");
+      91 |   await expect(status).toContainText("recording not saved");
+      92 |   await expect(page.getByText("Off by default.", { exact: false })).toBeVisible();
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:89:30
+
+    Error Context: test-results/starter-screen-recording-r-62bef-ned-and-keyboard-toggleable-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-recording-r-62bef-ned-and-keyboard-toggleable-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-recording-r-62bef-ned-and-keyboard-toggleable-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests/foundation/starter-screen.spec.ts:99:5 › practice language select is focusable, labeled, and updates the plan 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.focus: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('What language do you want to practise?')
+
+
+      103 |   // Headless Chromium cannot open the native select popup, so keyboard
+      104 |   // operability is asserted as focusability plus the real change behavior.
+    > 105 |   await practice.focus();
+          |                  ^
+      106 |   expect(await practice.evaluate((element) => element === document.activeElement)).toBe(true);
+      107 |   await practice.selectOption("hindi");
+      108 |   await expect(coaching).toHaveValue("hindi");
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:105:18
+
+    Error Context: test-results/starter-screen-practice-la-76cf9-abeled-and-updates-the-plan-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-practice-la-76cf9-abeled-and-updates-the-plan-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-practice-la-76cf9-abeled-and-updates-the-plan-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › tests/foundation/starter-screen.spec.ts:112:5 › coaching language follows practice until changed manually 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('What language do you want to practise?')
+
+
+      114 |   const practice = page.getByLabel("What language do you want to practise?");
+      115 |   const coaching = page.getByLabel("What language should the coach explain in?");
+    > 116 |   await practice.selectOption("tamil");
+          |                  ^
+      117 |   await expect(coaching).toHaveValue("tamil");
+      118 |   await coaching.selectOption("english");
+      119 |   await practice.selectOption("bengali");
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:116:18
+
+    Error Context: test-results/starter-screen-coaching-la-1239b-tice-until-changed-manually-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-coaching-la-1239b-tice-until-changed-manually-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-coaching-la-1239b-tice-until-changed-manually-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › tests/foundation/starter-screen.spec.ts:124:5 › scenario radios are keyboard operable 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.focus: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('radio', { name: /Interview practice/ })
+
+
+      125 |   await page.goto("/");
+      126 |   const firstScenario = page.getByRole("radio", { name: /Interview practice/ });
+    > 127 |   await firstScenario.focus();
+          |                       ^
+      128 |   await page.keyboard.press("ArrowDown");
+      129 |   await expect(page.getByRole("radio", { name: /Workplace conversations/ })).toBeChecked();
+      130 |   await expect(page.getByRole("status")).toContainText("Workplace conversations");
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:127:23
+
+    Error Context: test-results/starter-screen-scenario-radios-are-keyboard-operable-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-scenario-radios-are-keyboard-operable-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-scenario-radios-are-keyboard-operable-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › tests/foundation/starter-screen.spec.ts:133:5 › sample preview is optional and clearly labeled 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByText('Optional: see a sample coaching break')
+
+
+      135 |   const label = page.getByText("sample preview — no live AI or recording");
+      136 |   await expect(label).not.toBeVisible();
+    > 137 |   await page.getByText("Optional: see a sample coaching break").click();
+          |                                                                 ^
+      138 |   await expect(label).toBeVisible();
+      139 | });
+      140 |
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:137:65
+
+    Error Context: test-results/starter-screen-sample-prev-dfce0-ptional-and-clearly-labeled-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-sample-prev-dfce0-ptional-and-clearly-labeled-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-sample-prev-dfce0-ptional-and-clearly-labeled-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › tests/foundation/starter-screen.spec.ts:141:5 › layout does not overflow a 360px-wide screen 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Practice speaking, not just studying.' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Practice speaking, not just studying.' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Practice speaking, not just studying.' })
+
+
+      144 |   await expect(
+      145 |     page.getByRole("heading", { name: "Practice speaking, not just studying." }),
+    > 146 |   ).toBeVisible();
+          |     ^
+      147 |   const overflow = await page.evaluate(
+      148 |     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      149 |   );
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:146:5
+
+    Error Context: test-results/starter-screen-layout-does-not-overflow-a-360px-wide-screen-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-layout-does-not-overflow-a-360px-wide-screen-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-layout-does-not-overflow-a-360px-wide-screen-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium] › tests/foundation/starter-screen.spec.ts:153:5 › honours reduced-motion preference 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.evaluate: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('.scenario-option').first()
+
+
+      154 |   await page.goto("/");
+      155 |   const card = page.locator(".scenario-option").first();
+    > 156 |   const normal = await card.evaluate((element) => getComputedStyle(element).transitionDuration);
+          |                             ^
+      157 |   expect(normal).toBe("0.12s");
+      158 |   await page.emulateMedia({ reducedMotion: "reduce" });
+      159 |   const reduced = await card.evaluate((element) => getComputedStyle(element).transitionDuration);
+        at /Users/princegondaliya/Learning/Projects/temp/gnani/tests/foundation/starter-screen.spec.ts:156:29
+
+    Error Context: test-results/starter-screen-honours-reduced-motion-preference-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/starter-screen-honours-reduced-motion-preference-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/starter-screen-honours-reduced-motion-preference-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10 failed
+    [chromium] › tests/foundation/starter-screen.spec.ts:13:5 › shows the honest headline and no fake data visuals 
+    [chromium] › tests/foundation/starter-screen.spec.ts:49:5 › start call is visibly unavailable with a plain reason 
+    [chromium] › tests/foundation/starter-screen.spec.ts:61:5 › requests no microphone access on load, even after interaction 
+    [chromium] › tests/foundation/starter-screen.spec.ts:84:5 › recording retention is off by default, explained, and keyboard-toggleable 
+    [chromium] › tests/foundation/starter-screen.spec.ts:99:5 › practice language select is focusable, labeled, and updates the plan 
+    [chromium] › tests/foundation/starter-screen.spec.ts:112:5 › coaching language follows practice until changed manually 
+    [chromium] › tests/foundation/starter-screen.spec.ts:124:5 › scenario radios are keyboard operable 
+    [chromium] › tests/foundation/starter-screen.spec.ts:133:5 › sample preview is optional and clearly labeled 
+    [chromium] › tests/foundation/starter-screen.spec.ts:141:5 › layout does not overflow a 360px-wide screen 
+    [chromium] › tests/foundation/starter-screen.spec.ts:153:5 › honours reduced-motion preference ─
+  2 passed (1.0m)
+
+exit code: 1

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.speaking-coach.example/error-shape/0.1.0",
-  "title": "Error shape (draft v0.1)",
-  "description": "What a client may show or log about a failure. Status: DRAFT v0.1 — not frozen. `message` is plain-word, bounded and written for the learner; raw provider payloads, stack traces, secrets and learner content are rejected by the explicit false schemas below. `category` is the stable machine contract; `code` is a finer stable identifier. `retryable` is true only for transient conditions — client mistakes must never be offered as auto-retryable.",
+  "title": "Error shape (frozen v0.1)",
+  "description": "What a client may show or log about a failure. Status: FROZEN v0.1 (Phase 03, 2026-10-20). `message` is plain-word, bounded and written for the learner; raw provider payloads, stack traces, secrets and learner content are rejected by the explicit false schemas below. `category` is the stable machine contract; `code` is a finer stable identifier. `retryable` is true only for transient conditions — client mistakes must never be offered as auto-retryable. `not_available` is the category a frozen-but-unimplemented seam answers with: it is never retryable, because retrying does not make the seam exist.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -34,9 +34,10 @@
         "provider_unavailable",
         "timeout",
         "cancelled",
+        "not_available",
         "internal"
       ],
-      "description": "Stable category for client logic and support docs; frozen in Phase 03."
+      "description": "Stable category for client logic and support docs. `not_available` marks a frozen seam that is not implemented yet (the Phase 03 stub behaviour); it is never retryable."
     },
     "message": {
       "type": "string",
@@ -61,7 +62,14 @@
         "type": "object",
         "properties": {
           "category": {
-            "enum": ["invalid_request", "unauthenticated", "forbidden", "not_found", "conflict"]
+            "enum": [
+              "invalid_request",
+              "unauthenticated",
+              "forbidden",
+              "not_found",
+              "conflict",
+              "not_available"
+            ]
           }
         },
         "required": ["category"]

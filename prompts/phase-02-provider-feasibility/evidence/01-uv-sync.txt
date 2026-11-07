@@ -1,0 +1,12 @@
+==============================================================
+command : uv sync --project services/voice
+cwd     : /Users/princegondaliya/Learning/Projects/temp/gnani
+utc     : 2026-10-18T16:46:29Z
+python  : Python 3.12.12
+node    : v26.7.0  npm: 11.19.0
+==============================================================
+
+Resolved 66 packages in 2ms
+Audited 64 packages in 1ms
+
+--- exit status: 0 ---

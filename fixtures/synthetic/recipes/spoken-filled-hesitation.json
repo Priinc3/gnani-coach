@@ -1,0 +1,18 @@
+{
+  "fixtureId": "spoken-filled-hesitation",
+  "kind": "spoken",
+  "description": "A sentence containing at least two genuine filled pauses ('um', 'uh').",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [],
+  "labels": [],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-spoken-pending",
+    "generator": null,
+    "verified_by": null,
+    "review_state": "MISSING-REQUIRED-SPEECH-SOURCE",
+    "smallest_user_action": "The user reads a sentence aloud, inserting 'um' or 'uh' at two points. The user is the reviewer, since only they can confirm the hesitation was audible.",
+    "note": "Real spoken fixtures are required before any filler or boundary claim can be made. Synthetic analytic fixtures cannot substitute for them."
+  }
+}

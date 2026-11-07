@@ -1,0 +1,47 @@
+==============================================================
+command : uv run --project services/voice python tools/probes/run.py fixtures --offline
+cwd     : /Users/princegondaliya/Learning/Projects/temp/gnani
+utc     : 2026-10-18T16:46:30Z
+python  : Python 3.12.12
+node    : v26.7.0  npm: 11.19.0
+==============================================================
+
+
+== probe run ==
+  started_utc : 2026-10-18T16:46:30Z
+  python      : 3.12.12
+  cwd         : /Users/princegondaliya/Learning/Projects/temp/gnani
+  command     : run.py fixtures
+
+== synthetic fixtures ==
+[PASSED      ] manifest-written — fixtures/synthetic/manifest.json
+[PASSED      ] generator — gnani-coach-phase02-fixture-generator@1.0.0 seed=20261018
+[PASSED      ] fixture:silence-3s — 3 s of digital silence; must yield zero speech regions.
+[PASSED      ] fixture:noise-2s — Seeded pseudo-noise between silences; must not be scored as fluent speech.
+[PASSED      ] fixture:clear-utterance — One contiguous speech-shaped segment inside leading/trailing silence.
+[PASSED      ] fixture:one-word — Single short utterance; probes x-min-segment-ms short-answer behaviour.
+[PASSED      ] fixture:known-internal-gap — 1200 ms internal silence between two speech segments; the pause label is exact.
+[PASSED      ] fixture:repetition — Two near-identical speech segments; probes duplicate detection and index order.
+[PASSED      ] fixture:filled-hesitation — Short low-energy burst between two speech segments. The BURST is exact; whether a listener would call it a fil
+[PASSED      ] fixture:lexical-like-vs-filler-like — Two acoustically distinct tokens in the same position. Which one a listener would call a lexical 'like' and wh
+[PASSED      ] fixture:code-mixed-en-in — Two-pitch code-mix pattern; exercises segment continuity across a language switch.
+[PASSED      ] fixture:spoken-clear-sentence — One clear sentence, no internal pause, to establish a recognition baseline.
+[PASSED      ] fixture:spoken-known-gap — One sentence with a deliberate 1.2 s mid-sentence pause.
+[PASSED      ] fixture:spoken-one-word — A single-word answer.
+[PASSED      ] fixture:spoken-filled-hesitation — A sentence containing at least two genuine filled pauses ('um', 'uh').
+[PASSED      ] fixture:spoken-lexical-like-vs-filler-like — One sentence with a lexical 'like' and one with a filler 'like'.
+[PASSED      ] fixture:spoken-code-mixed — One Hindi-English mixed sentence.
+
+== audio ignore policy ==
+  generated audio is ignored by the existing *.wav rule (unmodified)
+  available=15 missing=0
+  missing ids: (none)
+[NOT RUN     ] live-fixture-calls — analytic fixtures need no provider call
+
+== summary ==
+  overall     : INCONCLUSIVE
+  elapsed_s   : 0.052
+  run index   : 20 invocations recorded
+  index file  : tools/probes/.cache/runs.jsonl
+
+--- exit status: 0 ---

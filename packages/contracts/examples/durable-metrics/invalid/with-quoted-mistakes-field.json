@@ -10,10 +10,12 @@
       "turnId": "trn_a3b4c5d6",
       "roundId": "rnd_c9d0e1f2",
       "durationMs": 42000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
       "observations": [
         {
           "metricKey": "pause.count",
-          "method": "energy-based speech regions, uncalibrated",
+          "method": "vad_speech_regions",
           "status": "available",
           "value": 3,
           "unit": "count"
@@ -21,6 +23,11 @@
       ]
     }
   ],
-  "totals": { "turnCount": 1, "speakingTimeMs": 42000 },
-  "quotedMistakes": ["I am go to office"]
+  "totals": {
+    "turnCount": 1,
+    "speakingTimeMs": 42000
+  },
+  "quotedMistakes": [
+    "I am go to office"
+  ]
 }

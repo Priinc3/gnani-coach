@@ -1,0 +1,37 @@
+{
+  "envelopeVersion": "0.1",
+  "direction": "client_to_server",
+  "type": "start",
+  "sessionId": null,
+  "connectionId": null,
+  "roundId": null,
+  "turnId": null,
+  "sequence": 0,
+  "sampleTimeMs": null,
+  "emittedAt": "2026-10-20T09:00:00Z",
+  "payload": {
+    "audio": {
+      "sampleRateHz": 16000,
+      "channels": 1,
+      "sampleFormat": "s16le"
+    },
+    "settings": {
+      "settingsVersion": "0.1",
+      "practiceLanguageId": "english",
+      "coachingLanguageId": "english",
+      "scenarioId": "interview",
+      "level": "beginner",
+      "coachingRoundTurns": 4,
+      "sessionLimitSeconds": 600,
+      "recordingRetention": false,
+      "consent": {
+        "consentVersion": "0.1",
+        "recordingRetentionGranted": false,
+        "recordingRetentionGrantedAt": null
+      }
+    },
+    "credentials": {
+      "gnaniApiKey": "never-in-a-payload"
+    }
+  }
+}

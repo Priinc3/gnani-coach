@@ -1,0 +1,35 @@
+{
+  "rows": [
+    {
+      "id": "tamil",
+      "displayName": "Tamil",
+      "sttCode": "ta-IN",
+      "ttsCode": "ta-IN",
+      "documented": true,
+      "stt": "PASSED",
+      "tts": "PASSED",
+      "geminiLanguage": "FAILED",
+      "note": "Gemini timeout API roundtrip only; human intelligibility and coaching quality NOT verified",
+      "recognizedChars": 62,
+      "voice": "Asmita",
+      "ttsBytes": 66560
+    }
+  ],
+  "budget": {
+    "operations_used": 5,
+    "operations_limit": 40,
+    "stt_audio_seconds": 3.2,
+    "stt_audio_seconds_limit": 300.0,
+    "connections_used": 2,
+    "connections_limit": 40,
+    "retries": 0,
+    "max_retries_per_operation": 2,
+    "per_kind": {
+      "gemini:reply": 1,
+      "gnani-stt:connect": 1,
+      "gnani-stt:session": 1,
+      "gnani-tts:connect": 1,
+      "gnani-tts:synthesize": 1
+    }
+  }
+}

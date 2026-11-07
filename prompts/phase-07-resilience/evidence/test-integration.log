@@ -1,0 +1,83 @@
+
+> speaking-coach@0.1.0 test:integration
+> npm run test:integration:service && npm run test:integration:web
+
+
+> speaking-coach@0.1.0 test:integration:service
+> uv run --project services/voice python -m pytest tests/integration --ignore=tests/integration/assembled -v
+
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0 -- /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani
+plugins: anyio-4.15.1
+collecting ... collected 46 items
+
+tests/integration/live/test_latency.py::test_the_live_latency_harness_runs_thirty_turns SKIPPED [  2%]
+tests/integration/test_origins.py::test_the_default_allowlist_is_the_local_web_origin PASSED [  4%]
+tests/integration/test_origins.py::test_a_wildcard_allowlist_is_refused_while_the_settings_parse PASSED [  6%]
+tests/integration/test_origins.py::test_a_malformed_allowlist_is_refused_while_the_settings_parse PASSED [  8%]
+tests/integration/test_origins.py::test_the_allowlist_accepts_a_json_array_and_a_comma_separated_list PASSED [ 10%]
+tests/integration/test_origins.py::test_the_allowlist_is_normalised PASSED [ 13%]
+tests/integration/test_origins.py::test_the_check_allows_the_configured_origin PASSED [ 15%]
+tests/integration/test_origins.py::test_the_check_refuses_a_foreign_origin PASSED [ 17%]
+tests/integration/test_origins.py::test_the_check_refuses_a_malformed_origin PASSED [ 19%]
+tests/integration/test_origins.py::test_the_check_allows_a_missing_origin PASSED [ 21%]
+tests/integration/test_origins.py::test_the_check_follows_the_configuration PASSED [ 23%]
+tests/integration/test_origins.py::test_an_allowed_origin_passes_the_cors_preflight PASSED [ 26%]
+tests/integration/test_origins.py::test_a_foreign_origin_fails_the_cors_preflight PASSED [ 28%]
+tests/integration/test_origins.py::test_a_foreign_origin_gets_no_cors_headers_on_a_simple_request PASSED [ 30%]
+tests/integration/test_origins.py::test_the_cors_middleware_does_not_send_credentials PASSED [ 32%]
+tests/integration/test_origins.py::test_an_allowed_origin_opens_the_call_socket PASSED [ 34%]
+tests/integration/test_origins.py::test_an_allowed_origin_with_an_invalid_start_is_closed_1008 PASSED [ 36%]
+tests/integration/test_origins.py::test_an_allowed_origin_with_a_wrong_sample_rate_is_refused PASSED [ 39%]
+tests/integration/test_origins.py::test_a_foreign_origin_is_refused_the_handshake PASSED [ 41%]
+tests/integration/test_origins.py::test_a_missing_origin_opens_the_call_socket PASSED [ 43%]
+tests/integration/test_origins.py::test_the_openapi_document_is_still_only_health PASSED [ 45%]
+tests/integration/test_seams.py::test_health_works_and_leaks_no_configuration PASSED [ 47%]
+tests/integration/test_seams.py::test_health_is_the_only_documented_route PASSED [ 50%]
+tests/integration/test_seams.py::test_history_route_answers_unauthenticated PASSED [ 52%]
+tests/integration/test_seams.py::test_consent_route_answers_unauthenticated PASSED [ 54%]
+tests/integration/test_seams.py::test_recording_routes_answer_unauthenticated PASSED [ 56%]
+tests/integration/test_seams.py::test_a_guest_delete_recording_answers_unauthenticated PASSED [ 58%]
+tests/integration/test_seams.py::test_a_recording_route_never_returns_audio PASSED [ 60%]
+tests/integration/test_seams.py::test_call_socket_answers_status_connecting_first PASSED [ 63%]
+tests/integration/test_seams.py::test_identity_port_is_the_anonymous_guest PASSED [ 65%]
+tests/integration/test_seams.py::test_analysis_port_reports_the_three_frozen_rules PASSED [ 67%]
+tests/integration/test_seams.py::test_phase_02_adapters_satisfy_the_ports PASSED [ 69%]
+tests/integration/test_seams.py::test_the_provider_package_does_not_depend_on_the_ports PASSED [ 71%]
+tests/integration/test_seams.py::test_readiness_never_reports_live_from_presence PASSED [ 73%]
+tests/integration/test_seams.py::test_readiness_is_unconfigured_without_credentials PASSED [ 76%]
+tests/integration/test_seams.py::test_the_frozen_model_default_is_dated PASSED [ 78%]
+tests/integration/test_seams.py::test_the_filler_capability_is_unvalidated PASSED [ 80%]
+tests/integration/test_seams.py::test_the_catalog_keeps_every_capability_flag_false PASSED [ 82%]
+tests/integration/test_voice_url.py::test_the_voice_url_module_exists_and_is_frozen PASSED [ 84%]
+tests/integration/test_voice_url.py::test_the_development_default_is_the_local_voice_service PASSED [ 86%]
+tests/integration/test_voice_url.py::test_the_env_examples_document_the_voice_url[relative0] PASSED [ 89%]
+tests/integration/test_voice_url.py::test_the_env_examples_document_the_voice_url[relative1] PASSED [ 91%]
+tests/integration/test_voice_url.py::test_the_service_env_example_has_no_public_variable PASSED [ 93%]
+tests/integration/test_voice_url.py::test_the_voice_url_is_the_only_public_variable PASSED [ 95%]
+tests/integration/test_voice_url.py::test_no_secret_uses_the_public_prefix PASSED [ 97%]
+tests/integration/test_voice_url.py::test_the_web_app_reads_no_other_environment_variable PASSED [100%]
+
+======================== 45 passed, 1 skipped in 0.22s =========================
+
+> speaking-coach@0.1.0 test:integration:web
+> playwright test --config=playwright.integration.config.ts
+
+[WebServer] INFO:     Started server process [88068]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+Running 5 tests using 5 workers
+
+  ✓  1 [chromium] › tests/integration/call-experience.spec.ts:61:5 › the history seam answers a guest with unauthenticated (48ms)
+  ✓  2 [chromium] › tests/integration/call-experience.spec.ts:53:5 › the voice service answers /health (26ms)
+[WebServer] INFO:     127.0.0.1:58953 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+  ✓  5 [chromium] › tests/integration/call-experience.spec.ts:70:5 › the call socket's first message is status connecting (777ms)
+  ✓  4 [chromium] › tests/integration/call-experience.spec.ts:33:5 › the web page requests no microphone access (802ms)
+  ✓  3 [chromium] › tests/integration/call-experience.spec.ts:18:5 › the home page renders the real landing and Start leads to the scenario picker (886ms)
+
+  5 passed (3.6s)

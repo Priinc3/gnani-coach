@@ -1,0 +1,25 @@
+# Phase 03 FIX-1 — the files this fix touched, with their SHA-256 (2026-10-20).
+
+117021821a2e6eceb4cf1e9b01497462a5b136acd3871a57a7478c2b1a682bc0  services/voice/src/gnani_coach/settings.py
+7847578db0240332d57aa82327fe5b89e4fc27157c5a386a3f1f8b624db0f811  services/voice/src/gnani_coach/ports/origins.py
+67219f1790991533dfdc576f5a103e90b0f9d2fc45a7196e76cecce9b471456b  services/voice/src/gnani_coach/ports/__init__.py
+63d3d2975993f8fb13af12096728825df3dd42908ac31119ee5b72aefc406d5f  services/voice/src/gnani_coach/conversation/router.py
+d2bb074547a81d205ed8a0ed639f61f0919642aaae043b383fd32827d6b7e0dd  services/voice/src/gnani_coach/main.py
+9945798c48e2600d692faf4bd344d04a5b9f4ab4683606785b1c5d39eb5fd020  apps/web/src/lib/voice.ts
+25f65e03b57e0b990272138588ec6f1ec7da7650a0b80be3c723f4da6f448c64  apps/web/.env.example
+57fcd9152b72ee6ed694ab4b5452a7294399b8f0825435d87a61d5903e16958a  apps/web/package.json
+1539a4dd7fd9a8f81962ebb4c3a565ac2e4c5f69f6f8ce7e6fbe3bb8d3c12e9e  package-lock.json
+07017b551cb7495439031365dd0b3f45a98b0767b0e11328dc7068107ae007d9  .env.example
+514df0adc7c11b6e8a4d1596202100e01126dec1ff91bd2f1794b9e2d168d783  services/voice/.env.example
+19282c2aa3495a586b56aea1d97c03c6b8ee6d30fa1c175d4ad11f2085f548e9  playwright.integration.config.ts
+a065de12a42b54f60261cf44c021ff53206bab3e35712d286cf2f81dc8dda048  docs/contracts/seams.md
+3aab21a24663c4ff936e8464ac46eec30d473f2b1f3ca5630b35213585495014  docs/contracts/settings.md
+68821c81f8cf4e84d00759035f88ef47cf3d724f72855579cea911f04160d276  docs/contracts/call-transport.md
+317292298423b92cc1ccfc0063822fcfab46784938b4f1468ab1e1223da4b006  docs/contracts/README.md
+0673c9803d528f252a1e825cd58bf6f418b66c8d1bc35884a32495d99f49f3a0  tests/integration/test_origins.py
+ab9e2240aa8f6cae132d058082365d7fc83238e872f309bb108dc7fb1e8d8c60  tests/integration/test_voice_url.py
+a9e94e4c57df782a38c839c96fd05250619d98063877758c9bb2e35c0fc1348d  tests/integration/README.md
+992119cd42006d67418ad8e7addba5a61f0f37ec4590027f977f48b5f8e3790f  prompts/phase-03-contract-freeze/REPORT.md
+
+# Unchanged by this fix (the Phase 02 provider package and the probe tools):
+# see provider-package-manifest.sha256 in this folder — byte-identical to the Phase 03 manifest.

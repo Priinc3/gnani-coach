@@ -1,0 +1,22 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "speech.rate_wpm",
+  "source": "measured",
+  "method": "stt_words_over_learner_span",
+  "denominator": "learner_span_ms",
+  "recognitionStatus": "measured",
+  "audioSourceClassification": "learner-audio",
+  "status": "available",
+  "value": 112.4,
+  "unit": "words_per_minute",
+  "evidenceSpan": { "startMs": 1200, "endMs": 18200 },
+  "reliability": {
+    "level": "low",
+    "limitations": [
+      "words over the elapsed learner-audio span; end padding excluded, connection and session time excluded"
+    ]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-20T09:31:45Z"
+}

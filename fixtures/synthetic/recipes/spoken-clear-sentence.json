@@ -1,0 +1,18 @@
+{
+  "fixtureId": "spoken-clear-sentence",
+  "kind": "spoken",
+  "description": "One clear sentence, no internal pause, to establish a recognition baseline.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [],
+  "labels": [],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-spoken-pending",
+    "generator": null,
+    "verified_by": null,
+    "review_state": "MISSING-REQUIRED-SPEECH-SOURCE",
+    "smallest_user_action": "A short, consent-free sentence recorded by the user or rendered by a locally installed TTS engine, at 16 kHz mono.",
+    "note": "Real spoken fixtures are required before any filler or boundary claim can be made. Synthetic analytic fixtures cannot substitute for them."
+  }
+}

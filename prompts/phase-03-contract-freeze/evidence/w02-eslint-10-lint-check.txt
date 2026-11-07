@@ -1,0 +1,15 @@
+# W02 removal experiment (2026-10-20)
+# eslint 10.13.0 installed with --no-save (package.json and package-lock.json unchanged: md5 c910dce3517b1c10f9c14543dc78678c / ce774c915313594f3f25249d26b86de0)
+# eslint-config-next@16.4.2 peerDependencies: { eslint: '>=9.0.0', typescript: '>=3.3.1' }
+# apps/web/node_modules/eslint version:
+  "version": "10.13.0",
+
+
+> speaking-coach@0.1.0 lint
+> npm run lint --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 lint
+> eslint .
+
+EXIT=0

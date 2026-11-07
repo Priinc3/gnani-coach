@@ -1,0 +1,30 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_a1b2c3d4",
+  "recordedAt": "2026-10-16T09:40:00Z",
+  "practiceLanguageId": "hindi",
+  "scenarioId": "everyday",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_a3b4c5d6",
+      "roundId": "rnd_c9d0e1f2",
+      "durationMs": 42000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "pause.count",
+          "method": "vad_speech_regions",
+          "status": "available",
+          "value": -1,
+          "unit": "count"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "turnCount": 1,
+    "speakingTimeMs": 42000
+  }
+}

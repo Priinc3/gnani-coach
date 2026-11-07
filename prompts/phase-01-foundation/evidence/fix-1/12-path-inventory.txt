@@ -1,0 +1,60 @@
+# F01 path inventory — 2026-10-16T18:56:39Z
+
+## root anchor
+pwd: /Users/princegondaliya/Learning/Projects/temp/gnani
+git toplevel: /Users/princegondaliya/Learning/Projects/temp/gnani
+
+## symlinks inside repo (must be 0)
+symlink count: 0
+
+## git status --porcelain at end of FIX-1
+ M .node-version
+ M README.md
+ M apps/web/package.json
+ M docs/architecture.md
+ M docs/design-direction.md
+ M docs/toolchain.md
+ M package-lock.json
+ M package.json
+ M packages/contracts/README.md
+ M packages/contracts/examples/durable-metrics/invalid/with-audio-url-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-embedding-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-model-text-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-quoted-mistakes-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-transcript-field.json
+ M packages/contracts/examples/durable-metrics/valid/numeric-only.json
+ M packages/contracts/schemas/analysis-observation.schema.json
+ M packages/contracts/schemas/durable-metrics.schema.json
+ M packages/contracts/scripts/test-examples.mjs
+ M prompts/00-plan.md
+ M prompts/_tracker.md
+ M prompts/phase-01-foundation/REPORT.md
+ M prompts/stack-decisions.md
+ M services/voice/tests/foundation/test_contract_parity.py
+ M services/voice/tests/foundation/test_privacy_shapes.py
+?? .nvmrc
+?? UI.png
+?? packages/contracts/examples/analysis-observation/invalid/fractional-count.json
+?? packages/contracts/examples/analysis-observation/invalid/mismatched-unit.json
+?? packages/contracts/examples/analysis-observation/invalid/negative-value.json
+?? packages/contracts/examples/analysis-observation/valid/measured-fractional-rate.json
+?? packages/contracts/examples/durable-metrics/invalid/fractional-count.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-model-feedback.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-transcript.json
+?? packages/contracts/examples/durable-metrics/invalid/mismatched-unit.json
+?? packages/contracts/examples/durable-metrics/invalid/negative-count.json
+?? packages/contracts/examples/durable-metrics/valid/controlled-provenance.json
+?? prompts/phase-01-foundation/FIX-1.md
+?? prompts/phase-01-foundation/VERIFY.md
+?? prompts/phase-01-foundation/evidence/fix-1/
+?? prompts/phase-04-call-ui/
+
+## tracked files never touched by FIX-1 (sanity): CEO/untracked files list
+modified CEO files: prompts/00-plan.md, prompts/_tracker.md, prompts/stack-decisions.md (pre-existing)
+untracked: UI.png, FIX-1.md, VERIFY.md, prompts/phase-04-call-ui/ (pre-existing or CEO-authored)
+
+## apps/web/src files modified by FIX-1 (must be none):
+exit: 0 (empty output = none)
+
+## running processes on dev ports (must be none)
+lsof exit: 1 (1 = free)

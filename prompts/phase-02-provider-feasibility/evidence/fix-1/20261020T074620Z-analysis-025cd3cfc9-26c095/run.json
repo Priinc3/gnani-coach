@@ -1,0 +1,23 @@
+{
+  "runId": "20261020T074620Z-analysis-025cd3cfc9-26c095",
+  "command": "analysis",
+  "argv": [
+    "analysis",
+    "--offline"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T07:46:20Z",
+  "finishedUtc": "2026-10-20T07:46:21Z",
+  "runtimeSeconds": 0.435,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 0,
+  "overall": "INCONCLUSIVE",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: analysis"
+  ]
+}

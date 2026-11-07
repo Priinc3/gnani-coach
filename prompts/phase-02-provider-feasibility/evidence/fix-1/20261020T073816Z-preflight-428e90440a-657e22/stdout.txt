@@ -1,0 +1,34 @@
+
+== probe run ==
+  run_id       : [REDACTED]
+  started_utc  : 2026-10-20T07:38:16Z
+  python       : 3.12.12
+  cwd          : /Users/princegondaliya/Learning/Projects/temp/gnani
+  command      : run.py preflight
+  exact argv   : ['preflight']
+  inference calls are made only by an explicit --allow-live command
+
+== configuration (names only, no values) ==
+[missing     ] GNANI_API_KEY — value never printed
+[missing     ] GEMINI_API_KEY — value never printed
+[missing     ] GEMINI_MODEL — no model id is defaulted by design
+[PASSED      ] SUPABASE_* — not required for any speech or reasoning probe
+[NOT RUN     ] provider_readiness() — deliberately unavailable; unused by probes
+[NOT RUN     ] env file — process environment only
+
+== intended endpoints and model selection ==
+  STT websocket : wss://api.vachana.ai/stt/v3/stream
+  TTS websocket : wss://api.vachana.ai/api/v1/tts
+  Gemini model  : (unset)
+  documented Gemini candidates: gemini-3.8-flash, gemini-3.5-flash-lite, gemini-3.6-flash
+  inference calls made by preflight: 0
+  missing names : GNANI_API_KEY, GEMINI_API_KEY, GEMINI_MODEL
+
+== summary ==
+  overall     : INCONCLUSIVE
+  exit_code   : 0
+  elapsed_s   : 0.065
+  run id      : [REDACTED]
+  evidence    : prompts/phase-02-provider-feasibility/evidence/fix-1/[REDACTED]
+  run index   : 20 invocations recorded
+  index file  : tools/probes/.cache/runs.jsonl

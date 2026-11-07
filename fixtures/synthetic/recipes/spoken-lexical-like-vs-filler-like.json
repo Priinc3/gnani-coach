@@ -1,0 +1,18 @@
+{
+  "fixtureId": "spoken-lexical-like-vs-filler-like",
+  "kind": "spoken",
+  "description": "One sentence with a lexical 'like' and one with a filler 'like'.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [],
+  "labels": [],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-spoken-pending",
+    "generator": null,
+    "verified_by": null,
+    "review_state": "MISSING-REQUIRED-SPEECH-SOURCE",
+    "smallest_user_action": "The user reads two sentences and marks which 'like' was filler usage.",
+    "note": "Real spoken fixtures are required before any filler or boundary claim can be made. Synthetic analytic fixtures cannot substitute for them."
+  }
+}

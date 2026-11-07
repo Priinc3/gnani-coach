@@ -1,0 +1,17 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "speech.active_rate_wpm",
+  "source": "measured",
+  "method": "stt_words_over_speech_regions",
+  "status": "available",
+  "value": 141.5,
+  "unit": "words_per_minute",
+  "evidenceSpan": { "startMs": 1200, "endMs": 18200 },
+  "reliability": {
+    "level": "low",
+    "limitations": ["the overall-rate method may not be used for the speech-active rate"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-20T09:32:10Z"
+}

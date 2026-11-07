@@ -1,0 +1,13 @@
+$ npm run typecheck
+# repo root, 2026-10-22T08:45:27Z
+
+
+> speaking-coach@0.1.0 typecheck
+> npm run typecheck --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+exit code: 0

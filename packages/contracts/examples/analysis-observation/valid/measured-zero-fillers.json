@@ -8,7 +8,9 @@
   "evidenceSpan": null,
   "reliability": {
     "level": "low",
-    "limitations": ["filler detection not validated in Phase 01"]
+    "limitations": [
+      "Shape example only: the filler capability state is unvalidated, so this observation is not produced today. A missing or unvalidated filler is insufficient_evidence, never 0."
+    ]
   },
   "roundId": "rnd_c9d0e1f2",
   "turnId": "trn_a3b4c5d6",

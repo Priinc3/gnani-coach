@@ -1,0 +1,15 @@
+
+> speaking-coach@0.1.0 test:contracts
+> npm run test --workspace @gnani/contracts
+
+
+> @gnani/contracts@0.1.0 test
+> node scripts/test-examples.mjs
+
+Contract draft example runner (draft v0.1, JSON Schema 2020-12, Ajv strict + ajv-formats)
+schemas compiled: 7 (analysis-observation, catalog, durable-metrics, error-shape, event-envelope, recording-metadata, session-settings)
+examples checked: 46 (15 valid, 31 invalid)
+catalog: 10 languages, 1 code-mixed mode(s), 4 scenarios, 3 levels
+note: shape-only fixture: session-settings/valid/shape-only-french-id-passes.json documents that a structurally well-formed id is not catalog membership; membership and staleness are runtime checks.
+note: format fixtures: invalid/space-separated-emitted-at.json proves date-time format checking is active in Ajv.
+PASS — all contract examples and catalog invariants hold

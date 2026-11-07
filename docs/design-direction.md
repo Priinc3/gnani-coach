@@ -1,7 +1,17 @@
-# Design direction — the "conversation studio" (Phase 01)
+# Design direction — Phase 01 starter, superseded as the visual target
 
-The starter screen establishes the visual and interaction language every later
-phase should extend, not replace.
+**Update (FIX-1, 2026-10-16):** the user selected **`UI.png`** (a "Speakify"
+design board) as the authoritative visual reference for the product. It is
+specified in [`prompts/phase-04-call-ui/UI-REFERENCE.md`](../prompts/phase-04-call-ui/UI-REFERENCE.md).
+That reference **replaces** this phase's serif "conversation studio" look as
+the visual target: **Phase 03** must account for it before freezing shared UI
+seams, and **Phase 04** implements the new look later. The current starter
+page is intentionally left as-is during this fix — no redesign happens here.
+
+What follows describes the Phase 01 starter as it exists today. Its
+**truthful-state rules, accessibility decisions and consent language**
+remain binding for every later phase and are not changed by the new visual
+reference; only the visual style described below is superseded.
 
 ## Core idea
 
@@ -59,11 +69,17 @@ Truthfulness is part of the look, not a footnote:
 
 ## Rules for later phases
 
-1. Keep the warm ivory/ink/green system; do not introduce neon, glassmorphism
-   or dark-first styling without revisiting this document.
-2. Never show a waveform, score, transcript or connection state that isn't
-   real. New honest states should follow the badge/disabled-with-reason
-   pattern already on the page.
+1. **Visual target:** the Speakify `UI.png` reference (see
+   `prompts/phase-04-call-ui/UI-REFERENCE.md`) governs palette, typography,
+   illustration and layout from Phase 03/04 onward. The ivory/ink/green
+   system above describes the current starter only and is not a constraint
+   on the new look; the reference brief's own rules (licensing and
+   Indic-script checks before fonts, no device-frame screenshots, derived
+   palette verified for legibility) apply.
+2. **These survive the visual change unchanged:** never show a waveform,
+   score, transcript or connection state that isn't real; new honest states
+   follow the badge/disabled-with-reason pattern; recording retention stays
+   off by default and consent language stays audio-only.
 3. Any self-hosted font must pass license and script-coverage review
    (including all nine Indic scripts) before it replaces the system stack.
 4. New controls must remain native-first with associated labels and visible

@@ -1,0 +1,19 @@
+=== npm-lint ===
+
+> speaking-coach@0.1.0 lint
+> npm run lint --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 lint
+> eslint .
+
+
+/Users/princegondaliya/Learning/Projects/temp/gnani/apps/web/src/features/call/views/FeaturesView.tsx
+  29:41  warning  'onBack' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/princegondaliya/Learning/Projects/temp/gnani/apps/web/tests/unit/client.spec.ts
+  98:7  warning  'OLDER_TURN_ID' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (0 errors, 2 warnings)
+
+--- exit code: 0 ---

@@ -13,8 +13,9 @@ recording, and nothing is stored. The starter screen says so on purpose.
 
 ## Quick start
 
-Prerequisites: Node ≥ 22 and npm ≥ 10 (tested: Node 26.7.0 / npm 11.19.0),
-[uv](https://docs.astral.sh/uv/) ≥ 0.10.9. No API keys required.
+Prerequisites: Node 24 LTS (tested: **24.22.0** / npm 11.19.1; `nvm use`
+reads the committed `.nvmrc`) and [uv](https://docs.astral.sh/uv/) ≥ 0.10.9.
+No API keys required.
 
 ```sh
 # Web + contracts (npm workspaces)
@@ -31,7 +32,7 @@ uv run --project services/voice uvicorn gnani_coach.main:app --host 127.0.0.1 --
 npm run lint            # ESLint (apps/web)
 npm run typecheck       # tsc --noEmit (apps/web)
 npm run build           # next build
-npm run test:contracts  # Ajv over 7 schemas + 36 fixtures + catalog invariants
+npm run test:contracts  # Ajv over 7 schemas + 46 fixtures + catalog invariants
 uv run --project services/voice python -m pytest services/voice/tests
 npm run test:e2e        # Playwright (starts its own dev server; install once: npx playwright install chromium)
 npm run check:health    # asserts the exact /health contract of a running service

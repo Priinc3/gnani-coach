@@ -1,0 +1,28 @@
+== offline dry run of E1 and E2 (fakes only; no provider is contacted) ==
+
+-- E1: one unbiasved variant --
+  status         : PASSED
+  observed text  : 'so um i think the timeline is uh probably next month'   (canned by the fake transport)
+  um / uh        : True / True
+  wire attempts  : 2
+  frames sent    : 140
+  headers        : {"x-api-key-id": "<dropped>", "lang_code": "en-IN", "x-sample-rate": "16000", "x-format": "verbatim", "x-vad-threshold": "0.7", "x-min-silence-ms": "500", "x-min-speech-ms": "100", "x-min-segment-ms": "120"}
+
+-- E1: one boosted variant --
+  status         : PASSED
+  boost headers  : {"x-api-key-id": "<dropped>", "lang_code": "en-IN", "x-sample-rate": "16000", "x-format": "verbatim", "x-vad-threshold": "0.7", "x-min-silence-ms": "300", "x-min-speech-ms": "100", "x-min-segment-ms": "120", "x-bias-list": "[\"um\", \"uh\"]", "x-bias-score": "1.0"}
+  control frame  : ['{"type": "update_settings", "bias": {"list": ["um", "uh"], "score": 1.0}}']
+  boost echo     : boost echo: {"serverConfigKeys": ["chunk_size", "sample_rate"], "biasWordCount": null, "biasScore": null, "format": null, "note": "the boost is only confirmed if the server echoes it back; an absent echo is reported as absent, never as 'boosting had no effect'"}
+
+-- E2: the audio review --
+  audio-review-filled-hesitation: status=PASSED um=True uh=True
+    positions: [{"word": "um", "startSeconds": 0, "endSeconds": 1, "resolution": "MM:SS (one-second resolution)"}, {"word": "uh", "startSeconds": 2, "endSeconds": 3, "resolution": "MM:SS (one-second resolution)"}]
+  audio-review-clear-sentence: status=FAILED um=True uh=True
+    positions: [{"word": "um", "startSeconds": 0, "endSeconds": 1, "resolution": "MM:SS (one-second resolution)"}, {"word": "uh", "startSeconds": 2, "endSeconds": 3, "resolution": "MM:SS (one-second resolution)"}]
+  fake client calls: [{"model": "gemini-3.8-flash", "inputItems": 1, "store": false}, {"model": "gemini-3.8-flash", "inputItems": 1, "store": false}]
+
+  budget: {"wire_attempts_used": 6, "wire_attempts_limit": 16, "wire_attempts_source": "measured", "logical_calls_used": 6, "connections_used": 2, "connections_limit": 40, "retries": 0, "max_retries_per_operation": 2, "stt_audio_seconds": 8.96, "stt_audio_seconds_limit": 300.0, "reserved_operations": 0, "reserved_audio_seconds": 0.0, "overruns": [], "per_kind": {"gemini:audio-review": 2, "gnani-stt:connect": 2, "gnani-stt:session": 2}, "attempts_per_kind": {"gemini:audio-review": 2, "gnani-stt:connect": 2, "gnani-stt:session": 2}, "retries_per_kind": {}, "retry_authority": "adapter boundary; the SDK is configured with no internal retry"}
+
+  NOTE: the fake transport returns a canned transcript and the fake
+  client a canned review. This proves the routes' code runs end to end;
+  it proves nothing about any provider, and no request was sent.

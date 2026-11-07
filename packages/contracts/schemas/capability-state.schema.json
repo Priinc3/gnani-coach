@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.speaking-coach.example/capability-state/0.1.0",
+  "title": "Capability state register (frozen v0.1)",
+  "description": "Authoritative shape of packages/contracts/data/capabilities.json. Status: FROZEN v0.1 (Phase 03, 2026-10-20). The SHAPE is frozen; the DATA may change later (Phase 08), and only by flipping a state and recording the evidence that justified it. Every capability carries an explicit state, and a capability that is not validated must say how it is rendered instead — `insufficient_evidence` is the honest rendering for a missing or unvalidated measurement, never a zero and never a fabricated number. `goalPreserved` records that a capability's product goal is still in scope even while it is unvalidated: narrowing a goal is a scope change that needs the owner's explicit approval, not a data edit. `acceptance` records the thresholds a later validation must meet, so a state flip is checkable rather than asserted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["capabilityVersion", "checkedOn", "sources", "capabilities"],
+  "properties": {
+    "capabilityVersion": {
+      "const": "0.1",
+      "description": "Contract version of this register's shape. Bumped only through a Phase 03-style contract review."
+    },
+    "checkedOn": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the states below were last checked against the evidence they cite."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "capabilities": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "The closed set of product capabilities and their states.",
+      "additionalProperties": false,
+      "properties": {
+        "filler-localization": { "$ref": "#/$defs/capability" },
+        "pause-detection": { "$ref": "#/$defs/capability" },
+        "speech-rate": { "$ref": "#/$defs/capability" },
+        "speech-active-rate": { "$ref": "#/$defs/capability" },
+        "turn-duration": { "$ref": "#/$defs/capability" },
+        "conversation-coach": { "$ref": "#/$defs/capability" }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "description": "Stable lowercase identifier (ASCII)."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "checkedOn"],
+      "description": "Where the state was decided: either a public URL or a repository path to the evidence document.",
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "url": { "type": "string", "format": "uri" },
+        "path": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "checkedOn": { "type": "string", "format": "date" }
+      },
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": { "url": { "type": "string", "format": "uri" } },
+          "required": ["url"]
+        },
+        {
+          "type": "object",
+          "properties": { "path": { "type": "string", "minLength": 1, "maxLength": 300 } },
+          "required": ["path"]
+        }
+      ]
+    },
+    "capabilityState": {
+      "type": "string",
+      "enum": ["unvalidated", "validated_synthetic_only", "validated"],
+      "description": "unvalidated = no passing check exists; validated_synthetic_only = the check passed only on generated signals, which proves the mechanism and not natural-learner behaviour; validated = a genuine check against real audio with held-out labels met the recorded acceptance thresholds."
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "renderedState",
+        "metrics",
+        "goal",
+        "goalPreserved",
+        "scopeChangeApproved",
+        "validatedAt",
+        "notes"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "state": { "$ref": "#/$defs/capabilityState" },
+        "renderedState": {
+          "type": "string",
+          "enum": ["insufficient_evidence", "available"],
+          "description": "How the UI and the coach must render this capability right now. An unvalidated capability is rendered as insufficient_evidence, never as a zero, a score or a fabricated number."
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "pause.longest_ms",
+              "pause.count",
+              "filler.count",
+              "speech.rate_wpm",
+              "speech.active_rate_wpm",
+              "turn.duration_ms"
+            ]
+          },
+          "description": "The metric keys this capability produces. Empty means the capability produces no metric at all."
+        },
+        "unavailabilityReason": {
+          "type": "string",
+          "enum": [
+            "stt_unavailable",
+            "speech_analysis_unavailable",
+            "too_little_speech",
+            "filler_detection_unvalidated"
+          ],
+          "description": "The reason code written with the metric when the capability cannot produce a value."
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "The product goal this capability serves, stated so that a data change cannot quietly narrow it."
+        },
+        "goalPreserved": {
+          "type": "boolean",
+          "description": "True while the goal is still in scope even though the capability is unvalidated. Narrowing a goal is a scope change that needs the owner's explicit approval."
+        },
+        "scopeChangeApproved": {
+          "type": "boolean",
+          "description": "True only when the owner has explicitly approved narrowing or dropping this capability. False means the goal still stands and the honest rendering is insufficient_evidence."
+        },
+        "validatedAt": {
+          "anyOf": [{ "type": "string", "format": "date" }, { "type": "null" }],
+          "description": "The date the capability was validated; null while it is not. A later validated state fills this field — the data field reserved for that flip."
+        },
+        "validatedBy": {
+          "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 200 }, { "type": "null" }],
+          "description": "Who or what validated it, in plain words. Null while it is not validated."
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 300 },
+          "description": "Paths or URLs of the evidence behind the state."
+        },
+        "acceptance": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The thresholds a later validation must meet, so that flipping the state is checkable rather than asserted.",
+          "properties": {
+            "precisionMin": { "type": "number", "minimum": 0, "maximum": 1 },
+            "recallMin": { "type": "number", "minimum": 0, "maximum": 1 },
+            "boundaryP95ErrorMsMax": { "type": "integer", "minimum": 0 },
+            "minPositiveExamples": { "type": "integer", "minimum": 0 },
+            "minNegativeExamples": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 400 },
+          "description": "Plain-word limitations, written by the project, never copied from learner or model text."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": { "state": { "const": "unvalidated" } },
+            "required": ["state"]
+          },
+          "then": {
+            "type": "object",
+            "properties": { "renderedState": { "const": "insufficient_evidence" } }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "state": { "enum": ["validated_synthetic_only", "validated"] }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "validatedAt": { "type": "string", "format": "date" },
+              "validatedBy": { "type": "string", "minLength": 1, "maxLength": 200 }
+            },
+            "required": ["validatedAt", "validatedBy"]
+          }
+        }
+      ]
+    }
+  }
+}

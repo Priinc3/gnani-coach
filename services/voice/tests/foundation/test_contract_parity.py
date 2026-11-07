@@ -50,22 +50,30 @@ REQUIRED_FIXTURES: dict[str, dict[str, list[str]]] = {
         ],
     },
     "analysis-observation": {
-        "valid": ["measured-zero-fillers.json", "unavailable-pause.json"],
+        "valid": ["measured-zero-fillers.json", "unavailable-pause.json", "measured-fractional-rate.json"],
         "invalid": [
             "unavailable-with-zero-value.json",
             "available-with-null-value.json",
             "missing-unit-when-available.json",
             "confidence-as-metric.json",
+            "negative-value.json",
+            "fractional-count.json",
+            "mismatched-unit.json",
         ],
     },
     "durable-metrics": {
-        "valid": ["numeric-only.json"],
+        "valid": ["numeric-only.json", "controlled-provenance.json"],
         "invalid": [
             "with-transcript-field.json",
             "with-audio-url-field.json",
             "with-quoted-mistakes-field.json",
             "with-model-text-field.json",
             "with-embedding-field.json",
+            "method-prose-transcript.json",
+            "method-prose-model-feedback.json",
+            "negative-count.json",
+            "fractional-count.json",
+            "mismatched-unit.json",
         ],
     },
     "recording-metadata": {

@@ -1,0 +1,21 @@
+{
+  "envelopeVersion": "0.1",
+  "direction": "server_to_client",
+  "type": "error",
+  "sessionId": "ses_a1b2c3d4",
+  "connectionId": "con_e5f6a7b8",
+  "roundId": null,
+  "turnId": null,
+  "sequence": 2,
+  "sampleTimeMs": null,
+  "emittedAt": "2026-10-20T09:00:02Z",
+  "payload": {
+    "errorVersion": "0.1",
+    "code": "not_available",
+    "category": "not_available",
+    "message": "This part of the service is not available yet.",
+    "retryable": false,
+    "correlationId": "cor_1a2b3c4d",
+    "occurredAt": "2026-10-20T09:00:02Z"
+  }
+}

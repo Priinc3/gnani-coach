@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "speech.rate_wpm",
+  "source": "measured",
+  "status": "available",
+  "value": 112.4,
+  "unit": "words_per_minute",
+  "evidenceSpan": { "startMs": 1200, "endMs": 18200 },
+  "reliability": {
+    "level": "low",
+    "limitations": ["word count from unvalidated speech-to-text; rate is uncalibrated and not a quality score"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:45Z"
+}

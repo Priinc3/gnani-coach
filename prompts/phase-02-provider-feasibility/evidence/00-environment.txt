@@ -1,0 +1,77 @@
+# Phase 02 environment capture
+utc        : 2026-10-18T16:46:29Z
+cwd        : /Users/princegondaliya/Learning/Projects/temp/gnani
+toplevel   : /Users/princegondaliya/Learning/Projects/temp/gnani
+uname      : Darwin 27.0.0 arm64
+uv         : uv 0.10.9 (f675560f3 2026-03-06)
+node       : v26.7.0
+npm        : 11.19.0
+
+--- python packages in services/voice ---
+fastapi==0.143.3
+gnani-coach==0.1.0
+google-genai==2.31.0
+httpx2==2.13.1
+jsonschema==4.26.0
+numpy==2.5.4
+onnxruntime==1.31.0
+pydantic-settings==2.16.0
+pydantic==2.14.1
+pytest==9.1.1
+uvicorn==0.54.0
+websockets==16.1.1
+
+--- symlinks under version control scope ---
+(none listed above means no symlinks found)
+
+--- git status (nothing staged) ---
+ M .node-version
+ M README.md
+ M apps/web/package.json
+ M docs/architecture.md
+ M docs/design-direction.md
+ M docs/toolchain.md
+ M package-lock.json
+ M package.json
+ M packages/contracts/README.md
+ M packages/contracts/examples/durable-metrics/invalid/with-audio-url-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-embedding-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-model-text-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-quoted-mistakes-field.json
+ M packages/contracts/examples/durable-metrics/invalid/with-transcript-field.json
+ M packages/contracts/examples/durable-metrics/valid/numeric-only.json
+ M packages/contracts/schemas/analysis-observation.schema.json
+ M packages/contracts/schemas/durable-metrics.schema.json
+ M packages/contracts/scripts/test-examples.mjs
+ M prompts/00-plan.md
+ M prompts/_tracker.md
+ M prompts/phase-01-foundation/REPORT.md
+ M prompts/research.md
+ M prompts/stack-decisions.md
+ M services/voice/pyproject.toml
+ M services/voice/tests/foundation/test_contract_parity.py
+ M services/voice/tests/foundation/test_privacy_shapes.py
+ M services/voice/uv.lock
+?? .nvmrc
+?? UI.png
+?? docs/feasibility/
+?? fixtures/
+?? packages/contracts/examples/analysis-observation/invalid/fractional-count.json
+?? packages/contracts/examples/analysis-observation/invalid/mismatched-unit.json
+?? packages/contracts/examples/analysis-observation/invalid/negative-value.json
+?? packages/contracts/examples/analysis-observation/valid/measured-fractional-rate.json
+?? packages/contracts/examples/durable-metrics/invalid/fractional-count.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-model-feedback.json
+?? packages/contracts/examples/durable-metrics/invalid/method-prose-transcript.json
+?? packages/contracts/examples/durable-metrics/invalid/mismatched-unit.json
+?? packages/contracts/examples/durable-metrics/invalid/negative-count.json
+?? packages/contracts/examples/durable-metrics/valid/controlled-provenance.json
+?? prompts/phase-01-foundation/FIX-1.md
+?? prompts/phase-01-foundation/VERIFY.md
+?? prompts/phase-01-foundation/evidence/fix-1/
+?? prompts/phase-02-provider-feasibility/
+?? prompts/phase-04-call-ui/
+?? prompts/waivers.md
+?? services/voice/src/gnani_coach/providers/
+?? services/voice/tests/providers/
+?? tools/

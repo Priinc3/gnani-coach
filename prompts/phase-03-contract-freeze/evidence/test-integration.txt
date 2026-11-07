@@ -1,0 +1,55 @@
+$ npm run test:integration
+
+> speaking-coach@0.1.0 test:integration
+> npm run test:integration:service && npm run test:integration:web
+
+
+> speaking-coach@0.1.0 test:integration:service
+> uv run --project services/voice python -m pytest tests/integration -v
+
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0 -- /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani
+plugins: anyio-4.15.1
+collecting ... collected 16 items
+
+tests/integration/test_seams.py::test_health_works_and_leaks_no_configuration PASSED [  6%]
+tests/integration/test_seams.py::test_health_is_the_only_documented_route PASSED [ 12%]
+tests/integration/test_seams.py::test_history_route_answers_not_available PASSED [ 18%]
+tests/integration/test_seams.py::test_consent_route_answers_not_available PASSED [ 25%]
+tests/integration/test_seams.py::test_recording_routes_answer_not_available PASSED [ 31%]
+tests/integration/test_seams.py::test_a_recording_route_never_returns_audio PASSED [ 37%]
+tests/integration/test_seams.py::test_call_socket_closes_with_the_frozen_error PASSED [ 43%]
+tests/integration/test_seams.py::test_identity_port_is_the_anonymous_guest PASSED [ 50%]
+tests/integration/test_seams.py::test_analysis_port_reports_insufficient_evidence PASSED [ 56%]
+tests/integration/test_seams.py::test_phase_02_adapters_satisfy_the_ports PASSED [ 62%]
+tests/integration/test_seams.py::test_the_provider_package_does_not_depend_on_the_ports PASSED [ 68%]
+tests/integration/test_seams.py::test_readiness_never_reports_live_from_presence PASSED [ 75%]
+tests/integration/test_seams.py::test_readiness_is_unconfigured_without_credentials PASSED [ 81%]
+tests/integration/test_seams.py::test_the_frozen_model_default_is_dated PASSED [ 87%]
+tests/integration/test_seams.py::test_the_filler_capability_is_unvalidated PASSED [ 93%]
+tests/integration/test_seams.py::test_the_catalog_keeps_every_capability_flag_false PASSED [100%]
+
+============================== 16 passed in 0.02s ==============================
+
+> speaking-coach@0.1.0 test:integration:web
+> playwright test --config=playwright.integration.config.ts
+
+[WebServer] INFO:     Started server process [37914]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+Running 5 tests using 5 workers
+
+  ✓  1 [chromium] › tests/integration/call-experience.spec.ts:51:5 › the voice service answers /health (26ms)
+  ✓  4 [chromium] › tests/integration/call-experience.spec.ts:59:5 › the history seam answers not_available (17ms)
+[WebServer] INFO:     127.0.0.1:56118 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+  ✓  5 [chromium] › tests/integration/call-experience.spec.ts:68:5 › the call socket sends the frozen error envelope and closes (906ms)
+  ✓  2 [chromium] › tests/integration/call-experience.spec.ts:31:5 › the web page requests no microphone access (922ms)
+  ✓  3 [chromium] › tests/integration/call-experience.spec.ts:17:5 › the home page renders the CallExperience mount point (949ms)
+
+  5 passed (8.1s)
+EXIT=0

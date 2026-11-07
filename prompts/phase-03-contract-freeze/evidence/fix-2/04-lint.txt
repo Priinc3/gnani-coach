@@ -1,0 +1,8 @@
+
+> speaking-coach@0.1.0 lint
+> npm run lint --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 lint
+> eslint .
+

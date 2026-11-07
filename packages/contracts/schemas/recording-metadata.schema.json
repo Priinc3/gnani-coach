@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.speaking-coach.example/recording-metadata/0.1.0",
-  "title": "Recording metadata boundary (draft v0.1)",
-  "description": "Boundary for metadata about an opted-in saved recording. Status: DRAFT v0.1 — not frozen; no storage implementation exists in Phase 01. The recording itself is private: this shape rejects `publicUrl`, `signedUrl`, `url` and `objectKey`, because any URL kept in a stored record becomes a shareable capability. Deletion keeps the record with a `deletedAt` timestamp instead of erasing the fact that audio once existed and was deleted.",
+  "title": "Recording metadata boundary (frozen v0.1)",
+  "description": "Boundary for metadata about an opted-in saved recording. Status: FROZEN v0.1 (Phase 03, 2026-10-20) — the shape is fixed; no storage implementation exists yet. The recording itself is private: this shape rejects `publicUrl`, `signedUrl`, `url` and `objectKey`, because any URL kept in a stored record becomes a shareable capability. Deletion keeps the record with a `deletedAt` timestamp instead of erasing the fact that audio once existed and was deleted.",
   "type": "object",
   "additionalProperties": false,
   "required": [

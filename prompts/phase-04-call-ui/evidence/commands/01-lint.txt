@@ -1,0 +1,13 @@
+$ npm run lint
+# repo root, 2026-10-22T08:45:25Z
+
+
+> speaking-coach@0.1.0 lint
+> npm run lint --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 lint
+> eslint .
+
+
+exit code: 0

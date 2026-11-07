@@ -1,10 +1,11 @@
 {
   "envelopeVersion": "0.1",
+  "direction": "server_to_client",
   "type": "audio.frame.descriptor",
   "sessionId": "ses_a1b2c3d4",
   "connectionId": "con_e5f6a7b8",
-  "roundId": null,
-  "turnId": null,
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
   "sequence": 3,
   "sampleTimeMs": 0,
   "emittedAt": "2026-10-16T09:30:00Z",

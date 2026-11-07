@@ -10,23 +10,29 @@
       "turnId": "trn_a3b4c5d6",
       "roundId": "rnd_c9d0e1f2",
       "durationMs": 42000,
+      "recognitionStatus": "measured",
+      "audioSourceClassification": "learner-audio",
       "observations": [
         {
           "metricKey": "pause.count",
-          "method": "energy-based speech regions, uncalibrated",
+          "method": "vad_speech_regions",
           "status": "available",
           "value": 3,
-          "unit": "count"
+          "unit": "count",
+          "audioSourceClassification": "learner-audio"
         },
         {
           "metricKey": "speech.rate_wpm",
-          "method": "active-speech duration and word count, uncalibrated",
-          "status": "unavailable",
-          "value": null,
-          "unit": null
+          "method": "stt_words_over_learner_span",
+          "denominator": "learner_span_ms",
+          "recognitionStatus": "measured",
+          "status": "available",
+          "value": 96.5,
+          "unit": "words_per_minute",
+          "audioSourceClassification": "learner-audio"
         }
       ]
     }
   ],
-  "totals": { "turnCount": 1, "speakingTimeMs": 42000 }
+  "totals": { "turnCount": 1, "speakingTimeMs": 30000 }
 }

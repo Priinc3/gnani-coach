@@ -1,0 +1,35 @@
+## pytest foundation — F02/F03 checks
+$ uv run --project services/voice python -m pytest services/voice/tests/foundation -v
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0 -- /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 23 items
+
+services/voice/tests/foundation/test_contract_parity.py::test_schema_inventory_is_draft_2020_12_with_local_refs_only PASSED [  4%]
+services/voice/tests/foundation/test_contract_parity.py::test_examples_match_folder_expectation PASSED [  8%]
+services/voice/tests/foundation/test_contract_parity.py::test_required_fixtures_exist PASSED [ 13%]
+services/voice/tests/foundation/test_contract_parity.py::test_formats_are_actually_checked PASSED [ 17%]
+services/voice/tests/foundation/test_contract_parity.py::test_catalog_matches_draft_invariants PASSED [ 21%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_durable_metrics_reject_every_content_bearing_field PASSED [ 26%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_durable_method_rejects_prose_and_accepts_controlled_identifiers PASSED [ 30%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_metric_domains_and_units_are_enforced PASSED [ 34%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_transient_observation_keeps_unavailable_distinct_from_zero PASSED [ 39%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_event_envelope_rejects_base64_audio PASSED [ 43%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_recording_metadata_is_a_private_reference_only PASSED [ 47%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_session_settings_consent_boundary PASSED [ 52%]
+services/voice/tests/foundation/test_privacy_shapes.py::test_error_shape_rejects_private_failure_details PASSED [ 56%]
+services/voice/tests/foundation/test_service_health.py::test_app_starts_without_provider_credentials PASSED [ 60%]
+services/voice/tests/foundation/test_service_health.py::test_startup_parses_the_configuration_boundary PASSED [ 65%]
+services/voice/tests/foundation/test_service_health.py::test_health_is_the_only_route PASSED [ 69%]
+services/voice/tests/foundation/test_service_health.py::test_health_accepts_get_only PASSED [ 73%]
+services/voice/tests/foundation/test_service_health.py::test_health_leaks_no_configuration_values PASSED [ 78%]
+services/voice/tests/foundation/test_settings_boundary.py::test_loads_with_no_credentials_and_a_missing_env_file PASSED [ 82%]
+services/voice/tests/foundation/test_settings_boundary.py::test_defaults_use_only_reviewed_documentation_endpoints PASSED [ 86%]
+services/voice/tests/foundation/test_settings_boundary.py::test_env_file_values_parse_and_configured_is_not_live PASSED [ 91%]
+services/voice/tests/foundation/test_settings_boundary.py::test_secrets_do_not_leak_through_reprs PASSED [ 95%]
+services/voice/tests/foundation/test_settings_boundary.py::test_environment_variables_take_precedence_over_env_file PASSED [100%]
+
+============================== 23 passed in 0.68s ==============================
+exit: 0

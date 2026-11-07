@@ -1,0 +1,36 @@
+# F05 dependency-chain evidence — 2026-10-16T18:06:10Z
+
+## npm explain braces
+$ npm explain braces
+braces@3.0.3 dev
+node_modules/braces
+  braces@"^3.0.3" from micromatch@4.0.8
+  node_modules/micromatch
+    micromatch@"^4.0.4" from fast-glob@3.3.1
+    node_modules/fast-glob
+      fast-glob@"3.3.1" from @next/eslint-plugin-next@16.4.2
+      node_modules/@next/eslint-plugin-next
+        @next/eslint-plugin-next@"16.4.2" from eslint-config-next@16.4.2
+        node_modules/eslint-config-next
+          dev eslint-config-next@"16.4.2" from @gnani/web@0.1.0
+          apps/web
+            @gnani/web@0.1.0
+            node_modules/@gnani/web
+              workspace apps/web from the root project
+exit: 0
+
+## npm ls braces micromatch fast-glob @next/eslint-plugin-next eslint-config-next
+$ npm ls braces micromatch fast-glob @next/eslint-plugin-next eslint-config-next
+speaking-coach@0.1.0 /Users/princegondaliya/Learning/Projects/temp/gnani
+└─┬ @gnani/web@0.1.0 -> ./apps/web
+  └─┬ eslint-config-next@16.4.2
+    └─┬ @next/eslint-plugin-next@16.4.2
+      └─┬ fast-glob@3.3.1
+        └─┬ micromatch@4.0.8
+          └── braces@3.0.3
+
+exit: 0
+
+## where do braces-affected packages appear: production tree check
+$ npm ls --omit=dev --all 2>/dev/null | grep -E 'braces|micromatch|fast-glob' ; echo "grep-exit: $?"
+grep-exit: 1  (1 = none found in production tree)

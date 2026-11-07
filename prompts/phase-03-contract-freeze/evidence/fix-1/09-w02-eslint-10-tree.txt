@@ -1,0 +1,58 @@
+W02 — the ESLint 10.13.0 pin (CEO disposition of 2026-10-20)
+
+$ grep -n '"eslint"' apps/web/package.json
+22:    "eslint": "10.13.0",
+
+$ apps/web/node_modules/.bin/eslint --version   # the binary 'npm run lint' uses
+v10.13.0
+
+$ node_modules/.bin/eslint --version   # the hoisted copy (peer instance for eslint-config-next; no repository script calls it)
+v9.39.5
+
+$ npm ls eslint
+speaking-coach@0.1.0 /Users/princegondaliya/Learning/Projects/temp/gnani
+└─┬ @gnani/web@0.1.0 -> ./apps/web
+  ├─┬ eslint-config-next@16.4.2
+  │ ├─┬ @next/eslint-plugin-next@16.4.2
+  │ │ └─┬ @eslint-community/eslint-utils@4.9.1
+  │ │   └── eslint@9.39.5 deduped
+  │ ├─┬ eslint-import-resolver-typescript@3.10.1
+  │ │ └── eslint@9.39.5 deduped
+  │ ├─┬ eslint-plugin-import@2.32.0
+  │ │ └── eslint@9.39.5 deduped
+  │ ├─┬ eslint-plugin-jsx-a11y@6.10.2
+  │ │ └── eslint@9.39.5 deduped
+  │ ├─┬ eslint-plugin-react-hooks@7.1.1
+  │ │ └── eslint@9.39.5 deduped
+  │ ├─┬ eslint-plugin-react@7.37.5
+  │ │ └── eslint@9.39.5 deduped
+  │ ├── eslint@9.39.5
+  │ └─┬ typescript-eslint@8.71.2
+  │   ├─┬ @typescript-eslint/eslint-plugin@8.71.2
+  │   │ ├─┬ @typescript-eslint/type-utils@8.71.2
+  │   │ │ └── eslint@9.39.5 deduped
+  │   │ └── eslint@9.39.5 deduped
+  │   ├─┬ @typescript-eslint/parser@8.71.2
+  │   │ └── eslint@9.39.5 deduped
+  │   ├─┬ @typescript-eslint/utils@8.71.2
+  │   │ └── eslint@9.39.5 deduped
+  │   └── eslint@9.39.5 deduped
+  └─┬ eslint@10.13.0
+    └─┬ @eslint-community/eslint-utils@4.10.1
+      └── eslint@9.39.5 deduped
+
+exit: 0
+
+$ npm ls --all > /dev/null; echo $?
+exit: 0
+
+$ npm run lint
+
+> speaking-coach@0.1.0 lint
+> npm run lint --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 lint
+> eslint .
+
+exit: 0

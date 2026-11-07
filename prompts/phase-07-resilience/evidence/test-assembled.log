@@ -1,0 +1,202 @@
+
+> speaking-coach@0.1.0 test:assembled
+> uv run --project services/voice python -m pytest tests/integration/assembled -v --confcutdir=tests/integration/assembled && playwright test --config=tests/integration/assembled/playwright.config.ts
+
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0 -- /Users/princegondaliya/Learning/Projects/temp/gnani/services/voice/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/princegondaliya/Learning/Projects/temp/gnani
+plugins: anyio-4.15.1
+collecting ... collected 18 items
+
+tests/integration/assembled/test_failure_matrix.py::test_a_guest_call_writes_nothing_and_ends_cleanly PASSED [  5%]
+tests/integration/assembled/test_failure_matrix.py::test_a_recognition_failure_keeps_the_call_alive[network-provider_unavailable] PASSED [ 11%]
+tests/integration/assembled/test_failure_matrix.py::test_a_recognition_failure_keeps_the_call_alive[auth-provider_rejected_request] PASSED [ 16%]
+tests/integration/assembled/test_failure_matrix.py::test_a_recognition_failure_keeps_the_call_alive[throttle-provider_rate_limited] PASSED [ 22%]
+tests/integration/assembled/test_failure_matrix.py::test_a_tts_failure_mid_sentence_is_named_and_the_call_survives PASSED [ 27%]
+tests/integration/assembled/test_failure_matrix.py::test_a_reasoning_timeout_is_named_and_the_call_survives PASSED [ 33%]
+tests/integration/assembled/test_failure_matrix.py::test_a_malformed_feedback_document_falls_back_to_the_facts PASSED [ 38%]
+tests/integration/assembled/test_failure_matrix.py::test_supabase_auth_down_continues_as_a_guest_with_a_notice PASSED [ 44%]
+tests/integration/assembled/test_failure_matrix.py::test_supabase_rest_down_at_the_end_says_not_saved PASSED [ 50%]
+tests/integration/assembled/test_failure_matrix.py::test_supabase_storage_down_keeps_the_metrics_and_says_the_audio_is_missing PASSED [ 55%]
+tests/integration/assembled/test_failure_matrix.py::test_an_expired_token_mid_call_does_not_drop_or_re_key_the_session PASSED [ 61%]
+tests/integration/assembled/test_failure_matrix.py::test_a_recording_is_a_wav_that_parses_and_delete_removes_it PASSED [ 66%]
+tests/integration/assembled/test_failure_matrix.py::test_withdrawing_consent_mid_call_keeps_metrics_and_drops_audio PASSED [ 72%]
+tests/integration/assembled/test_failure_matrix.py::test_the_same_frame_size_is_enforced PASSED [ 77%]
+tests/integration/assembled/test_failure_matrix.py::test_the_partial_turn_is_not_written_as_a_full_turn PASSED [ 83%]
+tests/integration/assembled/test_failure_matrix.py::test_ten_concurrent_calls_are_bounded_and_the_eleventh_is_refused PASSED [ 88%]
+tests/integration/assembled/test_failure_matrix.py::test_the_user_cap_refuses_a_third_call_with_the_frozen_error_shape PASSED [ 94%]
+tests/integration/assembled/test_interrupt_latency.py::test_the_service_stops_the_coach_promptly_over_twenty_fake_trials PASSED [100%]
+
+============================= 18 passed in 23.15s ==============================
+[WebServer] fake supabase ready on http://127.0.0.1:8018
+[WebServer] control ready on http://127.0.0.1:8019
+[WebServer] INFO:     Started server process [91879]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8017 (Press CTRL+C to quit)
+[WebServer] 
+[WebServer] > @gnani/web@0.1.0 dev
+[WebServer] > next dev --port 3107
+[WebServer] 
+[WebServer] ▲ Next.js 16.4.2 (Turbopack)
+[WebServer] - Local:         http://localhost:3107
+[WebServer] - Network:       http://192.0.0.2:3107
+[WebServer] ✓ Ready in 463ms
+[WebServer] ✓ Running next.config.ts took 146ms
+[WebServer] 
+
+Running 20 tests using 1 worker
+
+[WebServer]  GET / 200 in 730ms (next.js: 390ms, proxy.ts: 192ms, application-code: 149ms)
+[WebServer]  GET / 200 in 40ms (next.js: 5ms, proxy.ts: 6ms, application-code: 29ms)
+[WebServer]  GET /auth/session 200 in 188ms (next.js: 144ms, proxy.ts: 13ms, application-code: 32ms)
+[WebServer]  GET /auth/session 200 in 200ms (next.js: 170ms, proxy.ts: 18ms, application-code: 13ms)
+[WebServer] INFO:     127.0.0.1:60153 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 41ms (next.js: 8ms, proxy.ts: 19ms, application-code: 13ms)
+  ✓   1 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:239:5 › A1 — a guest call runs four turns, a round break, a retry and a clean end (14.9s)
+[WebServer]  GET / 200 in 221ms (next.js: 156ms, proxy.ts: 32ms, application-code: 32ms)
+[WebServer]  GET /auth/session 200 in 117ms (next.js: 37ms, proxy.ts: 33ms, application-code: 48ms)
+[WebServer]  GET /auth/session 200 in 126ms (next.js: 67ms, proxy.ts: 32ms, application-code: 26ms)
+[WebServer] INFO:     127.0.0.1:60178 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 30ms (next.js: 4ms, proxy.ts: 13ms, application-code: 13ms)
+[WebServer]  GET /auth/session 200 in 65ms (next.js: 7ms, proxy.ts: 39ms, application-code: 19ms)
+[WebServer]  GET /auth/session 200 in 69ms (next.js: 18ms, proxy.ts: 38ms, application-code: 13ms)
+  ✓   2 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:277:5 › A2 — an authenticated call with recording off saves metrics and appears in progress (4.7s)
+[WebServer]  GET / 200 in 36ms (next.js: 5ms, proxy.ts: 5ms, application-code: 25ms)
+[WebServer]  GET /auth/session 200 in 28ms (next.js: 4ms, proxy.ts: 10ms, application-code: 15ms)
+[WebServer]  GET /auth/session 200 in 28ms (next.js: 9ms, proxy.ts: 10ms, application-code: 10ms)
+[WebServer]  GET /auth/session 200 in 23ms (next.js: 4ms, proxy.ts: 7ms, application-code: 13ms)
+[WebServer] INFO:     127.0.0.1:60219 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 18ms (next.js: 3ms, proxy.ts: 9ms, application-code: 6ms)
+[WebServer]  GET /auth/session 200 in 38ms (next.js: 9ms, proxy.ts: 17ms, application-code: 13ms)
+[WebServer]  GET /auth/session 200 in 39ms (next.js: 12ms, proxy.ts: 16ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 17ms (next.js: 3ms, proxy.ts: 6ms, application-code: 9ms)
+[WebServer]  GET /auth/session 200 in 13ms (next.js: 2ms, proxy.ts: 5ms, application-code: 7ms)
+  ✓   3 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:316:5 › A3 — recording on saves a WAV, the progress player loads it, and delete removes it (4.6s)
+[WebServer]  GET / 200 in 54ms (next.js: 6ms, proxy.ts: 7ms, application-code: 41ms)
+[WebServer]  GET /auth/session 200 in 27ms (next.js: 6ms, proxy.ts: 11ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 27ms (next.js: 7ms, proxy.ts: 11ms, application-code: 9ms)
+[WebServer]  GET /auth/session 200 in 16ms (next.js: 4ms, proxy.ts: 6ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60285 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 17ms (next.js: 2ms, proxy.ts: 9ms, application-code: 6ms)
+  ✓   4 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:369:5 › A4 — a consent withdrawn mid-call keeps the metrics and writes no audio (4.3s)
+[WebServer]  GET / 200 in 107ms (next.js: 15ms, proxy.ts: 17ms, application-code: 75ms)
+[WebServer]  GET /auth/session 200 in 21ms (next.js: 7ms, proxy.ts: 6ms, application-code: 9ms)
+[WebServer]  GET /auth/session 200 in 27ms (next.js: 14ms, proxy.ts: 6ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60305 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 14ms (next.js: 4ms, proxy.ts: 5ms, application-code: 5ms)
+  ✓   5 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:399:5 › A5 — speaking over the coach stops the audio and no late audio arrives (5.2s)
+[WebServer]  GET / 200 in 39ms (next.js: 6ms, proxy.ts: 9ms, application-code: 24ms)
+[WebServer]  GET /auth/session 200 in 112ms (next.js: 16ms, proxy.ts: 38ms, application-code: 58ms)
+[WebServer]  GET /auth/session 200 in 123ms (next.js: 27ms, proxy.ts: 37ms, application-code: 60ms)
+[WebServer] INFO:     127.0.0.1:60322 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 17ms (next.js: 3ms, proxy.ts: 9ms, application-code: 5ms)
+[WebServer]  DELETE /auth/session 200 in 20ms (next.js: 2ms, proxy.ts: 7ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 11ms (next.js: 3ms, proxy.ts: 4ms, application-code: 4ms)
+[WebServer]  GET /auth/session 200 in 10ms (next.js: 2ms, proxy.ts: 3ms, application-code: 4ms)
+  ✓   6 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:430:5 › A6 — signing out closes the live call socket (979ms)
+[WebServer]  GET / 200 in 33ms (next.js: 3ms, proxy.ts: 4ms, application-code: 26ms)
+[WebServer]  GET /auth/session 200 in 36ms (next.js: 7ms, proxy.ts: 14ms, application-code: 15ms)
+[WebServer]  GET /auth/session 200 in 35ms (next.js: 10ms, proxy.ts: 15ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 5ms, proxy.ts: 10ms, application-code: 9ms)
+[WebServer] INFO:     127.0.0.1:60356 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 4ms, proxy.ts: 12ms, application-code: 8ms)
+  ✓   7 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:449:5 › A7 — another learner cannot list, read or delete user A's data (4.5s)
+[WebServer]  GET / 200 in 62ms (next.js: 7ms, proxy.ts: 13ms, application-code: 42ms)
+[WebServer]  GET /auth/session 200 in 28ms (next.js: 8ms, proxy.ts: 14ms, application-code: 6ms)
+[WebServer]  GET /auth/session 200 in 35ms (next.js: 7ms, proxy.ts: 15ms, application-code: 14ms)
+[WebServer] INFO:     127.0.0.1:60391 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 43ms (next.js: 5ms, proxy.ts: 28ms, application-code: 11ms)
+  ✓   8 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:512:5 › A8 — a metrics-only call stores no transcript, reply or custom topic anywhere we write (4.6s)
+[WebServer]  GET / 200 in 67ms (next.js: 9ms, proxy.ts: 10ms, application-code: 48ms)
+[WebServer]  GET /auth/session 200 in 18ms (next.js: 6ms, proxy.ts: 6ms, application-code: 6ms)
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 11ms, proxy.ts: 7ms, application-code: 6ms)
+[WebServer] INFO:     127.0.0.1:60413 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 17ms (next.js: 5ms, proxy.ts: 6ms, application-code: 5ms)
+  ✓   9 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:602:5 › F1 — a double Start opens exactly one call socket (962ms)
+[WebServer]  GET / 200 in 44ms (next.js: 4ms, proxy.ts: 3ms, application-code: 36ms)
+[WebServer]  GET /auth/session 200 in 40ms (next.js: 6ms, proxy.ts: 7ms, application-code: 27ms)
+[WebServer]  GET /auth/session 200 in 39ms (next.js: 9ms, proxy.ts: 6ms, application-code: 24ms)
+[WebServer] INFO:     127.0.0.1:60425 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 33ms (next.js: 4ms, proxy.ts: 21ms, application-code: 8ms)
+  ✓  10 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:622:5 › F2 — unplugging the microphone ends the call with plain words (992ms)
+[WebServer]  GET / 200 in 35ms (next.js: 5ms, proxy.ts: 3ms, application-code: 27ms)
+[WebServer]  GET /auth/session 200 in 20ms (next.js: 5ms, proxy.ts: 6ms, application-code: 9ms)
+[WebServer]  GET /auth/session 200 in 21ms (next.js: 8ms, proxy.ts: 6ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60437 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 18ms (next.js: 6ms, proxy.ts: 5ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60439 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 35ms (next.js: 11ms, proxy.ts: 12ms, application-code: 13ms)
+  ✓  11 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:639:5 › F3 — a dropped socket reconnects and does not duplicate a turn (3.7s)
+[WebServer]  GET / 200 in 48ms (next.js: 9ms, proxy.ts: 3ms, application-code: 36ms)
+[WebServer]  GET /auth/session 200 in 37ms (next.js: 5ms, proxy.ts: 6ms, application-code: 26ms)
+[WebServer]  GET /auth/session 200 in 36ms (next.js: 7ms, proxy.ts: 4ms, application-code: 25ms)
+[WebServer] INFO:     127.0.0.1:60451 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 15ms (next.js: 5ms, proxy.ts: 5ms, application-code: 5ms)
+  ✓  12 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:673:5 › F4 — an STT outage is named and the call can still end (2.8s)
+[WebServer]  GET / 200 in 44ms (next.js: 7ms, proxy.ts: 8ms, application-code: 29ms)
+[WebServer]  GET /auth/session 200 in 20ms (next.js: 4ms, proxy.ts: 6ms, application-code: 10ms)
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 11ms, proxy.ts: 6ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60464 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 14ms (next.js: 3ms, proxy.ts: 5ms, application-code: 6ms)
+  ✓  13 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:690:5 › F5 — a TTS outage mid-sentence is named and the call can still end (3.3s)
+[WebServer]  GET / 200 in 47ms (next.js: 8ms, proxy.ts: 9ms, application-code: 30ms)
+[WebServer]  GET /auth/session 200 in 26ms (next.js: 7ms, proxy.ts: 8ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 10ms, proxy.ts: 7ms, application-code: 7ms)
+[WebServer] INFO:     127.0.0.1:60477 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 14ms (next.js: 5ms, proxy.ts: 4ms, application-code: 5ms)
+  ✓  14 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:707:5 › F6 — a reasoning timeout is named and the call can still end (3.3s)
+[WebServer]  GET / 200 in 72ms (next.js: 7ms, proxy.ts: 24ms, application-code: 40ms)
+[WebServer]  GET /auth/session 200 in 35ms (next.js: 8ms, proxy.ts: 13ms, application-code: 14ms)
+[WebServer]  GET /auth/session 200 in 42ms (next.js: 17ms, proxy.ts: 16ms, application-code: 9ms)
+[WebServer] INFO:     127.0.0.1:60497 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+  ✓  15 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:722:5 › F7 — Auth down continues as a guest with a notice and no data (1.0s)
+[WebServer]  GET / 200 in 31ms (next.js: 4ms, proxy.ts: 6ms, application-code: 20ms)
+[WebServer]  GET /auth/session 200 in 40ms (next.js: 6ms, proxy.ts: 18ms, application-code: 17ms)
+[WebServer]  GET /auth/session 200 in 43ms (next.js: 10ms, proxy.ts: 18ms, application-code: 15ms)
+[WebServer] INFO:     127.0.0.1:60515 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 26ms (next.js: 4ms, proxy.ts: 13ms, application-code: 8ms)
+  ✓  16 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:752:5 › F8 — REST down at the end says the session was not saved (4.2s)
+[WebServer]  GET / 200 in 45ms (next.js: 7ms, proxy.ts: 15ms, application-code: 23ms)
+[WebServer]  GET /auth/session 200 in 47ms (next.js: 25ms, proxy.ts: 11ms, application-code: 11ms)
+[WebServer]  GET /auth/session 200 in 51ms (next.js: 26ms, proxy.ts: 13ms, application-code: 12ms)
+[WebServer]  GET /auth/session 200 in 20ms (next.js: 4ms, proxy.ts: 8ms, application-code: 8ms)
+[WebServer] INFO:     127.0.0.1:60546 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 24ms (next.js: 3ms, proxy.ts: 10ms, application-code: 11ms)
+  ✓  17 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:770:5 › F9 — Storage down keeps the metrics and says the recording is missing (4.3s)
+[WebServer]  GET / 200 in 72ms (next.js: 19ms, proxy.ts: 17ms, application-code: 37ms)
+[WebServer]  GET /auth/session 200 in 33ms (next.js: 8ms, proxy.ts: 12ms, application-code: 13ms)
+[WebServer]  GET /auth/session 200 in 34ms (next.js: 12ms, proxy.ts: 12ms, application-code: 10ms)
+[WebServer] INFO:     127.0.0.1:60572 - "WebSocket /ws/call" [accepted]
+[WebServer] INFO:     connection open
+[WebServer]  GET /auth/session 200 in 19ms (next.js: 4ms, proxy.ts: 8ms, application-code: 8ms)
+  ✓  18 [assembled-chromium] › tests/integration/assembled/assembled.spec.ts:795:5 › F10 — closing the tab stores the metrics and closes the socket (4.2s)
+[WebServer]  GET / 200 in 45ms (next.js: 9ms, proxy.ts: 7ms, application-code: 30ms)
+[WebServer]  GET /auth/session 200 in 22ms (next.js: 7ms, proxy.ts: 7ms, application-code: 8ms)
+[WebServer]  GET /auth/session 200 in 35ms (next.js: 17ms, proxy.ts: 8ms, application-code: 10ms)
+  ✓  19 [assembled-chromium] › tests/integration/assembled/security.spec.ts:13:5 › the web app sends the security headers it documents (551ms)
+[WebServer]  GET / 200 in 79ms (next.js: 28ms, proxy.ts: 4ms, application-code: 46ms)
+[WebServer]  GET /auth/session 200 in 15ms (next.js: 3ms, proxy.ts: 4ms, application-code: 7ms)
+[WebServer]  GET /auth/session 200 in 16ms (next.js: 6ms, proxy.ts: 4ms, application-code: 6ms)
+  ✓  20 [assembled-chromium] › tests/integration/assembled/security.spec.ts:36:5 › the history and consent routes never carry the token in a URL (1.1s)
+
+  20 passed (1.3m)

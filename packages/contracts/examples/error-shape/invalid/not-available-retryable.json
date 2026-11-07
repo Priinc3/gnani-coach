@@ -1,0 +1,9 @@
+{
+  "errorVersion": "0.1",
+  "code": "not_available",
+  "category": "not_available",
+  "message": "This part of the service is not available yet. Nothing was saved.",
+  "retryable": true,
+  "correlationId": "cor_3c4d5e6f",
+  "occurredAt": "2026-10-20T09:00:03Z"
+}

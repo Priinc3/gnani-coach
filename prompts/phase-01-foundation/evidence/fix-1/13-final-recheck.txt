@@ -1,0 +1,25 @@
+# Final state re-confirmation — 2026-10-18T08:21:36Z (Node v24.22.0)
+
+## npm run test:contracts
+note: shape-only fixture: session-settings/valid/shape-only-french-id-passes.json documents that a structurally well-formed id is not catalog membership; membership and staleness are runtime checks.
+note: format fixtures: invalid/space-separated-emitted-at.json proves date-time format checking is active in Ajv.
+PASS — all contract examples and catalog invariants hold
+exit: 0
+
+## uv run --project services/python -m pytest services/voice/tests/foundation
+.......................                                                  [100%]
+23 passed in 0.66s
+exit: 0
+# Final integrity check — 2026-10-18T08:25:04Z
+
+## UI.png final hash (must match baseline e24fbec5770047cc06cd25ea0a46da646ef7781597494f4a4001cfc0acf2e2cc)
+e24fbec5770047cc06cd25ea0a46da646ef7781597494f4a4001cfc0acf2e2cc  UI.png
+
+## all JSON in packages/contracts parses
+checked 55 JSON files; failures: none
+
+## no processes on app ports
+lsof lines: 0 (0 = free)
+
+## nothing staged in git (index must match HEAD for tracked files)
+staged-diff-lines: 0 (0 = nothing staged)

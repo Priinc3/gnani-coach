@@ -1,0 +1,16 @@
+{
+  "settingsVersion": "0.1",
+  "practiceLanguageId": "english",
+  "coachingLanguageId": "english",
+  "scenarioId": "interview",
+  "customTopic": { "text": "a first-week check-in with my manager", "persisted": false },
+  "level": "beginner",
+  "coachingRoundTurns": 4,
+  "sessionLimitSeconds": 600,
+  "recordingRetention": false,
+  "consent": {
+    "consentVersion": "0.1",
+    "recordingRetentionGranted": false,
+    "recordingRetentionGrantedAt": null
+  }
+}

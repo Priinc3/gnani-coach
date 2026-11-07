@@ -1,0 +1,33 @@
+
+> speaking-coach@0.1.0 build
+> npm run build --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 11ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 227ms
+  Running TypeScript ...
+  Finished TypeScript in 604ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 179ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /auth/session
+├ ƒ /auth/sign-in
+└ ƒ /auth/sign-out
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

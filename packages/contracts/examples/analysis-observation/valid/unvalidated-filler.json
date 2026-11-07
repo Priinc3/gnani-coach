@@ -1,0 +1,21 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "filler.count",
+  "source": "measured",
+  "method": "disfluency_recognition",
+  "recognitionStatus": "measured",
+  "audioSourceClassification": "learner-audio",
+  "status": "insufficient_evidence",
+  "value": null,
+  "unit": null,
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "unknown",
+    "limitations": [
+      "no validated filler detector exists; the count is unvalidated, so it is reported as insufficient evidence and never as 0"
+    ]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-20T09:32:00Z"
+}

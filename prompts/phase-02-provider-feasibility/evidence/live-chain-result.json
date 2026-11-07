@@ -1,0 +1,33 @@
+{
+  "fixture_id": "spoken-clear-sentence",
+  "language": "en-IN",
+  "gemini_model": "gemini-3.8-flash",
+  "tts_model": "timbre-v2.5",
+  "tts_voice": "Kaveri",
+  "recognized_chars": 55,
+  "reply_chars": 48,
+  "tts_total_bytes": 81920,
+  "first_nonempty_chunk_ms_backend": 359.53,
+  "timings_ms": {
+    "stt_ms": 6496.1,
+    "gemini_ms": 3541.3,
+    "tts_total_ms": 2325.8
+  },
+  "budget": {
+    "operations_used": 5,
+    "operations_limit": 40,
+    "stt_audio_seconds": 3.2,
+    "stt_audio_seconds_limit": 300.0,
+    "connections_used": 2,
+    "connections_limit": 12,
+    "retries": 0,
+    "max_retries_per_operation": 2,
+    "per_kind": {
+      "gemini:reply": 1,
+      "gnani-stt:connect": 1,
+      "gnani-stt:session": 1,
+      "gnani-tts:connect": 1,
+      "gnani-tts:synthesize": 1
+    }
+  }
+}

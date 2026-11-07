@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.speaking-coach.example/durable-metrics/0.1.0",
-  "title": "Durable session metrics (draft v0.1)",
-  "description": "Numeric-only record that may outlive a session. Status: DRAFT v0.1 — not frozen. This shape is deliberately incapable of holding learner or model content: the property names set to `false` below reject transcripts, quoted mistakes, arbitrary model prose, audio references and embeddings, and every nested object rejects unknown fields. `method` is short provenance metadata about how a number was produced, never report text. Nullable values keep the unavailable-versus-zero distinction: unavailable is never written as 0.",
+  "title": "Durable session metrics (frozen v0.1)",
+  "description": "Numeric-only record that may outlive a session. Status: FROZEN v0.1 (Phase 03, 2026-10-20) — the shape is now fixed; only capability DATA may change later (Phase 08). What this schema enforces: the property names set to `false` reject `transcript`, `quotedMistakes`, `modelText`, `audioUrl` and `embedding`; every nested object rejects unknown fields; `method` is a closed set of detector-method identifiers (never free text); `unavailabilityReason` is a closed set of reason codes; each metric key is coupled to exactly one unit, exactly one method identifier and exactly one denominator. What it cannot enforce: schema validation alone does not police writers, logs or caches — identifiers and catalog ids must be produced by trusted application code (catalog membership is a runtime check), display labels must come from trusted application mappings rather than learner or model text, and no naming of a `method` identifier implies that detector is implemented or validated. Nullable values keep the unavailable-versus-zero distinction: unavailable is never written as 0. The three rules that this freeze adds: (1) the two speaking rates have DIFFERENT methods and DIFFERENT denominators and may never be confused; (2) a turn declares its recognition status, and a turn whose transcript is missing or unanalyzable can never carry a measured rate or filler count; (3) a turn declares the source classification of the audio it was measured from, and that classification is a declaration, not a proof of diarization or echo cancellation.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -34,7 +34,8 @@
     "quotedMistakes": false,
     "modelText": false,
     "audioUrl": false,
-    "embedding": false
+    "embedding": false,
+    "customTopic": false
   },
   "$defs": {
     "sessionId": { "type": "string", "pattern": "^ses_[a-z0-9]{6,40}$" },
@@ -56,19 +57,70 @@
         "speech.active_rate_wpm",
         "turn.duration_ms"
       ],
-      "description": "Allowlisted numeric metrics only. Transcription confidence is not a speaking score and is not a metric here."
+      "description": "Allowlisted numeric metrics only; each key is coupled below to exactly one unit, one method identifier and (for the two rates) one denominator. *_ms keys take integer milliseconds, *.count keys take integer counts, *_wpm keys take fractional words_per_minute. Transcription confidence is not a speaking score and is not a metric here."
+    },
+    "methodId": {
+      "type": "string",
+      "enum": [
+        "vad_speech_regions",
+        "stt_words_over_learner_span",
+        "stt_words_over_speech_regions",
+        "stt_words_over_speech_active",
+        "disfluency_recognition",
+        "learner_audio_sample_clock"
+      ],
+      "description": "Controlled provenance identifiers, not free text. Each names the intended method family for a metric, and each metric key below is bound to exactly one of them: vad_speech_regions = speech/non-speech regions estimated by voice-activity or energy detection; stt_words_over_learner_span = word count from speech-to-text output divided by the ELAPSED LEARNER-AUDIO SPAN on the learner sample clock; stt_words_over_speech_regions = the pre-freeze identifier of that same overall rate, retained so records written before 2026-10-20 still validate, and bound to `speech.rate_wpm` only — it must never be used for the speech-active rate; stt_words_over_speech_active = the same word count divided by the SPEECH-ACTIVE duration estimated from the learner's audio; disfluency_recognition = the method family for filled-pause/disfluency event counting (unvalidated — see `packages/contracts/data/capabilities.json`); learner_audio_sample_clock = elapsed learner audio measured on the local sample clock, padding excluded, never connection or session time. NEITHER rate denominator may ever be total connection time, total session time, network round-trip time or provider emission time. STATING an identifier does NOT mean the detector is implemented or validated. Display labels come from a trusted application mapping of these identifiers, never from learner or model text."
+    },
+    "denominator": {
+      "type": "string",
+      "enum": ["learner_span_ms", "speech_active_ms"],
+      "description": "Which measured duration the rate was divided by. `learner_span_ms` is the elapsed learner-audio span (source leading and trailing silence included, end padding excluded); `speech_active_ms` is the VAD-estimated speech-active time on the same sample clock. The two rates may never share a denominator, and neither denominator may be connection or session time."
+    },
+    "recognitionStatus": {
+      "type": "string",
+      "enum": ["measured", "no-analyzable-speech", "missing-transcription"],
+      "description": "What the recogniser produced for this audio. `measured` = a transcript exists and was used; `no-analyzable-speech` = the recogniser ran and returned nothing analyzable; `missing-transcription` = no transcript was obtained at all. The last two are NOT a measured zero: any rate or filler count under them is absent, never 0."
+    },
+    "audioSourceClassification": {
+      "type": "string",
+      "enum": ["learner-audio", "synthetic-learner-audio"],
+      "description": "Classification of the audio a measurement was taken over. A source label is a DECLARATION, not a proof: it does not establish diarization and it does not establish echo cancellation. Empty, assistant-only, mixed and unknown classifications are refused before a measurement is produced, so they never appear here. Full stream ownership and echo exclusion remain runtime work."
+    },
+    "unavailabilityReason": {
+      "type": "string",
+      "enum": [
+        "stt_unavailable",
+        "speech_analysis_unavailable",
+        "too_little_speech",
+        "filler_detection_unvalidated"
+      ],
+      "description": "Closed reason codes required whenever status is not `available` (stt_unavailable/speech_analysis_unavailable/filler_detection_unvalidated with status unavailable; too_little_speech/filler_detection_unvalidated with status insufficient_evidence). These codes say why a metric is missing; they are not free-text explanations. `filler_detection_unvalidated` is the code for a filler count that could not be produced because no validated filler detector exists — a missing or unvalidated filler is `insufficient_evidence`, never 0. Display labels come from a trusted application mapping."
     },
     "observation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["metricKey", "method", "status", "value", "unit"],
+      "required": ["metricKey", "status", "value", "unit"],
       "properties": {
         "metricKey": { "$ref": "#/$defs/metricKey" },
         "method": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 120,
-          "description": "Short method/reliability note, e.g. 'energy-based speech regions, uncalibrated'. Metadata only, never learner or model prose."
+          "$ref": "#/$defs/methodId",
+          "description": "Controlled identifier required only when status is `available`; forbidden otherwise so an unmeasured metric cannot claim a method was applied."
+        },
+        "denominator": {
+          "$ref": "#/$defs/denominator",
+          "description": "Optional, and only meaningful for the two rate metrics; when present it must agree with the metric key. The method identifier remains the authoritative binding."
+        },
+        "recognitionStatus": {
+          "$ref": "#/$defs/recognitionStatus",
+          "description": "Optional per-observation override of the turn's recognition status. When it is not `measured`, the observation may not be `available` and its value may not be a number."
+        },
+        "audioSourceClassification": {
+          "$ref": "#/$defs/audioSourceClassification",
+          "description": "Optional per-observation restatement of the turn's source classification; when present it must be a trusted learner-role classification."
+        },
+        "unavailabilityReason": {
+          "$ref": "#/$defs/unavailabilityReason",
+          "description": "Required only when status is not `available`; forbidden when available."
         },
         "status": {
           "type": "string",
@@ -76,7 +128,7 @@
         },
         "value": {
           "type": ["number", "null"],
-          "description": "0 is a measured value; null means the metric was not available."
+          "description": "0 is a measured value; null means the metric was not available. Domain and integer/fractional requirements come from the metric-key rules below."
         },
         "unit": {
           "enum": ["milliseconds", "count", "words_per_minute", null]
@@ -93,14 +145,183 @@
             "type": "object",
             "properties": {
               "value": { "type": "number" },
-              "unit": { "type": "string", "enum": ["milliseconds", "count", "words_per_minute"] }
-            }
+              "unit": { "type": "string", "enum": ["milliseconds", "count", "words_per_minute"] },
+              "method": true,
+              "unavailabilityReason": false
+            },
+            "required": ["method"]
           },
           "else": {
             "type": "object",
             "properties": {
               "value": { "type": "null" },
-              "unit": { "type": "null" }
+              "unit": { "type": "null" },
+              "method": false,
+              "unavailabilityReason": true
+            },
+            "required": ["unavailabilityReason"]
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "status": { "const": "unavailable" } },
+            "required": ["status"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "unavailabilityReason": {
+                "enum": [
+                  "stt_unavailable",
+                  "speech_analysis_unavailable",
+                  "filler_detection_unvalidated"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "status": { "const": "insufficient_evidence" } },
+            "required": ["status"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "unavailabilityReason": {
+                "enum": ["too_little_speech", "filler_detection_unvalidated"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "pause.longest_ms" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": { "const": "vad_speech_regions" },
+              "value": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "milliseconds" }, { "type": "null" }] },
+              "denominator": false,
+              "recognitionStatus": false
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "pause.count" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": { "const": "vad_speech_regions" },
+              "value": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "count" }, { "type": "null" }] },
+              "denominator": false,
+              "recognitionStatus": false
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "filler.count" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": { "const": "disfluency_recognition" },
+              "value": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "count" }, { "type": "null" }] },
+              "denominator": false
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "speech.rate_wpm" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": ["stt_words_over_learner_span", "stt_words_over_speech_regions"]
+              },
+              "value": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "words_per_minute" }, { "type": "null" }] },
+              "denominator": { "const": "learner_span_ms" }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "speech.active_rate_wpm" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": { "const": "stt_words_over_speech_active" },
+              "value": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "words_per_minute" }, { "type": "null" }] },
+              "denominator": { "const": "speech_active_ms" }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "metricKey": { "const": "turn.duration_ms" } },
+            "required": ["metricKey"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "method": { "const": "learner_audio_sample_clock" },
+              "value": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
+              "unit": { "anyOf": [{ "const": "milliseconds" }, { "type": "null" }] },
+              "denominator": false,
+              "recognitionStatus": false
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "recognitionStatus": { "const": "no-analyzable-speech" } },
+            "required": ["recognitionStatus"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "status": { "const": "insufficient_evidence" },
+              "value": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": { "recognitionStatus": { "const": "missing-transcription" } },
+            "required": ["recognitionStatus"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "status": { "const": "unavailable" },
+              "value": { "type": "null" }
             }
           }
         }
@@ -109,24 +330,96 @@
     "turn": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["turnId", "roundId", "durationMs", "observations"],
+      "required": [
+        "turnId",
+        "roundId",
+        "durationMs",
+        "recognitionStatus",
+        "audioSourceClassification",
+        "observations"
+      ],
       "properties": {
         "turnId": { "$ref": "#/$defs/turnId" },
         "roundId": { "anyOf": [{ "$ref": "#/$defs/roundId" }, { "type": "null" }] },
-        "durationMs": { "type": "integer", "minimum": 0 },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Elapsed learner-audio span of this turn, measured on the learner-audio sample clock. It INCLUDES the source's leading and trailing silence and EXCLUDES the end padding. It is never connection time and never session time. The writer boundary keeps it equal to this turn's `turn.duration_ms` observation."
+        },
+        "recognitionStatus": {
+          "$ref": "#/$defs/recognitionStatus",
+          "description": "The recogniser outcome for this turn. A turn whose transcript is missing or unanalyzable may not carry a measured rate or filler count — the rate is omitted, never 0."
+        },
+        "audioSourceClassification": {
+          "$ref": "#/$defs/audioSourceClassification",
+          "description": "The declared source classification of the audio this turn was measured from. A declaration, not a proof of diarization or echo cancellation."
+        },
         "observations": {
           "type": "array",
           "items": { "$ref": "#/$defs/observation" }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "recognitionStatus": {
+                "enum": ["no-analyzable-speech", "missing-transcription"]
+              }
+            },
+            "required": ["recognitionStatus"]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "observations": {
+                "type": "array",
+                "items": {
+                  "allOf": [
+                    { "$ref": "#/$defs/observation" },
+                    {
+                      "if": {
+                        "type": "object",
+                        "properties": {
+                          "metricKey": {
+                            "enum": [
+                              "speech.rate_wpm",
+                              "speech.active_rate_wpm",
+                              "filler.count"
+                            ]
+                          }
+                        },
+                        "required": ["metricKey"]
+                      },
+                      "then": {
+                        "type": "object",
+                        "properties": { "status": { "not": { "const": "available" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "totals": {
       "type": "object",
       "additionalProperties": false,
       "required": ["turnCount", "speakingTimeMs"],
       "properties": {
-        "turnCount": { "type": "integer", "minimum": 0 },
-        "speakingTimeMs": { "type": "integer", "minimum": 0 }
+        "turnCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of completed learner TURNS in this session. Conversational turns, never speech-to-text segments: one sentence can produce several segments."
+        },
+        "speakingTimeMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The SUM OF DETECTED SPEECH-ACTIVE TIME across the session's turns — not the sum of the elapsed turn spans, which also contain silence. Invariant (enforced at the writer boundary, not by this schema): speakingTimeMs <= sum(turns[].durationMs)."
+        }
       }
     }
   }

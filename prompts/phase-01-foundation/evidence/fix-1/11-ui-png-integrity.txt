@@ -1,0 +1,18 @@
+# UI.png integrity record — captured 2026-10-16T18:31:17Z
+FIX-1 session began: 2026-10-16T18:05:21Z (first evidence file timestamp)
+
+size: 1795763 bytes
+mtime: 2026-10-16T22:39:48+0530
+birth: 2026-10-16T22:39:48+0530
+sha256: e24fbec5770047cc06cd25ea0a46da646ef7781597494f4a4001cfc0acf2e2cc
+
+git status of UI.png:
+?? UI.png
+(?? = untracked; UI.png must never be staged)
+# UI.png final integrity check — 2026-10-16T18:57:12Z
+baseline (11-ui-png-integrity.txt): sha256 e24fbec5770047cc06cd25ea0a46da646ef7781597494f4a4001cfc0acf2e2cc, size 1795763, mtime 2026-10-16T22:39:48+0530
+now:
+size: 1795763 bytes
+mtime: 2026-10-16T22:39:48+0530
+sha256: e24fbec5770047cc06cd25ea0a46da646ef7781597494f4a4001cfc0acf2e2cc
+git status: ?? UI.png

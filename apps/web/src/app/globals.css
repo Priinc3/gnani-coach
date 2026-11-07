@@ -1,35 +1,61 @@
-/* Speaking Coach — foundation design system (Phase 01).
-   Calm conversation studio: warm ivory, ink text, restrained green accent,
-   editorial serif headings, readable Indic script fallbacks. */
+/* Speaking Coach — global design tokens and baseline (Phase 03 contract freeze).
+ *
+ * THIS FILE IS THE SINGLE SOURCE OF THE DESIGN TOKENS. Phase 04 builds the
+ * call UI inside `apps/web/src/features/**` and must not need to edit it:
+ * every colour, radius, shadow and type step used by the app is declared
+ * here, and the layout primitives the starter screen already uses are
+ * styled here too.
+ *
+ * Visual target: the user-selected Speakify reference (`UI.png`, read
+ * 2026-10-20) — a warm near-white canvas, softly raised white panels,
+ * subtle borders and shadows, generously rounded corners, dark ink text,
+ * pill-shaped dark primary buttons, mint/teal highlights, restrained
+ * pastel icon tiles, and bold friendly sans-serif headings. The reference
+ * is guidance for appearance, not for behaviour: the mock scores, the
+ * recording-on default and the tap-to-speak interaction are not product
+ * requirements.
+ *
+ * No web font is introduced: the stack is the platform sans with Indic
+ * fallbacks, so there is no licensing question and no layout shift.
+ */
 
 :root {
   color-scheme: light;
-  --ivory: #f5f0e4;
-  --panel: #fffdf7;
-  --ink: #211e17;
-  --ink-soft: #575144;
-  --ink-faint: #837b69;
-  --green: #2c6e49;
-  --green-deep: #1d5133;
-  --green-tint: #e8f1e7;
-  --hairline: #ddd4c1;
-}
 
-* {
-  box-sizing: border-box;
-}
+  /* -- surfaces ------------------------------------------------------ */
+  --canvas: #f7f6f2;
+  --panel: #ffffff;
+  --panel-sunk: #fbfaf7;
+  --hairline: #e5e2db;
 
-body {
-  margin: 0;
-  background:
-    radial-gradient(
-      1100px 520px at 12% -8%,
-      rgba(255, 253, 247, 0.9) 0%,
-      rgba(255, 253, 247, 0) 62%
-    ),
-    var(--ivory);
-  color: var(--ink);
-  font-family:
+  /* -- ink ----------------------------------------------------------- */
+  --ink: #1b1d1f;
+  --ink-soft: #4d545a;
+  --ink-faint: #838b93;
+
+  /* -- brand --------------------------------------------------------- */
+  --primary: #10655a;
+  --primary-strong: #0b4f46;
+  --primary-ink: #ffffff;
+  --accent: #17a67f;
+  --accent-tint: #e6f5ef;
+  --accent-line: #c9e7dc;
+
+  /* -- pastel tiles (icon backgrounds) -------------------------------- */
+  --tile-lavender: #eef0fd;
+  --tile-peach: #fdeee4;
+  --tile-sky: #e9f3fd;
+  --tile-mint: #e9f7f0;
+
+  /* -- shape --------------------------------------------------------- */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 24px 48px -40px rgba(27, 29, 31, 0.45);
+
+  /* -- type ---------------------------------------------------------- */
+  --font-sans:
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -44,6 +70,23 @@ body {
     "Noto Sans Tamil",
     "Noto Sans Telugu",
     sans-serif;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-tiny: 0.75rem;
+  --text-display: clamp(2.1rem, 5.6vw, 3.1rem);
+  --text-title: 1.4rem;
+  --text-section: 1.05rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
   font-size: 16.5px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -52,17 +95,11 @@ body {
 
 h1,
 h2,
+h3,
 .wordmark {
-  font-family:
-    "Iowan Old Style",
-    "Palatino Linotype",
-    Palatino,
-    "Book Antiqua",
-    Georgia,
-    "Times New Roman",
-    serif;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .page {
@@ -78,15 +115,16 @@ h2,
 .wordmark {
   margin: 0;
   font-size: 0.82rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: var(--green-deep);
+  color: var(--primary);
 }
 
 h1 {
   margin: 18px 0 0;
-  font-size: clamp(2.15rem, 6vw, 3.3rem);
-  line-height: 1.06;
+  font-size: var(--text-display);
+  line-height: 1.08;
 }
 
 .lede {
@@ -98,9 +136,10 @@ h1 {
 .masthead-status {
   margin: 24px 0 0;
   padding: 14px 16px;
-  border-left: 3px solid var(--green);
-  background: rgba(255, 253, 247, 0.72);
-  border-radius: 0 10px 10px 0;
+  border: 1px solid var(--accent-line);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-tint);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   color: var(--ink-soft);
   font-size: 0.92rem;
 }
@@ -114,14 +153,14 @@ h1 {
 .panel {
   background: var(--panel);
   border: 1px solid var(--hairline);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 30px 28px;
-  box-shadow: 0 26px 50px -42px rgba(33, 30, 23, 0.55);
+  box-shadow: var(--shadow-soft);
 }
 
 .panel h2 {
   margin: 0 0 14px;
-  font-size: 1.42rem;
+  font-size: var(--text-title);
   line-height: 1.2;
 }
 
@@ -145,7 +184,7 @@ h1 {
 .field-help {
   margin: 8px 0 0;
   color: var(--ink-faint);
-  font-size: 0.86rem;
+  font-size: var(--text-small);
   max-width: 62ch;
 }
 
@@ -158,20 +197,21 @@ fieldset.field legend {
   padding: 0;
 }
 
-select {
+select,
+.text-input {
   width: 100%;
   max-width: 460px;
   font: inherit;
   color: var(--ink);
-  background: #fffefa;
+  background: var(--panel);
   border: 1px solid var(--hairline);
-  border-radius: 11px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
 }
 
 input[type="radio"],
 input[type="checkbox"] {
-  accent-color: var(--green);
+  accent-color: var(--primary);
   width: 1.15rem;
   height: 1.15rem;
   margin: 0;
@@ -190,8 +230,8 @@ input[type="checkbox"] {
   align-items: start;
   padding: 13px 15px;
   border: 1px solid var(--hairline);
-  border-radius: 14px;
-  background: #fffefa;
+  border-radius: var(--radius-md);
+  background: var(--panel);
   cursor: pointer;
   transition: border-color 120ms ease;
 }
@@ -206,9 +246,9 @@ input[type="checkbox"] {
 }
 
 .scenario-option:has(input:checked) {
-  border-color: var(--green);
-  background: var(--green-tint);
-  box-shadow: inset 0 0 0 1px var(--green);
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 
 .scenario-name {
@@ -217,7 +257,7 @@ input[type="checkbox"] {
 
 .scenario-description {
   color: var(--ink-faint);
-  font-size: 0.88rem;
+  font-size: var(--text-small);
 }
 
 .checkbox-field {
@@ -227,8 +267,8 @@ input[type="checkbox"] {
   align-items: start;
   padding: 14px 16px;
   border: 1px dashed var(--hairline);
-  border-radius: 14px;
-  background: #fdfbf3;
+  border-radius: var(--radius-md);
+  background: var(--panel-sunk);
 }
 
 .checkbox-field > input {
@@ -251,15 +291,17 @@ input[type="checkbox"] {
   font: inherit;
   font-weight: 650;
   padding: 12px 22px;
-  border-radius: 999px;
-  border: 1px solid var(--hairline);
-  background: #eae4d4;
-  color: var(--ink-faint);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: var(--primary-ink);
 }
 
 .start-button:disabled {
   cursor: not-allowed;
-  opacity: 0.85;
+  background: var(--panel-sunk);
+  border-color: var(--hairline);
+  color: var(--ink-faint);
 }
 
 .start-reason {
@@ -271,9 +313,9 @@ input[type="checkbox"] {
 p.plan-summary {
   margin: 22px 0 0;
   padding: 14px 16px;
-  background: var(--green-tint);
-  border: 1px solid #cfe0cd;
-  border-radius: 14px;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-md);
   color: var(--ink);
   font-size: 0.92rem;
 }
@@ -287,35 +329,29 @@ p.plan-summary {
 .preview summary {
   cursor: pointer;
   font-weight: 650;
-  color: var(--green-deep);
+  color: var(--primary);
 }
 
 .preview-body {
   margin-top: 14px;
   padding: 16px;
   border: 1px solid var(--hairline);
-  border-radius: 14px;
-  background: #fdfbf3;
+  border-radius: var(--radius-md);
+  background: var(--panel-sunk);
 }
 
 p.preview-label {
   margin: 0 0 10px;
-  font-size: 0.76rem;
+  font-size: var(--text-tiny);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--green-deep);
+  color: var(--primary);
 }
 
 p.preview-quote {
   margin: 0 0 10px;
-  font-family:
-    "Iowan Old Style",
-    "Palatino Linotype",
-    Palatino,
-    Georgia,
-    serif;
-  font-style: italic;
+  font-weight: 500;
   font-size: 1.02rem;
   color: var(--ink);
 }
@@ -355,11 +391,11 @@ p.preview-quote {
   display: inline-block;
   white-space: nowrap;
   padding: 3px 11px;
-  border-radius: 999px;
-  border: 1px solid #c9ddc8;
-  background: var(--green-tint);
-  color: var(--green-deep);
-  font-size: 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-tint);
+  color: var(--primary-strong);
+  font-size: var(--text-tiny);
   font-weight: 700;
   letter-spacing: 0.03em;
 }
@@ -384,7 +420,7 @@ p.preview-quote {
 }
 
 :focus-visible {
-  outline: 3px solid var(--green);
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -419,7 +455,7 @@ input:focus-visible {
 
   .panel {
     padding: 22px 16px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
   }
 
   h1 {

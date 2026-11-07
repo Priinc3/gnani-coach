@@ -2,7 +2,13 @@
 
 These are explicit, named assertions on top of the folder-based parity tests:
 they document *why* each rejection exists, so a future schema change cannot
-silently reopen the hole.
+silently reopen the hole. Coverage mirrors the new FIX-1 cases:
+
+- ``method`` in durable metrics is a controlled identifier, so a learner
+  transcript sentence or a model feedback sentence in that (formerly
+  free-text) field is rejected.
+- Metric values are nonnegative, counts and millisecond quantities are
+  integers, and every metric key is coupled to exactly one unit.
 """
 
 import copy
@@ -35,6 +41,133 @@ def test_durable_metrics_reject_every_content_bearing_field(contracts_dir: Path)
     for field, value in injections.items():
         document = {**base, field: value}
         assert list(validator.iter_errors(document)), f"{field} must be rejected in durable metrics"
+
+
+def test_durable_method_rejects_prose_and_accepts_controlled_identifiers(
+    contracts_dir: Path,
+) -> None:
+    """F02: `method` was any 1-120 char string, so transcript/model text could
+    occupy it while satisfying every constraint. It is now a closed identifier
+    set; a learner sentence and a model feedback sentence must both fail, and
+    a controlled identifier must pass.
+    """
+    validator = _validator(contracts_dir, "durable-metrics")
+    base = _load(contracts_dir / "examples" / "durable-metrics" / "valid" / "numeric-only.json")
+    observation = base["turns"][0]["observations"][0]
+    prose_in_method = {
+        "learner transcript sentence": "I said I will go to the office tomorrow",
+        "model feedback sentence": "Great job overall — your pauses were well placed this time.",
+        "empty string": "",
+    }
+    for label, prose in prose_in_method.items():
+        document = copy.deepcopy(base)
+        document["turns"][0]["observations"][0] = {**observation, "method": prose}
+        errors = list(validator.iter_errors(document))
+        assert errors, f"method must reject {label}"
+    controlled = copy.deepcopy(base)
+    controlled["turns"][0]["observations"][0] = {
+        **observation,
+        "method": "vad_speech_regions",
+    }
+    assert list(validator.iter_errors(controlled)) == [], (
+        "a controlled method identifier must validate"
+    )
+    reason_document = copy.deepcopy(base)
+    reason_document["turns"][0]["observations"][0] = {
+        "metricKey": "speech.rate_wpm",
+        "unavailabilityReason": "stt_unavailable",
+        "status": "unavailable",
+        "value": None,
+        "unit": None,
+    }
+    assert list(validator.iter_errors(reason_document)) == [], (
+        "closed reason codes must validate for unavailable metrics"
+    )
+
+
+def test_metric_domains_and_units_are_enforced(contracts_dir: Path) -> None:
+    """F03: nonnegative domains, integer counts/ms quantities, and one unit per
+    metric key — while keeping valid zero, fractional rates and unavailable nulls.
+    """
+    durable = _validator(contracts_dir, "durable-metrics")
+    base = _load(contracts_dir / "examples" / "durable-metrics" / "valid" / "numeric-only.json")
+
+    def durable_doc(observation: dict) -> dict:
+        document = copy.deepcopy(base)
+        document["turns"][0]["observations"] = [observation]
+        return document
+
+    must_reject = [
+        ("negative count", {
+            "metricKey": "pause.count", "method": "vad_speech_regions",
+            "status": "available", "value": -1, "unit": "count",
+        }),
+        ("fractional count", {
+            "metricKey": "filler.count", "method": "disfluency_recognition",
+            "status": "available", "value": 2.5, "unit": "count",
+        }),
+        ("negative duration", {
+            "metricKey": "pause.longest_ms", "method": "vad_speech_regions",
+            "status": "available", "value": -250, "unit": "milliseconds",
+        }),
+        ("mismatched unit (count metric as wpm)", {
+            "metricKey": "pause.count", "method": "vad_speech_regions",
+            "status": "available", "value": 3, "unit": "words_per_minute",
+        }),
+        ("mismatched unit (duration as count)", {
+            "metricKey": "pause.longest_ms", "method": "vad_speech_regions",
+            "status": "available", "value": 1200, "unit": "count",
+        }),
+    ]
+    for label, observation in must_reject:
+        assert list(durable.iter_errors(durable_doc(observation))), (
+            f"durable metrics must reject: {label}"
+        )
+
+    must_accept = [
+        ("valid zero", {
+            "metricKey": "filler.count", "method": "disfluency_recognition",
+            "status": "available", "value": 0, "unit": "count",
+        }),
+        ("valid fractional rate", {
+            "metricKey": "speech.rate_wpm", "method": "stt_words_over_speech_regions",
+            "status": "available", "value": 112.4, "unit": "words_per_minute",
+        }),
+        ("unavailable null", {
+            "metricKey": "speech.rate_wpm", "unavailabilityReason": "stt_unavailable",
+            "status": "unavailable", "value": None, "unit": None,
+        }),
+    ]
+    for label, observation in must_accept:
+        assert list(durable.iter_errors(durable_doc(observation))) == [], (
+            f"durable metrics must accept: {label}"
+        )
+
+    transient = _validator(contracts_dir, "analysis-observation")
+    valid_observation = _load(
+        contracts_dir / "examples" / "analysis-observation" / "valid" / "measured-fractional-rate.json"
+    )
+
+    def transient_doc(**overrides: Any) -> dict:
+        document = copy.deepcopy(valid_observation)
+        document.update(overrides)
+        return document
+
+    for label, overrides in [
+        ("negative value", {"metricKey": "pause.longest_ms", "value": -250, "unit": "milliseconds"}),
+        ("fractional count", {"metricKey": "pause.count", "value": 2.5, "unit": "count"}),
+        ("mismatched unit", {"metricKey": "filler.count", "value": 1, "unit": "milliseconds"}),
+    ]:
+        assert list(transient.iter_errors(transient_doc(**overrides))), (
+            f"analysis observation must reject: {label}"
+        )
+    for label, overrides in [
+        ("valid zero", {"metricKey": "filler.count", "value": 0, "unit": "count"}),
+        ("valid fractional rate", {"metricKey": "speech.rate_wpm", "value": 112.4, "unit": "words_per_minute"}),
+    ]:
+        assert list(transient.iter_errors(transient_doc(**overrides))) == [], (
+            f"analysis observation must accept: {label}"
+        )
 
 
 def test_transient_observation_keeps_unavailable_distinct_from_zero(contracts_dir: Path) -> None:

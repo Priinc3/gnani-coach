@@ -1,0 +1,107 @@
+{
+  "fixtureId": "lexical-like-vs-filler-like",
+  "kind": "analytic",
+  "description": "Two acoustically distinct tokens in the same position. Which one a listener would call a lexical 'like' and which a filler is UNVERIFIED; this fixture exists to keep both classes in the evaluation set.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [
+    {
+      "tag": "silence",
+      "start_sample": 0,
+      "end_sample": 6400,
+      "start_ms": 0,
+      "end_ms": 400,
+      "duration_ms": 400
+    },
+    {
+      "tag": "speech",
+      "start_sample": 6400,
+      "end_sample": 17600,
+      "start_ms": 400,
+      "end_ms": 1100,
+      "duration_ms": 700
+    },
+    {
+      "tag": "like_a_lexical",
+      "start_sample": 17600,
+      "end_sample": 22080,
+      "start_ms": 1100,
+      "end_ms": 1380,
+      "duration_ms": 280
+    },
+    {
+      "tag": "silence",
+      "start_sample": 22080,
+      "end_sample": 25280,
+      "start_ms": 1380,
+      "end_ms": 1580,
+      "duration_ms": 200
+    },
+    {
+      "tag": "speech",
+      "start_sample": 25280,
+      "end_sample": 36480,
+      "start_ms": 1580,
+      "end_ms": 2280,
+      "duration_ms": 700
+    },
+    {
+      "tag": "like_b_disputed",
+      "start_sample": 36480,
+      "end_sample": 40960,
+      "start_ms": 2280,
+      "end_ms": 2560,
+      "duration_ms": 280
+    },
+    {
+      "tag": "silence",
+      "start_sample": 40960,
+      "end_sample": 47360,
+      "start_ms": 2560,
+      "end_ms": 2960,
+      "duration_ms": 400
+    }
+  ],
+  "labels": [
+    {
+      "kind": "silence",
+      "startSample": 0,
+      "endSample": 6400,
+      "startMs": 0,
+      "endMs": 400,
+      "durationMs": 400,
+      "note": "exact by construction"
+    },
+    {
+      "kind": "silence",
+      "startSample": 22080,
+      "endSample": 25280,
+      "startMs": 1380,
+      "endMs": 1580,
+      "durationMs": 200,
+      "note": "exact by construction"
+    },
+    {
+      "kind": "silence",
+      "startSample": 40960,
+      "endSample": 47360,
+      "startMs": 2560,
+      "endMs": 2960,
+      "durationMs": 400,
+      "note": "exact by construction"
+    }
+  ],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-analytic",
+    "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+    "seed": 20261018,
+    "verified_by": null,
+    "review_state": "UNVERIFIED-FILLER-LABEL",
+    "note": "A forced aligner would map whichever token is in the supplied text. It cannot decide which token was a filler. Do not score this fixture with filler precision/recall until a reviewer labels it.",
+    "classes_present": [
+      "lexical-like",
+      "disputed-filler-like"
+    ]
+  }
+}

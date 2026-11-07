@@ -1,0 +1,16 @@
+{
+  "observationVersion": "0.1",
+  "metricKey": "filler.count",
+  "source": "measured",
+  "status": "available",
+  "value": 1,
+  "unit": "milliseconds",
+  "evidenceSpan": null,
+  "reliability": {
+    "level": "low",
+    "limitations": ["filler detection not validated in Phase 01"]
+  },
+  "roundId": "rnd_c9d0e1f2",
+  "turnId": "trn_a3b4c5d6",
+  "observedAt": "2026-10-16T09:31:10Z"
+}

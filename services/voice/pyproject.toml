@@ -3,11 +3,33 @@ name = "gnani-coach"
 version = "0.1.0"
 description = "Speaking Coach voice-service skeleton (Phase 01 foundation): process health and the configuration boundary only. No live speech provider is implemented."
 requires-python = ">=3.12,<3.13"
+# Phase 02 additions (researched 2026-10-18, see docs/feasibility/SETUP.md):
+#   websockets  16.1.1  low-level transport. The Gnani STT page states the
+#                       `gnani-vachana` Python SDK does NOT expose VAD
+#                       tuning and directs you to a raw WebSocket client, so
+#                       the SDK is deliberately not installed. Pinned <17
+#                       because google-genai 2.31.0 requires websockets<17.
+#   google-genai 2.31.0 current Google GenAI SDK (Interactions API).
+#   numpy         2.5.4  PCM/VAD numeric work (Python 3.12 floor matches).
+#   onnxruntime   1.31.0 CPU VAD inference. Chosen over `silero-vad`, whose
+#                       6.2.3 hard-depends on torch (127 MB wheel + deps) for
+#                       a model we can run from ONNX alone.
 dependencies = [
     "fastapi==0.143.3",
     "uvicorn==0.54.0",
+    # Phase 06 addition (2026-10-20, ADDENDUM section F): the Supabase
+    # identity and storage clients talk to the Auth, REST and Storage APIs
+    # over plain HTTPS. `httpx` was already in this lock file as a
+    # transitive dependency of google-genai 2.31.0; it is declared directly
+    # now because the identity and persistence modules import it. No new
+    # package is downloaded: the pin is the version already resolved.
+    "httpx==0.28.1",
     "pydantic==2.14.1",
     "pydantic-settings==2.16.0",
+    "websockets==16.1.1",
+    "google-genai==2.31.0",
+    "numpy==2.5.4",
+    "onnxruntime==1.31.0",
 ]
 
 [dependency-groups]
@@ -26,3 +48,6 @@ module-name = "gnani_coach"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "live: opt-in live provider checks; excluded from the default suite and skipped unless GNANI_LIVE_TESTS=1 plus real credentials are configured",
+]

@@ -1,0 +1,62 @@
+{
+  "fixtureId": "one-word",
+  "kind": "analytic",
+  "description": "Single short utterance; probes x-min-segment-ms short-answer behaviour.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [
+    {
+      "tag": "silence",
+      "start_sample": 0,
+      "end_sample": 6400,
+      "start_ms": 0,
+      "end_ms": 400,
+      "duration_ms": 400
+    },
+    {
+      "tag": "speech",
+      "start_sample": 6400,
+      "end_sample": 10400,
+      "start_ms": 400,
+      "end_ms": 650,
+      "duration_ms": 250
+    },
+    {
+      "tag": "silence",
+      "start_sample": 10400,
+      "end_sample": 20000,
+      "start_ms": 650,
+      "end_ms": 1250,
+      "duration_ms": 600
+    }
+  ],
+  "labels": [
+    {
+      "kind": "silence",
+      "startSample": 0,
+      "endSample": 6400,
+      "startMs": 0,
+      "endMs": 400,
+      "durationMs": 400,
+      "note": "exact by construction"
+    },
+    {
+      "kind": "silence",
+      "startSample": 10400,
+      "endSample": 20000,
+      "startMs": 650,
+      "endMs": 1250,
+      "durationMs": 600,
+      "note": "exact by construction"
+    }
+  ],
+  "expectedScript": "(placeholder signal; no words)",
+  "labelProvenance": {
+    "origin": "synthetic-analytic",
+    "generator": "gnani-coach-phase02-fixture-generator@1.0.0",
+    "seed": 20261018,
+    "verified_by": null,
+    "review_state": "unreviewed-synthetic",
+    "note": "Generated signal, not speech. Segment indices and silence boundaries are exact; no claim is made about natural speech onsets or about any recogniser."
+  }
+}

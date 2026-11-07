@@ -1,0 +1,57 @@
+=== npm-build ===
+
+> speaking-coach@0.1.0 build
+> npm run build --workspace @gnani/web
+
+
+> @gnani/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 11ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 142ms
+  Running TypeScript ...
+src/features/call/CallExperience.tsx(258,33): error TS2741: Property 'onBack' is missing in type '{ catalog: PracticeCatalog; }' but required in type 'FeaturesViewProps'.
+tests/playwright.config.ts(58,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.
+      Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'Partial<PlaywrightTestOptions & CustomProperties<unknown>>'.
+        Types of property 'permissions' are incompatible.
+          The type 'readonly ["microphone"]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+            Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.
+              Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'Partial<PlaywrightTestOptions & CustomProperties<unknown>>'.
+                Types of property 'permissions' are incompatible.
+                  The type 'readonly ["microphone"]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+tests/playwright.config.ts(66,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.
+      Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'Partial<PlaywrightTestOptions & CustomProperties<unknown>>'.
+        Types of property 'permissions' are incompatible.
+          The type 'readonly ["microphone"]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+            Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.
+              Type '{ permissions: readonly ["microphone"]; launchOptions: { args: string[]; }; viewport: ViewportSize; userAgent: string; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean; defaultBrowserType: "chromium" | "firefox" | "webkit"; }' is not assignable to type 'Partial<PlaywrightTestOptions & CustomProperties<unknown>>'.
+                Types of property 'permissions' are incompatible.
+                  The type 'readonly ["microphone"]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+tests/unit/client.spec.ts(183,5): error TS2698: Spread types may only be created from object types.
+tests/unit/settings.spec.ts(181,34): error TS2345: Argument of type '{ consent: { consentVersion: "0.1"; recordingRetentionGranted: boolean; recordingRetentionGrantedAt: null; }; scenarioId: string; scenarioPresetId: string | null; customTopic: string; ... 6 more ...; subtitles: boolean; }' is not assignable to parameter of type 'SessionSettings'.
+  Type '{ consent: { consentVersion: "0.1"; recordingRetentionGranted: boolean; recordingRetentionGrantedAt: null; }; scenarioId: string; scenarioPresetId: string | null; customTopic: string; ... 6 more ...; subtitles: boolean; }' is missing the following properties from type 'SessionSettings': settingsVersion, level, coachingRoundTurns, sessionLimitSeconds
+tests/unit/settings.spec.ts(191,34): error TS2345: Argument of type '{ consent: { consentVersion: "0.1"; recordingRetentionGranted: boolean; recordingRetentionGrantedAt: string; }; scenarioId: string; scenarioPresetId: string | null; customTopic: string; ... 6 more ...; subtitles: boolean; }' is not assignable to parameter of type 'SessionSettings'.
+  Type '{ consent: { consentVersion: "0.1"; recordingRetentionGranted: boolean; recordingRetentionGrantedAt: string; }; scenarioId: string; scenarioPresetId: string | null; customTopic: string; ... 6 more ...; subtitles: boolean; }' is missing the following properties from type 'SessionSettings': settingsVersion, level, coachingRoundTurns, sessionLimitSeconds
+tests/unit/settings.spec.ts(197,34): error TS2345: Argument of type '{ sessionLimitSeconds: number; scenarioId: string; scenarioPresetId: string | null; customTopic: string; practiceLanguageId: string; coachingLanguageId: string; coachingLanguageChosen: boolean; levelId: string; recordingRetention: boolean; recordingRetentionGrantedAt: string | null; subtitles: boolean; }' is not assignable to parameter of type 'SessionSettings'.
+  Type '{ sessionLimitSeconds: number; scenarioId: string; scenarioPresetId: string | null; customTopic: string; practiceLanguageId: string; coachingLanguageId: string; coachingLanguageChosen: boolean; levelId: string; recordingRetention: boolean; recordingRetentionGrantedAt: string | null; subtitles: boolean; }' is missing the following properties from type 'SessionSettings': settingsVersion, level, coachingRoundTurns, consent
+tests/unit/settings.spec.ts(199,34): error TS2345: Argument of type '{ coachingRoundTurns: number; scenarioId: string; scenarioPresetId: string | null; customTopic: string; practiceLanguageId: string; coachingLanguageId: string; coachingLanguageChosen: boolean; levelId: string; recordingRetention: boolean; recordingRetentionGrantedAt: string | null; subtitles: boolean; }' is not assignable to parameter of type 'SessionSettings'.
+  Type '{ coachingRoundTurns: number; scenarioId: string; scenarioPresetId: string | null; customTopic: string; practiceLanguageId: string; coachingLanguageId: string; coachingLanguageChosen: boolean; levelId: string; recordingRetention: boolean; recordingRetentionGrantedAt: string | null; subtitles: boolean; }' is missing the following properties from type 'SessionSettings': settingsVersion, level, sessionLimitSeconds, consent
+tests/unit/worklet.spec.ts(61,16): error TS2306: File '/Users/princegondaliya/Learning/Projects/temp/gnani/apps/web/src/lib/audio/capture-worklet.js' is not a module.
+tests/unit/worklet.spec.ts(89,25): error TS2740: Type 'Float32Array<ArrayBuffer>' is missing the following properties from type 'number[]': pop, push, concat, shift, and 6 more.
+Failed to type check.
+
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /Users/princegondaliya/Learning/Projects/temp/gnani/apps/web
+npm error workspace @gnani/web@0.1.0
+npm error location /Users/princegondaliya/Learning/Projects/temp/gnani/apps/web
+npm error command failed
+npm error command sh -c next build
+--- exit code: 1 ---

@@ -1,0 +1,25 @@
+{
+  "runId": "20261020T092922Z-filler-45696009ad-3a0eed",
+  "command": "filler",
+  "argv": [
+    "filler",
+    "--allow-live",
+    "--max-requests",
+    "16"
+  ],
+  "cwd": "/Users/princegondaliya/Learning/Projects/temp/gnani",
+  "startedUtc": "2026-10-20T09:29:22Z",
+  "finishedUtc": "2026-10-20T09:29:22Z",
+  "runtimeSeconds": 0.131,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "darwin"
+  },
+  "exitCode": 1,
+  "overall": "FAILED",
+  "allowLive": false,
+  "attemptAccounting": null,
+  "notes": [
+    "command: filler"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "fixtureId": "spoken-known-gap",
+  "kind": "spoken",
+  "description": "One sentence with a deliberate 1.2 s mid-sentence pause.",
+  "languageId": "english",
+  "languageCode": "en-IN",
+  "segments": [],
+  "labels": [],
+  "expectedScript": "",
+  "labelProvenance": {
+    "origin": "synthetic-spoken-pending",
+    "generator": null,
+    "verified_by": null,
+    "review_state": "MISSING-REQUIRED-SPEECH-SOURCE",
+    "smallest_user_action": "The user reads one sentence, pausing mid-sentence for about 1.2 s.",
+    "note": "Real spoken fixtures are required before any filler or boundary claim can be made. Synthetic analytic fixtures cannot substitute for them."
+  }
+}

@@ -1,0 +1,651 @@
+{
+  "matrixVersion": "0.1",
+  "status": "DRAFT - Phase 02 feasibility observation, NOT a frozen catalog",
+  "generatedFrom": [
+    "prompts/phase-02-provider-feasibility/evidence/live-matrix-result*.json",
+    "prompts/phase-02-provider-feasibility/evidence/live-chain-result.json",
+    "tools/probes/.cache/runs.jsonl"
+  ],
+  "catalogSource": "packages/contracts/data/catalog.json (read, not modified)",
+  "entryKinds": [
+    "language",
+    "code-mixed-mode"
+  ],
+  "notProvenByApiAccess": [
+    "human intelligibility of the synthesised speech",
+    "coaching or teaching quality in this language",
+    "recognition accuracy on natural learner speech",
+    "filler preservation",
+    "any pronunciation or confidence measure"
+  ],
+  "caveats": [
+    "The observedStt column of these historical runs records PARAMETER ACCEPTANCE, not language coverage. Only the English fixture (spoken-clear-sentence, en-IN) existed when these runs were made, so every other row's STT cell shows that the endpoint accepted that language's code. It does not establish that-language recognition.",
+    "These historical rows were aggregated from the STT cell alone. The repaired matrix aggregates every requested stage (STT, TTS, reasoning); a row is covered only when all of them pass. The repaired matrix has not been re-run: no replacement credentials are confirmed and no native per-language fixtures exist yet.",
+    "Wire-attempt counts for these historical runs are UNKNOWN. Attempt accounting was introduced in Phase 02 FIX-1; the earlier runs carry no measured attempt count and are never reconstructed as zero.",
+    "The filler state is 'fillers absent from recognition'. Whether the fillers were present in the rendered audio was NOT reviewed, so this is neither a measured zero-filler result nor a finding of permanent recogniser incapability."
+  ],
+  "historicalWireAttempts": "unknown",
+  "columnsTrackedIndependently": [
+    "documentedSupport",
+    "observedStt",
+    "observedTts",
+    "observedTtsVoice",
+    "observedGeminiReplyLanguage",
+    "verifiedCoachingQuality",
+    "fillerPreservation",
+    "audioLocalization"
+  ],
+  "entries": [
+    {
+      "id": "english",
+      "displayName": "English (India)",
+      "nativeName": "English",
+      "sttCode": "en-IN",
+      "ttsCode": "en-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Devika",
+      "observedTtsBytes": 66560,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "The realtime STT documentation describes this entry as accepting Hindi–English mixed audio with Latin-script output. The TTS code hi-en must not be sent to STT.",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "hindi",
+      "displayName": "Hindi",
+      "nativeName": "हिन्दी",
+      "sttCode": "hi-IN",
+      "ttsCode": "hi-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Ambuja",
+      "observedTtsBytes": 71680,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "bengali",
+      "displayName": "Bengali",
+      "nativeName": "বাংলা",
+      "sttCode": "bn-IN",
+      "ttsCode": "bn-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Dhruva",
+      "observedTtsBytes": 66560,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "gujarati",
+      "displayName": "Gujarati",
+      "nativeName": "ગુજરાતી",
+      "sttCode": "gu-IN",
+      "ttsCode": "gu-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Falak",
+      "observedTtsBytes": 81920,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "kannada",
+      "displayName": "Kannada",
+      "nativeName": "ಕನ್ನಡ",
+      "sttCode": "kn-IN",
+      "ttsCode": "kn-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Kavin",
+      "observedTtsBytes": 61440,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "malayalam",
+      "displayName": "Malayalam",
+      "nativeName": "മലയാളം",
+      "sttCode": "ml-IN",
+      "ttsCode": "ml-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Reshma",
+      "observedTtsBytes": 66560,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "marathi",
+      "displayName": "Marathi",
+      "nativeName": "मराठी",
+      "sttCode": "mr-IN",
+      "ttsCode": "mr-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Ishaan",
+      "observedTtsBytes": 66560,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "punjabi",
+      "displayName": "Punjabi",
+      "nativeName": "ਪੰਜਾਬੀ",
+      "sttCode": "pa-IN",
+      "ttsCode": "pa-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Mehuli",
+      "observedTtsBytes": 76800,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "tamil",
+      "displayName": "Tamil",
+      "nativeName": "தமிழ்",
+      "sttCode": "ta-IN",
+      "ttsCode": "ta-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Asmita",
+      "observedTtsBytes": 66560,
+      "observedGeminiReplyLanguage": "FAILED",
+      "observedGeminiModel": "NOT RUN",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "telugu",
+      "displayName": "Telugu",
+      "nativeName": "తెలుగు",
+      "sttCode": "te-IN",
+      "ttsCode": "te-IN",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Lavanya",
+      "observedTtsBytes": 71680,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    },
+    {
+      "id": "hinglish",
+      "displayName": "Hinglish (Hindi–English mix)",
+      "nativeName": null,
+      "sttCode": "en-IN",
+      "ttsCode": "hi-en",
+      "documentedSupport": true,
+      "observedStt": "PASSED",
+      "observedTts": "PASSED",
+      "observedTtsModel": "timbre-v2.5",
+      "observedTtsVoice": "Poorvi",
+      "observedTtsBytes": 61440,
+      "observedGeminiReplyLanguage": "PASSED",
+      "observedGeminiModel": "gemini-3.8-flash",
+      "verifiedCoachingQuality": "NOT RUN",
+      "fillerPreservation": "NOT RUN",
+      "audioLocalization": "NOT RUN",
+      "limitations": [
+        "",
+        "Realtime STT describes Hindi–English mixed input under the English entry; the separate TTS code hi-en must not be sent to STT.",
+        "Treated as an additional code-mixed mode, not an eleventh independent language, and not a proven mixed-language scoring system.",
+        "No intelligibility or coaching-quality review was performed."
+      ],
+      "sourceRefs": [
+        "stt-realtime",
+        "tts-realtime"
+      ]
+    }
+  ],
+  "chainedTurn": {
+    "fixture_id": "spoken-clear-sentence",
+    "language": "en-IN",
+    "gemini_model": "gemini-3.8-flash",
+    "tts_model": "timbre-v2.5",
+    "tts_voice": "Kaveri",
+    "recognized_chars": 55,
+    "reply_chars": 48,
+    "tts_total_bytes": 81920,
+    "first_nonempty_chunk_ms_backend": 359.53,
+    "timings_ms": {
+      "stt_ms": 6496.1,
+      "gemini_ms": 3541.3,
+      "tts_total_ms": 2325.8
+    },
+    "budget": {
+      "operations_used": 5,
+      "operations_limit": 40,
+      "stt_audio_seconds": 3.2,
+      "stt_audio_seconds_limit": 300.0,
+      "connections_used": 2,
+      "connections_limit": 12,
+      "retries": 0,
+      "max_retries_per_operation": 2,
+      "per_kind": {
+        "gemini:reply": 1,
+        "gnani-stt:connect": 1,
+        "gnani-stt:session": 1,
+        "gnani-tts:connect": 1,
+        "gnani-tts:synthesize": 1
+      }
+    }
+  },
+  "probeInvocations": [
+    {
+      "recordedAt": "2026-10-18T08:54:29Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T08:55:33Z",
+      "command": "fixtures",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T08:55:45Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 2
+    },
+    {
+      "recordedAt": "2026-10-18T08:55:54Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "PASSED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T08:59:04Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:14:56Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:16:54Z",
+      "command": "fixtures",
+      "allowLive": true,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:17:43Z",
+      "command": "fixtures",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:18:38Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 1
+    },
+    {
+      "recordedAt": "2026-10-18T09:19:40Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:20:03Z",
+      "command": "chain",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 1
+    },
+    {
+      "recordedAt": "2026-10-18T09:20:41Z",
+      "command": "chain",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:20:59Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:21:07Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:21:50Z",
+      "command": "matrix",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:24:15Z",
+      "command": "matrix",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 1
+    },
+    {
+      "recordedAt": "2026-10-18T09:26:20Z",
+      "command": "matrix",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T09:28:25Z",
+      "command": "matrix",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 1
+    },
+    {
+      "recordedAt": "2026-10-18T09:36:39Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:31:03Z",
+      "command": "matrix",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:31:26Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:31:27Z",
+      "command": "analysis",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:38:45Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:38:46Z",
+      "command": "fixtures",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:38:46Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:38:46Z",
+      "command": "analysis",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:41:24Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:41:41Z",
+      "command": "speech",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:41:41Z",
+      "command": "chain",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 2
+    },
+    {
+      "recordedAt": "2026-10-18T16:42:28Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "BLOCKED",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:43:35Z",
+      "command": "fixtures",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:43:35Z",
+      "command": "fixtures",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:43:36Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:45:58Z",
+      "command": "chain",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 1
+    },
+    {
+      "recordedAt": "2026-10-18T16:46:30Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:46:30Z",
+      "command": "fixtures",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:46:30Z",
+      "command": "analysis",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T16:46:30Z",
+      "command": "analysis",
+      "allowLive": true,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-18T17:49:39Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-20T07:30:22Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    },
+    {
+      "recordedAt": "2026-10-20T07:30:47Z",
+      "command": "preflight",
+      "allowLive": false,
+      "overall": "INCONCLUSIVE",
+      "exitCode": 0
+    }
+  ]
+}

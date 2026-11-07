@@ -1,0 +1,44 @@
+{
+  "metricsVersion": "0.1",
+  "sessionId": "ses_c3d4e5f6",
+  "recordedAt": "2026-10-20T08:15:00Z",
+  "practiceLanguageId": "tamil",
+  "scenarioId": "custom",
+  "recordingId": null,
+  "turns": [
+    {
+      "turnId": "trn_c5d6e7f8",
+      "roundId": null,
+      "durationMs": 9000,
+      "recognitionStatus": "missing-transcription",
+      "audioSourceClassification": "learner-audio",
+      "observations": [
+        {
+          "metricKey": "speech.rate_wpm",
+          "denominator": "learner_span_ms",
+          "recognitionStatus": "missing-transcription",
+          "unavailabilityReason": "stt_unavailable",
+          "status": "unavailable",
+          "value": null,
+          "unit": null
+        },
+        {
+          "metricKey": "speech.active_rate_wpm",
+          "denominator": "speech_active_ms",
+          "unavailabilityReason": "stt_unavailable",
+          "status": "unavailable",
+          "value": null,
+          "unit": null
+        },
+        {
+          "metricKey": "turn.duration_ms",
+          "method": "learner_audio_sample_clock",
+          "status": "available",
+          "value": 9000,
+          "unit": "milliseconds"
+        }
+      ]
+    }
+  ],
+  "totals": { "turnCount": 1, "speakingTimeMs": 4000 }
+}
