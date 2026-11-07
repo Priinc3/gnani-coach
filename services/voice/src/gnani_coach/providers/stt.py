@@ -554,8 +554,13 @@ class GnaniSttSession:
         emitted. That silence is padding, not learner speech: it is recorded
         on the clock as padding and is excluded from the genuine span.
         """
-        if self._transport is None or self._closed:
+        if self._closed:
             raise CancelledError("session is closed", provider=PROVIDER)
+        if self._transport is None:
+            # The port wrapper opens a session and then submits a clip
+            # without entering the async context. Connect lazily on first
+            # use so a live call does not fail with "session is closed".
+            await self._connect()
 
         frame_ms = frame_duration_ms(self.config.sample_rate)
         grace = self.idle_grace_ms if idle_grace_ms is None else idle_grace_ms

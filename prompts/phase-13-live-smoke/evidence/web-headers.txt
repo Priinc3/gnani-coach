@@ -1,0 +1,30 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 630
+cache-control: private, no-store, no-cache, must-revalidate, max-age=0
+content-disposition: inline
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' wss://13-205-26-178.sslip.io https://13-205-26-178.sslip.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+content-type: text/html; charset=utf-8
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+date: Sat, 07 Nov 2026 11:23:09 GMT
+etag: "0469f08f94853cbb7cee0d850b3076f6"
+expires: 0
+permissions-policy: camera=(), microphone=(self), geolocation=(), payment=(), usb=()
+pragma: no-cache
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=31536000; includeSubDomains
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-frame-options: DENY
+x-matched-path: /
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-permitted-cross-domain-policies: none
+x-vercel-cache: HIT
+x-vercel-id: bom1::gjb26-1794050589543-fa0de3e77d22
+content-length: 23545
+

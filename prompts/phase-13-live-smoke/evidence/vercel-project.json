@@ -1,0 +1,19 @@
+{
+  "id": "prj_X5G5R7k5hG3Amkfz1mzJEPHjpmnE",
+  "name": "gnani-coach",
+  "owner": {
+    "name": "0-prince-0's projects",
+    "slug": "0-prince-0s-projects"
+  },
+  "createdAt": 1794049855157,
+  "rootDirectory": "apps/web",
+  "nodeVersion": "24.x",
+  "framework": "nextjs",
+  "buildCommand": null,
+  "outputDirectory": null,
+  "installCommand": null,
+  "sandbox": {
+    "region": "iad1",
+    "failoverRegions": []
+  }
+}

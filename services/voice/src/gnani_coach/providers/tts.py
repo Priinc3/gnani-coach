@@ -519,8 +519,13 @@ class GnaniTtsSession:
         Returns a :class:`TtsResult`. A fenced chunk is recorded with its
         payload but is **not** forwarded to ``forward``.
         """
-        if self._transport is None or self._closed:
+        if self._closed:
             raise CancelledError("session is closed", provider=PROVIDER)
+        if self._transport is None:
+            # The port wrapper opens a session and then synthesises without
+            # entering the async context. Connect lazily on first use so a
+            # live call does not fail with "session is closed".
+            await self._connect()
         if self._in_flight:
             raise InvalidRequestError(
                 "one synthesis request at a time per connection (documented)"

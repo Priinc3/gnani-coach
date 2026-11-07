@@ -1,0 +1,14 @@
+# APK workflow attempts
+Sat Nov  7 11:22:55 UTC 2026
+--- old run 42357747364 ---
+{'id': 42357747364, 'status': 'queued', 'conclusion': None, 'created_at': '2026-11-07T08:59:04Z', 'updated_at': '2026-11-07T09:00:08Z', 'html_url': 'https://github.com/Priinc3/gnani-coach/actions/runs/42357747364'}
+--- new run 42367877759 ---
+{'id': 42367877759, 'status': 'completed', 'conclusion': 'startup_failure', 'created_at': '2026-11-07T11:21:59Z', 'updated_at': '2026-11-07T11:22:00Z', 'html_url': 'https://github.com/Priinc3/gnani-coach/actions/runs/42367877759'}
+--- jobs for new run ---
+jobs 0
+--- cancel old ---
+{"message":"Cannot cancel a workflow re-run that has not yet queued.","documentation_url":"https://docs.github.com/rest/actions/workflow-runs#cancel-a-workflow-run","status":"409"}gh: Cannot cancel a workflow re-run that has not yet queued. (HTTP 409)
+
+--- final check Sat Nov  7 11:27:23 UTC 2026 (5 min after dispatch) ---
+{'id': 42367877759, 'status': 'completed', 'conclusion': 'startup_failure', 'updated_at': '2026-11-07T11:22:00Z'}
+jobs 0

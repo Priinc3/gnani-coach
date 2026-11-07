@@ -52,11 +52,16 @@ class _SttSession:
             raw_pcm, trailing_silence_ms=trailing_silence_ms
         )
         clock = result.sample_clock
+        # ``SampleClock`` exposes milliseconds through ``summary()``; the
+        # attributes are ``genuine_seconds``/``submitted_seconds``/
+        # ``padding_seconds``. Read the documented summary so a live
+        # submission does not fail on a missing attribute.
+        summary = clock.summary()
         return SttRunResult(
             segments=tuple(_segment_from_event(event) for event in result.transcripts),
-            genuine_ms=clock.genuine_ms,
-            submitted_ms=clock.submitted_ms,
-            padding_ms=clock.padding_ms,
+            genuine_ms=int(summary["genuine_ms"]),
+            submitted_ms=int(summary["submitted_ms"]),
+            padding_ms=int(summary["padding_ms"]),
             end_padding_ms=result.end_padding_ms,
             unrecognized_frame_count=len(result.unrecognized_frames),
         )
