@@ -93,3 +93,82 @@ that in-flight file; the clean run above is after the sibling finished.
   page; Phase 10 did not edit those files.
 
 PHASE 10 BUILT
+
+## FIX-1
+
+### Files changed
+
+- `apps/web/src/features/call/components/SignInEntry.tsx` (new) — the
+  guest-only same-origin link to `/auth/sign-in`, min height 48 px, with the
+  one-line promise that guests can still practise but nothing is saved.
+- `apps/web/src/features/call/components/AccountSection.tsx` (new) — guest
+  entry in Settings; signed-in account state, Sign out, and the destructive
+  delete flow. Delete reuses the End-call sheet, asks for the password in a
+  `type="password"` field with `autocomplete="current-password"`, states
+  “This deletes your account, history and saved recordings. It cannot be
+  undone.”, calls `deleteAccount(password)` once per confirmed submit, keeps
+  the sheet open on failure with the returned message, and clears the field
+  on close.
+- `apps/web/src/features/call/views/LandingView.tsx` — guest sign-in entry
+  and a short account-deleted confirmation.
+- `apps/web/src/features/call/views/HistoryView.tsx` — guest sign-in entry
+  inside the existing empty Progress state.
+- `apps/web/src/features/call/views/SettingsView.tsx` — renders the account
+  section at the top of the settings stack and accepts `onSignOut` /
+  `onDeleted`.
+- `apps/web/src/features/call/CallExperience.tsx` — wires the existing
+  `handleSignOut`, adds `handleAccountDeleted` (reset call state, landing
+  view, confirmation), and passes `signedIn`/`notice` to the landing view.
+- `apps/web/src/features/call/app.module.css` — styles for the sign-in entry,
+  account cards, delete form and error line; 48 px destructive/secondary
+  targets.
+- `apps/web/tests/flow/mobile-ui.spec.ts` — one new test: a guest sees the
+  sign-in link in Settings, its href is `/auth/sign-in`, and its target is at
+  least 48 px tall.
+
+### Commands run
+
+- `cd apps/web && NODE_OPTIONS=--max-old-space-size=512 npx tsc --noEmit`
+  → exit 0. Raw output: `evidence/tsc-fix1.log`,
+  `evidence/tsc-fix1-command.txt`.
+- `cd apps/web && npx eslint <touched TS/TSX files>` → exit 0 (CSS is
+  ignored by the repo config). Raw output: `evidence/eslint-fix1.log`,
+  `evidence/eslint-fix1-command.txt`.
+
+### Verified by reading
+
+- Guest entry exists in all three places and only for guests:
+  `LandingView` renders it when `signedIn` is false; `HistoryView` renders it
+  in the `state.kind === "guest"` branch; `AccountSection` renders it in
+  Settings when `signedIn` is false. Signed-in learners get the account card
+  instead, with Sign out and Delete.
+- Delete calls `deleteAccount(password)` exactly once per submit: the form
+  has one `onSubmit`, and a `busy` guard returns before a second request.
+  The password lives only in component state, is cleared on success and on
+  close, and is never logged.
+- On success `deleteAccount` has already moved the session to guest; the app
+  calls `session.reset()`, returns to landing and shows
+  “Your account, history and saved recordings were deleted.”
+- No paths outside the FIX-1 OWN list were edited; `git diff --stat` before
+  the commit showed only `features/call/**`, `tests/**`, the two G2 files and
+  this phase folder.
+- Honesty and mobile rules unchanged: no scores, no “end-to-end encrypted”
+  claim, no language-verification claim; the new link is a 48 px target and
+  does not add horizontal scroll.
+
+### Process restore
+
+- `STATUS.md` row 10 restored to `DONE | 08:52 | Phone layout, PWA, mic
+  check, account entry`.
+- `COMM.md` re-added the `## 10 08:45 — Phase 10 done …` entry from
+  `88f4b26` and added the FIX-1 entry. No other row or entry was changed.
+
+### Limits
+
+- No browser, Playwright or `next build` on this box (2 GB rule). The new
+  test and the delete/sign-out UI were verified by reading and by `tsc` /
+  `eslint`; the real click-through belongs to the Phase 13 smoke.
+- Commit hash: `0e670b3` (`phase-10: fix-1 account entry points`).
+
+PHASE 10 FIX-1 BUILT
+

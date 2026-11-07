@@ -18,6 +18,7 @@
  */
 
 import styles from "../app.module.css";
+import { AccountSection } from "../components/AccountSection";
 import { ArrowLeftIcon, CheckIcon, MicIcon } from "../components/Icon";
 import { MicCheck } from "../components/MicCheck";
 import type { PracticeCatalog } from "../state/settings";
@@ -43,6 +44,10 @@ export interface SettingsViewProps {
   onCustomTopic: (text: string) => void;
   onStart: () => void;
   onBack: () => void;
+  /** The same sign-out handler the live call screen uses. */
+  onSignOut: () => void;
+  /** Called after the account and its data were deleted. */
+  onDeleted: () => void;
 }
 
 export function SettingsView({
@@ -66,6 +71,8 @@ export function SettingsView({
   onCustomTopic,
   onStart,
   onBack,
+  onSignOut,
+  onDeleted,
 }: SettingsViewProps) {
   const scenario = catalog.scenarios.find((entry) => entry.id === scenarioId);
   const preset = scenario?.presets?.find((entry) => entry.id === presetId);
@@ -91,6 +98,12 @@ export function SettingsView({
         </p>
 
         <div className={styles.settingsStack}>
+          <AccountSection
+            signedIn={signedIn}
+            onSignOut={onSignOut}
+            onDeleted={onDeleted}
+          />
+
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="practice-language">
               Speaking language

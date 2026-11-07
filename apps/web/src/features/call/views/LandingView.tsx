@@ -15,15 +15,26 @@
 import styles from "../app.module.css";
 import { CoachAvatar } from "../components/CoachAvatar";
 import { ArrowLeftIcon, MicIcon, SparkIcon } from "../components/Icon";
+import { SignInEntry } from "../components/SignInEntry";
 import type { PracticeCatalog } from "../state/settings";
 
 export interface LandingViewProps {
   catalog: PracticeCatalog;
   onStart: () => void;
   onSeeFeatures: () => void;
+  /** Whether the learner has a verified session. */
+  signedIn?: boolean;
+  /** A short confirmation after an account was deleted. */
+  notice?: string | null;
 }
 
-export function LandingView({ catalog, onStart, onSeeFeatures }: LandingViewProps) {
+export function LandingView({
+  catalog,
+  onStart,
+  onSeeFeatures,
+  signedIn = false,
+  notice = null,
+}: LandingViewProps) {
   const languageCount = catalog.languages.length;
   const scenarioCount = catalog.scenarios.length;
   const presetCount = catalog.scenarios.reduce(
@@ -36,6 +47,11 @@ export function LandingView({ catalog, onStart, onSeeFeatures }: LandingViewProp
 
   return (
     <div className={styles.container}>
+      {notice ? (
+        <p className={styles.callNote} role="status" data-testid="account-notice">
+          {notice}
+        </p>
+      ) : null}
       <section className={styles.hero} aria-labelledby="landing-title">
         <div>
           <p className={styles.eyebrow}>
@@ -62,6 +78,7 @@ export function LandingView({ catalog, onStart, onSeeFeatures }: LandingViewProp
             The call runs in this browser over one connection to our own voice service. No speech
             provider key ever reaches the page, and the recording is off until you turn it on.
           </p>
+          {!signedIn ? <SignInEntry /> : null}
           <dl className={styles.statRow}>
             <div>
               <dd className={styles.statValue}>{languageCount} documented languages</dd>

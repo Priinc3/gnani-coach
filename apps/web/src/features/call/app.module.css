@@ -839,6 +839,97 @@
   font-size: 1.02rem;
 }
 
+/* ------------------------------------------------------------------ */
+/* Account entry points                                               */
+/* ------------------------------------------------------------------ */
+
+.signInEntry {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  margin-top: 18px;
+}
+
+.signInEntryLink {
+  min-height: 48px;
+  text-align: center;
+}
+
+.accountGuest,
+.accountSection {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+}
+
+.accountGuest {
+  border-style: dashed;
+  background: var(--panel-sunk);
+}
+
+.accountSection {
+  border-color: var(--accent-line);
+  background: var(--accent-tint);
+}
+
+.accountIcon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--accent-tint);
+  color: var(--primary);
+}
+
+.accountTitle {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.accountText {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--text-small);
+}
+
+.accountActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.accountActions .secondaryButton,
+.accountDeleteButton {
+  min-height: 48px;
+}
+
+.accountDeleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.confirmForm {
+  display: grid;
+  gap: 8px;
+}
+
+.confirmInput {
+  max-width: 100%;
+}
+
+.confirmError {
+  margin: 0;
+  color: #8c2f2f;
+  font-size: var(--text-small);
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Call screen                                                        */

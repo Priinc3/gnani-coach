@@ -43,8 +43,7 @@ test("the phone shell shows the bottom tab bar with 48 px targets", async ({ pag
   }
 });
 
-test("the call controls sit at the bottom and End asks first", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 740 });
+test("the call controls sit at the bottom and End asks first", async ({ page }) => {  await page.setViewportSize({ width: 360, height: 740 });
   await installFakeVoiceServer(page, "silent");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
@@ -61,4 +60,18 @@ test("the call controls sit at the bottom and End asks first", async ({ page }) 
   await page.getByRole("button", { name: "Stay in call" }).click();
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(page.getByTestId("call-status")).toContainText("Listening");
+});
+
+test("a guest sees the sign-in link in Settings", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start a practice call" }).click();
+  await page.getByRole("button", { name: "Continue to settings" }).click();
+  await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
+
+  const link = page.getByRole("link", { name: "Sign in or create an account" });
+  await expect(link).toBeVisible();
+  expect(await link.getAttribute("href")).toBe("/auth/sign-in");
+  const box = await link.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(48);
 });

@@ -21,6 +21,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import styles from "../app.module.css";
 import { ArrowLeftIcon, ClockIcon, ProgressIcon, TrashIcon, UsersIcon } from "../components/Icon";
+import { SignInEntry } from "../components/SignInEntry";
 import {
   deleteRecording,
   fetchHistory,
@@ -195,6 +196,7 @@ export function HistoryView({ httpBaseUrl, languageNames, scenarioNames, onBack 
               You can practise as a guest — the call works exactly the same. A guest has no saved
               history and no retained audio, so nothing is kept until you sign in.
             </p>
+            <SignInEntry />
           </div>
         ) : null}
 

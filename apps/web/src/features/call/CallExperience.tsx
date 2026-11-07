@@ -75,6 +75,7 @@ const NAV_ITEMS: { id: View; label: string }[] = [
 export function CallExperience({ catalog }: CallExperienceProps) {
   const practiceCatalog = catalog as unknown as PracticeCatalog;
   const [view, setView] = useState<View>("landing");
+  const [accountNotice, setAccountNotice] = useState<string | null>(null);
   const [settings, dispatchSettings] = useReducer(
     settingsReducer,
     undefined,
@@ -118,6 +119,9 @@ export function CallExperience({ catalog }: CallExperienceProps) {
 
   const navigate = useCallback((next: View) => {
     setView(next);
+    if (next !== "landing") {
+      setAccountNotice(null);
+    }
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0 });
     }
@@ -174,6 +178,17 @@ export function CallExperience({ catalog }: CallExperienceProps) {
       }
     })();
   }, [session]);
+
+  /**
+   * The account and every row and recording were deleted by the settings
+   * screen. `deleteAccount` has already moved the session to guest; the
+   * app returns to the landing view with a short confirmation.
+   */
+  const handleAccountDeleted = useCallback(() => {
+    session.reset();
+    setAccountNotice("Your account, history and saved recordings were deleted.");
+    navigate("landing");
+  }, [navigate, session]);
 
   /**
    * "Try again" — a fresh connection.
@@ -294,6 +309,8 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             catalog={practiceCatalog}
             onStart={() => navigate("scenarios")}
             onSeeFeatures={() => navigate("features")}
+            signedIn={signedIn}
+            notice={accountNotice}
           />
         ) : null}
 
@@ -341,6 +358,8 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             onCustomTopic={(text) => dispatchSettings({ type: "custom_topic", text })}
             onStart={() => void handleStart()}
             onBack={() => navigate("scenarios")}
+            onSignOut={handleSignOut}
+            onDeleted={handleAccountDeleted}
           />
         ) : null}
 
