@@ -1,0 +1,20 @@
+● gnani-voice.service - Gnani Coach voice service (FastAPI, single worker)
+     Loaded: loaded (/etc/systemd/system/gnani-voice.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-11-07 08:54:33 UTC; 1min 17s ago
+ Invocation: cc34a757db06486691309d72aad9eb88
+       Docs: file:///home/ubuntu/prince/gnani/docs/release/DEPLOY.md
+   Main PID: 699483 (uv)
+      Tasks: 5 (limit: 1741)
+     Memory: 58M (high: 500M, max: 600M, available: 441.9M, peak: 58M)
+        CPU: 1.042s
+     CGroup: /system.slice/gnani-voice.service
+             ├─699483 /home/ubuntu/.local/bin/uv run --no-sync --frozen --project services/voice uvicorn gnani_coach.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+             └─699490 /home/ubuntu/prince/gnani/services/voice/.venv/bin/python /home/ubuntu/prince/gnani/services/voice/.venv/bin/uvicorn gnani_coach.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+
+ActiveState=active
+SubState=running
+NRestarts=0
+MemoryCurrent=60821504
+CPUQuotaPerSecUSec=1.500000s
+MemoryHigh=524288000
+MemoryMax=629145600

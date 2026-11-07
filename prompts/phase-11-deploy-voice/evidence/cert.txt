@@ -1,0 +1,4 @@
+subject=CN=13-205-26-178.sslip.io
+issuer=C=US, O=Let's Encrypt, CN=YE2
+notBefore=Nov  7 07:56:07 2026 GMT
+notAfter=Feb  5 07:56:06 2027 GMT

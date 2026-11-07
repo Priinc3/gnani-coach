@@ -1,0 +1,116 @@
+== memory before install ==
+               total        used        free      shared  buff/cache   available
+Mem:            1905        1100         349          49         708         804
+Swap:           4095        1233        2862
+swap:
+NAME       TYPE SIZE   USED PRIO
+/swapfile  file   2G 791.6M   -1
+/swapfile2 file   2G 442.2M   -1
+== installing Caddy from the official repository ==
+Selecting previously unselected package apt-transport-https.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 137121 files and directories currently installed.)
+Preparing to unpack .../apt-transport-https_3.2.1ubuntu0.1_all.deb ...
+Unpacking apt-transport-https (3.2.1ubuntu0.1) ...
+Selecting previously unselected package debian-archive-keyring.
+Preparing to unpack .../debian-archive-keyring_2025.1ubuntu1_all.deb ...
+Unpacking debian-archive-keyring (2025.1ubuntu1) ...
+Selecting previously unselected package debian-keyring.
+Preparing to unpack .../debian-keyring_2026.03.25_all.deb ...
+Unpacking debian-keyring (2026.03.25) ...
+Setting up apt-transport-https (3.2.1ubuntu0.1) ...
+Setting up debian-archive-keyring (2025.1ubuntu1) ...
+Setting up debian-keyring (2026.03.25) ...
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Selecting previously unselected package caddy.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 137173 files and directories currently installed.)
+Preparing to unpack .../caddy_2.11.9_amd64.deb ...
+Unpacking caddy (2.11.9) ...
+Setting up caddy (2.11.9) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/caddy.service' → '/usr/lib/systemd/system/caddy.service'.
+Processing triggers for man-db (2.13.1-1build1) ...
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Caddy installed: v2.11.9 h1:bhZtcRKQOq0fuLvEgCdPYvUxXyGn9kzjG4lh2332DTE=
+== syncing the voice environment (as ubuntu) ==
+Checked 64 packages in 50ms
+== preparing the Silero VAD asset ==
+{
+  "filename": "silero_vad.onnx",
+  "sha256": "2623a2953f6ff3d2c1e61740c6cdb7168133479b267dfef114a4a3cc5bdd788f",
+  "bytes": 2327524,
+  "source": "https://raw.githubusercontent.com/snakers4/silero-vad/v5.1/src/silero_vad/data/silero_vad.onnx",
+  "license": "MIT (snakers4/silero-vad)"
+}
+{
+  "prepared": true,
+  "filename": "silero_vad.onnx",
+  "sha256": "2623a2953f6ff3d2c1e61740c6cdb7168133479b267dfef114a4a3cc5bdd788f",
+  "bytes": 2327524,
+  "source": "https://raw.githubusercontent.com/snakers4/silero-vad/v5.1/src/silero_vad/data/silero_vad.onnx",
+  "license": "MIT (snakers4/silero-vad)",
+  "runtime": "onnxruntime CPU"
+}
+== completing missing settings in /etc/gnani-coach/voice.env (values are not printed) ==
+  added GNANI_STT_WS_URL
+  added GNANI_TTS_WS_URL
+  added GEMINI_MODEL
+  added SPEAKING_COACH_ENVIRONMENT
+  added SPEAKING_COACH_ALLOWED_ORIGINS
+  added SPEAKING_COACH_STORAGE_BACKEND
+  added SPEAKING_COACH_DATA_DIR
+== credential presence ==
+  GNANI_API_KEY=SET
+  GEMINI_API_KEY=SET
+== installing gnani-voice.service ==
+== installing /etc/caddy/Caddyfile (host 13-205-26-178.sslip.io) ==
+== validating Caddyfile ==
+{"level":"info","ts":1794041672.093783,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+{"level":"info","ts":1794041672.098289,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"warn","ts":1794041672.0983176,"msg":"Caddyfile input is not formatted; run 'caddy fmt --overwrite' to fix inconsistencies","adapter":"caddyfile","file":"/etc/caddy/Caddyfile","line":14}
+{"level":"info","ts":1794041672.099078,"logger":"http.auto_https","msg":"server is listening only on the HTTPS port but has no TLS connection policies; adding one to enable TLS","server_name":"srv0","https_port":443}
+{"level":"info","ts":1794041672.099109,"logger":"http.auto_https","msg":"enabling automatic HTTP->HTTPS redirects","server_name":"srv0"}
+{"level":"info","ts":1794041672.1001518,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0x21083d7a4c80"}
+{"level":"info","ts":1794041672.1025221,"logger":"tls.cache.maintenance","msg":"stopped background certificate maintenance","cache":"0x21083d7a4c80"}
+{"level":"info","ts":1794041672.102564,"logger":"http","msg":"servers shutting down with eternal grace period"}
+Valid configuration
+== validating systemd unit ==
+/usr/lib/systemd/system/xfs_scrub_all.service:26: Support for option CPUAccounting= has been removed and it is ignored
+/usr/lib/systemd/system/system-xfs_scrub.slice:15: Support for option CPUAccounting= has been removed and it is ignored
+/etc/systemd/system/paseo.service:17: Unknown key 'StartLimitIntervalSec' in section [Service], ignoring.
+== starting caddy ==
+== starting gnani-voice.service ==
+Created symlink '/etc/systemd/system/multi-user.target.wants/gnani-voice.service' → '/etc/systemd/system/gnani-voice.service'.
+== local health ==
+curl: (7) Failed to connect to 127.0.0.1 port 8000 after 0 ms: Could not connect to server
+PASS local http://127.0.0.1:8000/health
+== public health over TLS (certificate issuance may take ~30 s) ==
+curl: (35) TLS connect error: error:0A000438:SSL routines::tlsv1 alert internal error
+curl: (35) TLS connect error: error:0A000438:SSL routines::tlsv1 alert internal error
+PASS https://13-205-26-178.sslip.io/health
+memory used by gnani-voice.service: 59625472 bytes
+INSTALL OK

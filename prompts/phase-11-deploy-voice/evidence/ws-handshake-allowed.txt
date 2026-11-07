@@ -1,0 +1,10 @@
+HTTP/1.1 101 Switching Protocols
+Alt-Svc: h3=":443"; ma=2592000
+Connection: Upgrade
+Date: Sat, 07 Nov 2026 08:55:46 GMT
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+Server: Caddy
+Server: uvicorn
+Upgrade: websocket
+
+Å~{"envelopeVersion":"0.1","direction":"server_to_client","type":"status","sessionId":"ses_0f5284d4cc143cb5","connectionId":"con_9bd6631e25b8bfba","roundId":null,"turnId":null,"sequence":1,"sampleTimeMs":null,"emittedAt":"2026-11-07T08:55:46.962760Z","payload":{"state":"connecting"}}curl: (28) Operation timed out after 4002 milliseconds with 286 bytes received

@@ -1,0 +1,9 @@
+HTTP/2 200 
+alt-svc: h3=":443"; ma=2592000
+content-type: application/json
+date: Sat, 07 Nov 2026 08:55:46 GMT
+server: uvicorn
+vary: Origin
+via: 1.1 Caddy
+content-length: 206
+

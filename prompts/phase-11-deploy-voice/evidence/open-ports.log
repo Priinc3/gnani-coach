@@ -1,0 +1,14 @@
+== verifying instance i-0c645ae0bd6a0522d ==
+group sg-0ae5a8799482e1588 confirmed
+== rules before ==
+  tcp 22-22 0.0.0.0/0
+  tcp/80 from 0.0.0.0/0: authorising
+  tcp/443 from 0.0.0.0/0: authorising
+== rules after ==
+  tcp 80-80 0.0.0.0/0
+  tcp 22-22 0.0.0.0/0
+  tcp 443-443 0.0.0.0/0
+== diff (before -> after) ==
+  + ('tcp', 443, 443, '0.0.0.0/0')
+  + ('tcp', 80, 80, '0.0.0.0/0')
+OPEN PORTS OK

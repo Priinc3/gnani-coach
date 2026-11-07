@@ -1,0 +1,13 @@
+HTTP/2 200 
+accept-ranges: bytes
+alt-svc: h3=":443"; ma=2592000
+cache-control: public, max-age=300
+content-disposition: attachment; filename=test.apk
+content-type: application/vnd.android.package-archive
+etag: "dmouq2l45p59-h"
+last-modified: Sat, 07 Nov 2026 08:55:50 GMT
+server: Caddy
+vary: Accept-Encoding
+content-length: 17
+date: Sat, 07 Nov 2026 08:55:51 GMT
+

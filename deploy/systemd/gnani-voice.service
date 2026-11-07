@@ -1,0 +1,63 @@
+[Unit]
+Description=Gnani Coach voice service (FastAPI, single worker)
+Documentation=file:///home/ubuntu/prince/gnani/docs/release/DEPLOY.md
+After=network-online.target
+Wants=network-online.target
+# The voice service is the whole backend: it must survive a Caddy restart.
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/prince/gnani
+# Provider keys and app settings. voice.env is created by
+# scripts/deploy/install-voice.sh; keys.env is optional and, when present,
+# overrides the two provider keys (useful for key rotation).
+EnvironmentFile=/etc/gnani-coach/voice.env
+EnvironmentFile=-/etc/gnani-coach/keys.env
+# Never download at runtime: the install script syncs the lock file once.
+Environment=HOME=/home/ubuntu
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=UV_NO_SYNC=1
+Environment=UV_FROZEN=1
+Environment=PYTHONUNBUFFERED=1
+# Rate limiters key on request.client.host. Caddy overwrites X-Forwarded-For
+# with the real peer address; uvicorn must read it, but trust only the local
+# proxy (never "*"). Sources:
+#   https://uvicorn.dev/settings/ ("HTTP": --proxy-headers, --forwarded-allow-ips)
+#   https://caddyserver.com/docs/caddyfile/directives/reverse_proxy ("Defaults")
+ExecStart=/home/ubuntu/.local/bin/uv run --no-sync --frozen --project services/voice \
+    uvicorn gnani_coach.main:app \
+    --host 127.0.0.1 --port 8000 --workers 1 \
+    --proxy-headers --forwarded-allow-ips 127.0.0.1
+
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+
+# Box limits (2 GB RAM, shared with other agents).
+MemoryHigh=500M
+MemoryMax=600M
+CPUQuota=150%
+Nice=5
+
+# Sandboxing. ProtectSystem=full keeps /usr, /boot and /etc read-only while
+# leaving the repo and the data directory writable.
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+PrivateDevices=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadWritePaths=/var/lib/gnani-coach
+StateDirectory=gnani-coach
+StateDirectoryMode=0700
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

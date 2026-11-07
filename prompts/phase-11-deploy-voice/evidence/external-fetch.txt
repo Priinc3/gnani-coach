@@ -1,0 +1,6 @@
+Title: 
+
+URL Source: https://13-205-26-178.sslip.io/health
+
+Markdown Content:
+{"status":"ok","service":"gnani-coach-voice","version":"0.1.0","phase":"foundation","liveCallingImplemented":false,"detail":"Process readiness only. No live provider connection is implemented or verified."}

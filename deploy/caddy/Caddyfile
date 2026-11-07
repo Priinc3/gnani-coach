@@ -1,0 +1,63 @@
+# Gnani Coach — Caddy site configuration.
+#
+# Installed to /etc/caddy/Caddyfile by scripts/deploy/install-voice.sh.
+# The host is a variable so a future custom domain needs one change:
+#
+#     sudo systemctl edit caddy   # or /etc/default/caddy
+#     VOICE_HOST=voice.example.com
+#
+# Default: the free IP-embedded sslip.io name for this box's public IPv4.
+# Caddy obtains and renews a Let's Encrypt certificate automatically over
+# HTTP-01 (ports 80/443 must be open).
+#   https://caddyserver.com/docs/automatic-https
+#   https://sslip.io/
+{
+	# Uncomment and set a real address when a domain exists, so Let's
+	# Encrypt can contact you about expiry problems.
+	# email ops@example.com
+}
+
+{$VOICE_HOST:13-205-26-178.sslip.io} {
+	# ------------------------------------------------------------------
+	# APK downloads: /apk/speaking-coach.apk -> /var/www/gnani-apk/...
+	# No directory listing. .apk files are sent as attachments.
+	# ------------------------------------------------------------------
+	handle_path /apk/* {
+		root * /var/www/gnani-apk
+		@apk path *.apk
+		header @apk Content-Disposition "attachment; filename={http.request.uri.path.file}"
+		header @apk Cache-Control "public, max-age=300"
+		file_server {
+			browse false
+		}
+	}
+
+	# ------------------------------------------------------------------
+	# Call socket. WebSockets are tunnelled by reverse_proxy; compression
+	# is off and flush_interval -1 removes response buffering so audio
+	# frames are not delayed. stream_timeout is deliberately unset: the
+	# default is no timeout, so a 15-minute call is never cut here.
+	# https://caddyserver.com/docs/caddyfile/directives/reverse_proxy
+	# ------------------------------------------------------------------
+	handle /ws/* {
+		reverse_proxy 127.0.0.1:8000 {
+			flush_interval -1
+			stream_close_delay 5m
+			transport http {
+				compression off
+			}
+		}
+	}
+
+	# ------------------------------------------------------------------
+	# Everything else: /health, /health/latency, /api/*, auth routes.
+	# 12 MB request cap (recordings and JSON bodies are far smaller).
+	# ------------------------------------------------------------------
+	handle {
+		request_body {
+			max_size 12MB
+		}
+		encode zstd gzip
+		reverse_proxy 127.0.0.1:8000
+	}
+}

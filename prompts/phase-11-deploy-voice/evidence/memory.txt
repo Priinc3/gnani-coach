@@ -1,0 +1,7 @@
+               total        used        free      shared  buff/cache   available
+Mem:            1905        1123         188          20         817         781
+Swap:           4095        1305        2790
+
+NAME       TYPE SIZE   USED PRIO
+/swapfile  file   2G 830.3M   -1
+/swapfile2 file   2G 474.7M   -1
