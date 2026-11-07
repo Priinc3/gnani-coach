@@ -2,7 +2,7 @@
 
 **State: BUILT.** The voice service is live on this EC2 box behind Caddy
 with a valid Let's Encrypt certificate. One worker, memory-capped, SQLite
-data directory ready. Commit: `PENDING`.
+data directory ready. Commit: `04a4e8c`.
 
 ## Files
 
@@ -120,6 +120,6 @@ headroom for SQLite/ONNX work.
 
 ## Commit
 
-`PENDING`
+`04a4e8c` — `phase-11: Caddy + systemd voice deployment on EC2`
 
 PHASE 11 BUILT
