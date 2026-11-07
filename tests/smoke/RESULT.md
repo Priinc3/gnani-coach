@@ -61,14 +61,16 @@ provider calls and the 1.28 s trailing-silence/hold window:
 
 | Run | Latency |
 | --- | --- |
-| H (first call) | **9,698 ms** |
-| E2 (clean second call) | **9,753 ms** |
+| H (final run, after the last restart) | **11,997 ms** |
+| E2 (final run, clean second call) | **16,363 ms** |
 
-This is **not** a product target and not a browser/microphone number. It
-includes the fixed end-of-turn hold, the recogniser's trailing silence,
-the model and the first TTS chunk. The voice service's own
-`/health/latency` window is not exposed because no health token is set
-(it correctly returns 404).
+An earlier run of the same script measured 9,698 ms and 9,753 ms, so the
+observed range is roughly **9.7–16.4 s**. The variance is provider/queue
+time, not a changed code path. This is **not** a product target and not a
+browser/microphone number. It includes the fixed end-of-turn hold, the
+recogniser's trailing silence, the model and the first TTS chunk. The
+voice service's own `/health/latency` window is not exposed because no
+health token is set (it correctly returns 404).
 
 ## Small model and key
 
