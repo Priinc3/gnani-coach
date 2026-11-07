@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Speaking Coach</string>
+    <string name="title_activity_main">Speaking Coach</string>
+    <string name="package_name">com.gnanicoach.app</string>
+    <string name="custom_url_scheme">com.gnanicoach.app</string>
+</resources>

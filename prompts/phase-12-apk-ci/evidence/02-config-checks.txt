@@ -1,0 +1,26 @@
+--- APP_URL=https://example.com npx cap config (server section) ---
+      server: {
+        url: [32m'https://example.com'[39m,
+        androidScheme: [32m'https'[39m,
+        errorPath: [32m'error.html'[39m
+      },
+      android: { webContentsDebuggingEnabled: [33mfalse[39m }
+    }
+  }
+}
+
+--- unset APP_URL ---
+[error] Parsing capacitor.config.ts failed.
+        
+        Error: APP_URL is required: set it to the https:// URL of the hosted Speaking Coach web app.
+        at Object.<anonymous> (/home/ubuntu/prince/gnani/apps/mobile/capacitor.config.ts:5:11)
+        at Module._compile (node:internal/modules/cjs/loader:1781:14)
+        at require.extensions..ts (/home/ubuntu/prince/gnani/apps/mobile/node_modules/@capacitor/cli/dist/util/node.js:69:72)
+
+--- APP_URL=http://example.com ---
+[error] Parsing capacitor.config.ts failed.
+        
+        Error: APP_URL must start with https:// (got "http://example.com"). Cleartext HTTP is not allowed.
+        at Object.<anonymous> (/home/ubuntu/prince/gnani/apps/mobile/capacitor.config.ts:8:11)
+        at Module._compile (node:internal/modules/cjs/loader:1781:14)
+        at require.extensions..ts (/home/ubuntu/prince/gnani/apps/mobile/node_modules/@capacitor/cli/dist/util/node.js:69:72)

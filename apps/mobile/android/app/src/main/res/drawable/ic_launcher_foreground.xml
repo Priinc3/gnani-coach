@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Original Speaking Coach mark: a speech bubble with three voice bars. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,30 H68 A10,10 0 0 1 78,40 V58 A10,10 0 0 1 68,68 H52 L42,77 V68 H40 A10,10 0 0 1 30,58 V40 A10,10 0 0 1 40,30 Z" />
+    <path
+        android:fillColor="#0F2A33"
+        android:pathData="M41,45 H46 V57 H41 Z M51,39 H56 V63 H51 Z M61,43 H66 V59 H61 Z" />
+</vector>

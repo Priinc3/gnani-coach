@@ -1,0 +1,44 @@
+$ find apps/mobile/android/app/src/main/res -type f | sort
+apps/mobile/android/app/src/main/res/drawable/ic_launcher_foreground.xml
+apps/mobile/android/app/src/main/res/drawable/splash.xml
+apps/mobile/android/app/src/main/res/layout/activity_main.xml
+apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+apps/mobile/android/app/src/main/res/mipmap-anydpi/ic_launcher.xml
+apps/mobile/android/app/src/main/res/mipmap-anydpi/ic_launcher_round.xml
+apps/mobile/android/app/src/main/res/values/ic_launcher_background.xml
+apps/mobile/android/app/src/main/res/values/strings.xml
+apps/mobile/android/app/src/main/res/values/styles.xml
+apps/mobile/android/app/src/main/res/xml/config.xml
+apps/mobile/android/app/src/main/res/xml/file_paths.xml
+
+$ cat adaptive icons
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+</adaptive-icon>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Original Speaking Coach mark: a speech bubble with three voice bars. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,30 H68 A10,10 0 0 1 78,40 V58 A10,10 0 0 1 68,68 H52 L42,77 V68 H40 A10,10 0 0 1 30,58 V40 A10,10 0 0 1 40,30 Z" />
+    <path
+        android:fillColor="#0F2A33"
+        android:pathData="M41,45 H46 V57 H41 Z M51,39 H56 V63 H51 Z M61,43 H66 V59 H61 Z" />
+</vector>
+
+$ cat splash.xml
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/ic_launcher_background" />
+    <item
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center"
+        android:width="96dp"
+        android:height="96dp" />
+</layer-list>

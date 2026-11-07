@@ -1,0 +1,20 @@
+Sat Nov  7 08:55:50 UTC 2026
+node v22.23.4
+npm 10.9.9
+
+npm registry latest:
+@capacitor/core 8.6.0 {}
+@capacitor/cli 8.6.0 {"node":">=22.0.0"}
+@capacitor/android 8.6.0 {}
+
+action latest releases:
+actions/checkout v7.0.1 https://github.com/actions/checkout/releases/tag/v7.0.1
+actions/setup-node v7.1.0 https://github.com/actions/setup-node/releases/tag/v7.1.0
+actions/setup-java v6.2.0 https://github.com/actions/setup-java/releases/tag/v6.2.0
+actions/upload-artifact v7.0.2 https://github.com/actions/upload-artifact/releases/tag/v7.0.2
+gradle/actions v6.4.1 https://github.com/gradle/actions/releases/tag/v6.4.1
+
+runner image excerpts:
+- Node.js 22.23.4
+| 21.0.13+9           | JAVA_HOME_21_X64     |
+| Android SDK Platforms      | android-37.2-beta3 (rev 3)<br>android-37.2-beta2 (rev 2)<br>android-37.2-beta1 (rev 1)<br>android-37.2 (rev 2)<br>android-37.1 (rev 1)<br>android-37.0 (rev 2)<br>android-36.1 (rev 1)<br>android-36-ext19 (rev 1)<br>android-36-ext18 (rev 1)<br>android-36 (rev 2)<br>android-35-ext15 (rev 1)<br>android-35-ext14 (rev 1)<br>android-35 (rev 2)<br>android-34-ext8 (rev 1)<br>android-34-ext12 (rev 1)<br>android-34-ext11 (rev 1)<br>android-34-ext10 (rev 1)<br>android-34 (rev 3) |

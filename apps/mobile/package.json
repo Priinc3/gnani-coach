@@ -1,0 +1,18 @@
+{
+  "name": "@gnani/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capacitor 8 Android shell that loads the hosted Speaking Coach web app.",
+  "scripts": {
+    "add:android": "cap add android",
+    "sync": "cap sync android",
+    "build:debug": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/core": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0"
+  }
+}

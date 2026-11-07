@@ -1,0 +1,31 @@
+$ Capacitor 8.6.0 android/capacitor/build.gradle (Java/SDK)
+    compileSdk = project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 36
+        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 24
+        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 36
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+
+$ BridgeWebChromeClient.onPermissionRequest
+    public void onPermissionRequest(final PermissionRequest request) {
+        List<String> permissionList = new ArrayList<>();
+        if (Arrays.asList(request.getResources()).contains("android.webkit.resource.VIDEO_CAPTURE")) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+        if (Arrays.asList(request.getResources()).contains("android.webkit.resource.AUDIO_CAPTURE")) {
+            permissionList.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+            permissionList.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (!permissionList.isEmpty()) {
+            String[] permissions = permissionList.toArray(new String[0]);
+            permissionListener = (isGranted) -> {
+                if (isGranted) {
+                    request.grant(request.getResources());
+                } else {
+                    request.deny();
+                }
+            };
+            permissionLauncher.launch(permissions);
+        } else {
+            request.grant(request.getResources());
+        }
+    }

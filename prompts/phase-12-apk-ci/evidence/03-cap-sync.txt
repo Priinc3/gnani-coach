@@ -1,0 +1,7 @@
+$ APP_URL=https://example.com npx cap sync android
+✔ Copying web assets from www to android/app/src/main/assets/public in 5.15ms
+✔ Creating capacitor.config.json in android/app/src/main/assets in 656.71μs
+✔ copy android in 12.78ms
+✔ Updating Android plugins in 599.61μs
+✔ update android in 20.69ms
+[info] Sync finished in 0.039s

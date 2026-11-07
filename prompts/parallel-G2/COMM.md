@@ -6,6 +6,9 @@ INFO
 ## 07 20:30 — Phase 14 done; `deleteAccount(password)` exported from `@/lib/auth`
 INFO
 
+## 08 55 — Phase 12 started; Capacitor 8 shell + Android APK workflow
+INFO
+
 ## 10 08:45 — Phase 10 done: phone layout, PWA manifest/icons, pre-call mic check; tsc and eslint exit 0
 INFO
 
@@ -13,4 +16,7 @@ INFO
 INFO
 
 ## 07 08:51 — Phase 11 deploying voice on EC2 (Caddy, systemd, SG 80/443)
+INFO
+
+## 07 08:56 — Phase 11 done: https health 200, WS 101, APK route live
 INFO
