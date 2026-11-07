@@ -168,7 +168,7 @@ PHASE 10 BUILT
 - No browser, Playwright or `next build` on this box (2 GB rule). The new
   test and the delete/sign-out UI were verified by reading and by `tsc` /
   `eslint`; the real click-through belongs to the Phase 13 smoke.
-- Commit hash: `0e670b3` (`phase-10: fix-1 account entry points`).
+- Commit hash: `3d03a29` (`phase-10: fix-1 account entry points`).
 
 PHASE 10 FIX-1 BUILT
 
