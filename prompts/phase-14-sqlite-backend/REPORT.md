@@ -172,6 +172,6 @@ settings screen (posted as `INFO` in `prompts/parallel-G2/COMM.md`).
 
 ## Commit
 
-`COMMIT_HASH_PLACEHOLDER`
+`6453781`
 
 PHASE 14 BUILT
