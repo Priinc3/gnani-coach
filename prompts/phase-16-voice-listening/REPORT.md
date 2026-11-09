@@ -143,6 +143,6 @@ personal data.
 
 ## Commit
 
-`COMMIT_HASH_PLACEHOLDER`
+`9a373fc` (the report-hash follow-up is a separate commit, as in Phase 15).
 
 PHASE 16 BUILT — NEEDS RESTART OF gnani-voice
