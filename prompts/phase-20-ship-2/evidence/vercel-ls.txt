@@ -1,0 +1,30 @@
+Vercel CLI 65.9.0
+> Deployments for 0-prince-0s-projects/gnani-coach [326ms]
+
+  Age     Project                              Deployment                                                        Status        Environment     Duration     Username       
+  1m      0-prince-0s-projects/gnani-coach     https://gnani-coach-1xiygm581-0-prince-0s-projects.vercel.app     ● Ready       Production      17s          0-prince-0     
+  56m     0-prince-0s-projects/gnani-coach     https://gnani-coach-o3mlyc60j-0-prince-0s-projects.vercel.app     ● Ready       Production      17s          0-prince-0     
+  58m     0-prince-0s-projects/gnani-coach     https://gnani-coach-hx1v4k544-0-prince-0s-projects.vercel.app     ● Ready       Production      17s          0-prince-0     
+  1h      0-prince-0s-projects/gnani-coach     https://gnani-coach-29l6kmx4l-0-prince-0s-projects.vercel.app     ● Ready       Production      18s          0-prince-0     
+  1h      0-prince-0s-projects/gnani-coach     https://gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app     ● Ready       Production      18s          0-prince-0     
+  1h      0-prince-0s-projects/gnani-coach     https://gnani-coach-bq2hzu8n6-0-prince-0s-projects.vercel.app     ● Ready       Production      16s          0-prince-0     
+  1h      0-prince-0s-projects/gnani-coach     https://gnani-coach-3tkft5r2h-0-prince-0s-projects.vercel.app     ● Ready       Production      18s          0-prince-0     
+  2h      0-prince-0s-projects/gnani-coach     https://gnani-coach-8hchn1lxl-0-prince-0s-projects.vercel.app     ● Ready       Production      19s          0-prince-0     
+  1d      0-prince-0s-projects/gnani-coach     https://gnani-coach-pyf7m62rx-0-prince-0s-projects.vercel.app     ● Blocked     Preview         ?            0-prince-0     
+  2d      0-prince-0s-projects/gnani-coach     https://gnani-coach-ae1wm8twy-0-prince-0s-projects.vercel.app     ● Ready       Production      16s          0-prince-0     
+  2d      0-prince-0s-projects/gnani-coach     https://gnani-coach-dyzjuvcim-0-prince-0s-projects.vercel.app     ● Ready       Production      17s          0-prince-0     
+  2d      0-prince-0s-projects/gnani-coach     https://gnani-coach-l2ai8byl2-0-prince-0s-projects.vercel.app     ● Ready       Production      18s          0-prince-0     
+  2d      0-prince-0s-projects/gnani-coach     https://gnani-coach-pxlk5yfc5-0-prince-0s-projects.vercel.app     ● Ready       Production      48s          0-prince-0     
+
+https://gnani-coach-1xiygm581-0-prince-0s-projects.vercel.app
+https://gnani-coach-o3mlyc60j-0-prince-0s-projects.vercel.app
+https://gnani-coach-hx1v4k544-0-prince-0s-projects.vercel.app
+https://gnani-coach-29l6kmx4l-0-prince-0s-projects.vercel.app
+https://gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app
+https://gnani-coach-bq2hzu8n6-0-prince-0s-projects.vercel.app
+https://gnani-coach-3tkft5r2h-0-prince-0s-projects.vercel.app
+https://gnani-coach-8hchn1lxl-0-prince-0s-projects.vercel.app
+https://gnani-coach-pyf7m62rx-0-prince-0s-projects.vercel.app
+https://gnani-coach-ae1wm8twy-0-prince-0s-projects.vercel.app
+https://gnani-coach-dyzjuvcim-0-prince-0s-projects.vercel.app
+https://gnani-coach-l2ai8byl2-0-prince-0s-projects.vercel.app

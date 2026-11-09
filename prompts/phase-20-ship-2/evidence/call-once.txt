@@ -1,0 +1,9 @@
+fixture=spoken-smoke.wav frames=93 duration_s=2.98
+url=wss://13-205-26-178.sslip.io/ws/call origin=https://gnani-coach.vercel.app
+
+[PASS] H one real turn: events[audio.frame.descriptor=1, binary=1, coach_text=1, status=6, transcript_final=1] coach_turns=1 first_audio=True latency_ms_from_end_of_speech=681
+[PASS] E1 three seconds of silence: events[status=4] coach_turns=0 no_fake_score=True no_crash=True
+[PASS] E2 drop mid-turn then a clean second call: dropped_after=events[audio.frame.descriptor=1, binary=1, status=4] then events[audio.frame.descriptor=1, binary=1, coach_text=1, status=6, transcript_final=1] coach_turns=1 first_audio=True latency_ms_from_end_of_speech=645
+
+budget: coach_turns=2 (limit 6); learner_clips_submitted=4; server-side wire attempts are not exposed to the client
+SUMMARY pass=3 fail=0

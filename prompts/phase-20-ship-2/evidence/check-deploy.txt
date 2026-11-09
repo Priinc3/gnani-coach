@@ -1,0 +1,20 @@
+voice=https://13-205-26-178.sslip.io
+web=https://gnani-coach.vercel.app
+[PASS] TLS certificate valid: subject=13-205-26-178.sslip.io issuer=Let's Encrypt notAfter=Feb  5 07:56:06 2027 GMT
+[PASS] /health 200: HTTP 200 service=gnani-coach-voice
+[PASS] WS handshake from the Vercel origin: accepted, status envelope received
+[PASS] WS handshake from a foreign origin refused: refused HTTP 403
+[PASS] web / 200 and CSP connect-src: HTTP 200; connect-src contains wss://13-205-26-178.sslip.io
+[PASS] /manifest.webmanifest display standalone: HTTP 200 display=standalone name='Speaking Coach — practice speaking out loud'
+[PASS] /health/latency 404 when no token configured: HTTP 404 (no SPEAKING_COACH_HEALTH_TOKEN configured)
+[SKIP] /apk/speaking-coach.apk served with matching size/sha256: APK not published (GitHub Actions blocked; web PWA is the fallback)
+[PASS] unit trusts proxy headers only from 127.0.0.1: ExecStart carries --proxy-headers --forwarded-allow-ips 127.0.0.1
+[PASS] account register: HTTP 201, session token issued
+[PASS] account login: HTTP 200, session token issued
+[PASS] account me: HTTP 200, opaque userId returned
+[PASS] wrong password generic error: HTTP 401 with the generic message
+[PASS] history isolation (user B cannot read user A): HTTP 200, empty history for B; A's userId query is ignored
+[PASS] account delete: HTTP 204, account and rows removed
+[PASS] per-address login limiter (11th wrong password gets 429): 10 x 401 then 429 on the 11th
+[PASS] client address reaches the app: 1 distinct peer host(s) in the access log; none loopback
+SUMMARY pass=16 fail=0 skip=1

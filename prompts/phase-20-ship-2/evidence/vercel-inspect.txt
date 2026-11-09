@@ -1,0 +1,54 @@
+Vercel CLI 65.9.0
+> Fetched deployment "gnani-coach-1xiygm581-0-prince-0s-projects.vercel.app" in 0-prince-0s-projects [721ms]
+
+  General
+
+    id		dpl_7jxHEx6cEFyajUNTF493qzkYsqGy
+    name	gnani-coach
+    target	production
+    status	● Ready
+    url		https://gnani-coach-1xiygm581-0-prince-0s-projects.vercel.app
+    created	Mon Nov 09 2026 08:47:44 GMT+0000 (Coordinated Universal Time) [1m ago]
+
+
+  Build Machine
+
+    requested build machine basic
+    actual assigned cores   2 vCPU (actual assignment)
+    memory                  8192 MiB
+    selection type          fixed
+    selection source        plan-default
+
+
+  Build Cache
+
+    size       141.91 MiB / 1.5 GiB limit
+    file count ~23,699 (approx., paths selected for packing)
+
+
+  Duration
+
+    build duration	17s
+    post-build duration	20s
+    billable duration	1m
+    CPU Minutes Usage	2 minutes (1m x 2vCPU)
+
+
+  Aliases
+
+    ╶ https://gnani-coach.vercel.app
+    ╶ https://gnani-coach-0-prince-0s-projects.vercel.app
+    ╶ https://gnani-coach-git-main-0-prince-0s-projects.vercel.app
+    
+
+  Builds
+
+    ┌ .        [0ms]
+    ├── λ index (663.99KB) [iad1]
+    ├── λ _global-error (663.99KB) [iad1]
+    ├── λ _global-error.rsc (663.99KB) [iad1]
+    ├── λ _global-error.segments/__PAGE__.segment.rsc (663.99KB) [iad1]
+    ├── λ _global-error.segments/_full.segment.rsc (663.99KB) [iad1]
+    └── 15 output items hidden
+    
+

@@ -1,0 +1,80 @@
+url=wss://13-205-26-178.sslip.io/ws/call origin=https://gnani-coach.vercel.app
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.639  status state=connecting
+  +   0.639  status state=ready
+  +   0.639  status state=listening
+  +   2.494  status state=thinking
+  +   2.495  descriptor kind=backchannel
+  +   2.499  binary bytes=25600 kind=backchannel
+  +   3.750  status state=listening
+  +  14.277  descriptor kind=backchannel
+  +  14.280  binary bytes=25600 kind=backchannel
+  +  14.324  status state=thinking
+  +  14.324  descriptor kind=backchannel
+  +  14.325  binary bytes=20480 kind=backchannel
+  +  15.386  transcript_final chars=5 words=1
+  +  15.386  transcript_final chars=186 words=39
+  +  16.710  status state=speaking
+  +  16.732  coach_text
+  +  16.999  descriptor kind=reply
+  +  16.999  binary bytes=3584 kind=reply
+  +  17.013  binary bytes=512 kind=reply
+  +  17.013  binary bytes=4096 kind=reply
+  +  17.030  binary bytes=512 kind=reply
+  +  17.030  binary bytes=4096 kind=reply
+  +  17.043  binary bytes=1024 kind=reply
+  +  17.043  binary bytes=512 kind=reply
+  +  17.044  binary bytes=4096 kind=reply
+  +  17.044  binary bytes=512 kind=reply
+  +  17.059  binary bytes=512 kind=reply
+  +  17.060  binary bytes=2048 kind=reply
+  +  17.060  binary bytes=512 kind=reply
+  +  17.060  binary bytes=1536 kind=reply
+  +  17.075  binary bytes=1024 kind=reply
+  +  17.075  binary bytes=512 kind=reply
+  +  17.075  binary bytes=3072 kind=reply
+  +  17.090  binary bytes=512 kind=reply
+  +  17.090  binary bytes=2048 kind=reply
+  +  17.091  binary bytes=512 kind=reply
+  +  17.092  binary bytes=3584 kind=reply
+  +  17.108  binary bytes=512 kind=reply
+  +  17.108  binary bytes=3584 kind=reply
+  +  17.121  binary bytes=512 kind=reply
+  +  17.121  binary bytes=512 kind=reply
+  +  17.122  binary bytes=1024 kind=reply
+  +  17.123  binary bytes=2560 kind=reply
+  +  17.139  binary bytes=1536 kind=reply
+  +  17.140  binary bytes=4096 kind=reply
+  +  17.140  binary bytes=1024 kind=reply
+  +  17.153  binary bytes=1024 kind=reply
+  +  17.153  binary bytes=512 kind=reply
+  +  17.154  binary bytes=1024 kind=reply
+  +  17.154  binary bytes=1536 kind=reply
+  +  17.168  binary bytes=512 kind=reply
+  +  17.168  binary bytes=4096 kind=reply
+  +  17.184  binary bytes=512 kind=reply
+  +  17.185  binary bytes=3584 kind=reply
+  +  17.186  binary bytes=1024 kind=reply
+  +  17.187  binary bytes=1536 kind=reply
+  +  17.200  binary bytes=1536 kind=reply
+  +  17.200  binary bytes=3072 kind=reply
+  +  17.215  binary bytes=512 kind=reply
+  +  17.215  binary bytes=1024 kind=reply
+  +  17.215  binary bytes=1536 kind=reply
+  +  17.216  binary bytes=1024 kind=reply
+  +  17.217  binary bytes=512 kind=reply
+  +  17.217  binary bytes=2048 kind=reply
+  +  17.273  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=1 coach_after_long=1
+longest_gap_between_server_messages_ms=10527
+end_of_long_speech_to_first_coach_audio_ms=1674
+end_of_long_speech_to_first_sound_of_any_kind_ms=1674
+end_of_long_speech_to_first_word_of_real_reply_ms=4393
+backchannel_count=3
+errors=0 socket_closed_early=False
+RESULT=PASS
