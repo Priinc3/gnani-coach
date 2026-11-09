@@ -47,12 +47,10 @@ test("the call controls sit at the bottom and End asks first", async ({ page }) 
   await installFakeVoiceServer(page, "silent");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
 
   await expect(page.getByTestId("call-status")).toContainText("Listening", { timeout: 10_000 });
   await expect(page.getByRole("button", { name: "Mute" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Give me a moment" })).toBeVisible();
   await expect(page.getByRole("button", { name: "End" })).toBeVisible();
 
   await page.getByRole("button", { name: "End" }).click();
@@ -66,7 +64,7 @@ test("a guest sees the sign-in link in Settings", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
+  await page.getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
 
   const link = page.getByRole("link", { name: "Sign in or create an account" });

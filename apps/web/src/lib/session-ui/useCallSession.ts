@@ -20,6 +20,7 @@ import {
   CAPTURE_SAMPLE_RATE_HZ,
   CoachAudioPlayer,
   describeMicFailure,
+  rmsOfFrame,
   startCapture,
   type CaptureHandle,
 } from "../audio";
@@ -85,6 +86,10 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
   //: must not replace the disconnected message with a generic one.
   const micEndedRef = useRef(false);
   const startedAtRef = useRef(0);
+  //: When the last server message arrived, for the "Still working…" state.
+  const lastEventAtRef = useRef(0);
+  //: Throttle the microphone level so the ring does not re-render every frame.
+  const lastLevelAtRef = useRef(0);
   const sampleRateRef = useRef(CAPTURE_SAMPLE_RATE_HZ);
   const stateRef = useRef(state);
   const optionsRef = useRef(options);
@@ -145,7 +150,11 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
       return;
     }
     const handle = setInterval(() => {
-      dispatch({ type: "tick", elapsedMs: Date.now() - startedAtRef.current });
+      dispatch({
+        type: "tick",
+        elapsedMs: Date.now() - startedAtRef.current,
+        msSinceEvent: Date.now() - lastEventAtRef.current,
+      });
     }, 500);
     return () => clearInterval(handle);
   }, [state.phase]);
@@ -160,6 +169,16 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
         context,
         onFrame: (frame) => {
           clientRef.current?.sendFrame(frame);
+          const now = Date.now();
+          if (now - lastLevelAtRef.current >= 100) {
+            lastLevelAtRef.current = now;
+            // A little gain, so quiet speech still moves the ring. This is a
+            // decorative level, never a measurement shown to the learner.
+            dispatch({
+              type: "mic_level",
+              level: Math.min(1, rmsOfFrame(frame) * 5),
+            });
+          }
         },
         onTrackEnded: () => {
           // The device was unplugged, or the operating system took the
@@ -229,6 +248,7 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
 
   const handleServerEvent = useCallback(
     (event: ServerEvent) => {
+      lastEventAtRef.current = Date.now();
       switch (event.type) {
         case "status": {
           const payload = event.payload as StatusPayload;
@@ -296,6 +316,7 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
     }
     startedRef.current = true;
     micEndedRef.current = false;
+    lastEventAtRef.current = Date.now();
     dispatch({ type: "start_requested" });
 
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
@@ -341,6 +362,7 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
         playerRef.current?.appendChunk(turnId, new Uint8Array(data), sampleRateRef.current);
       },
       onConnectionState: (connectionState) => {
+        lastEventAtRef.current = Date.now();
         if (connectionState === "reconnecting") {
           dispatch({ type: "reconnecting", reconnecting: true });
         }
@@ -349,16 +371,20 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
         }
       },
       onLocalError: (error: LocalError) => {
+        lastEventAtRef.current = Date.now();
         dispatch({ type: "local_error", error });
       },
       onServerError: (error: PlainError) => {
+        lastEventAtRef.current = Date.now();
         dispatch({ type: "server_error", error });
       },
       onInterrupt: (turnId) => {
+        lastEventAtRef.current = Date.now();
         playerRef.current?.stopTurn(turnId);
         dispatch({ type: "interrupted" });
       },
       onWarning: (message) => {
+        lastEventAtRef.current = Date.now();
         dispatch({ type: "warning", message });
       },
       onLimitReached: () => {

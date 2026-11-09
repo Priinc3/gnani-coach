@@ -22,16 +22,23 @@ export const metadata: Metadata = {
  * `themeColor` matches the brand green in the manifest so the browser
  * chrome blends with the header.
  *
- * Source: Next.js `generateViewport` / `viewport` reference
+ * `interactiveWidget: "resizes-content"` makes the layout shrink when the
+ * Android keyboard opens, so the primary button stays visible.
+ *
+ * Sources: Next.js `generateViewport` / `viewport` reference
  * (<https://nextjs.org/docs/app/api-reference/functions/generate-viewport>,
- * checked 2026-11-07), MDN viewport meta tag
+ * checked 2026-11-09; `interactiveWidget` is typed in
+ * `next/dist/lib/metadata/types/extra-types.d.ts`), MDN viewport meta tag
  * (<https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag>,
- * checked 2026-11-07).
+ * checked 2026-11-09), MDN env()
+ * (<https://developer.mozilla.org/en-US/docs/Web/CSS/env>, checked
+ * 2026-11-09).
  */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  interactiveWidget: "resizes-content",
   themeColor: "#10655a",
   colorScheme: "light",
 };

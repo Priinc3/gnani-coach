@@ -1,17 +1,11 @@
 "use client";
 
 /**
- * The account section in Settings — Phase 10 FIX-1.
+ * The account section in Settings — Phase 17.
  *
- * A guest sees the same sign-in entry as the landing view and the Progress
- * empty state. A signed-in learner sees the account state, a Sign out
- * button, and the delete flow.
- *
- * The delete flow reuses the End-call confirmation sheet: it asks for the
- * password again, states exactly what is erased, and calls
- * `deleteAccount(password)` once per confirmed submit. The password is
- * only held in component state for that request, and it is cleared when
- * the sheet closes. It is never logged and never stored.
+ * A guest sees one Sign in link. A signed-in learner sees Sign out and
+ * Delete account. Deleting asks for the password once and states that it
+ * cannot be undone.
  */
 
 import { useState } from "react";
@@ -19,14 +13,12 @@ import { useState } from "react";
 import { deleteAccount } from "@/lib/auth";
 
 import styles from "../app.module.css";
-import { TrashIcon, UsersIcon } from "./Icon";
+import { TrashIcon } from "./Icon";
 import { SignInEntry } from "./SignInEntry";
 
 export interface AccountSectionProps {
   signedIn: boolean;
-  /** The same handler the live call screen uses for sign-out. */
   onSignOut: () => void;
-  /** Return to the landing view and show the short confirmation. */
   onDeleted: () => void;
 }
 
@@ -37,17 +29,7 @@ export function AccountSection({ signedIn, onSignOut, onDeleted }: AccountSectio
   const [message, setMessage] = useState<string | null>(null);
 
   if (!signedIn) {
-    return (
-      <section className={styles.accountGuest} aria-labelledby="account-guest-title">
-        <span className={styles.accountIcon} aria-hidden="true">
-          <UsersIcon size={22} />
-        </span>
-        <h3 className={styles.accountTitle} id="account-guest-title">
-          Keep your progress
-        </h3>
-        <SignInEntry />
-      </section>
-    );
+    return <SignInEntry />;
   }
 
   function close() {
@@ -80,27 +62,18 @@ export function AccountSection({ signedIn, onSignOut, onDeleted }: AccountSectio
   }
 
   return (
-    <section className={styles.accountSection} aria-labelledby="account-title">
-      <span className={styles.accountIcon} aria-hidden="true">
-        <UsersIcon size={22} />
-      </span>
-      <h3 className={styles.accountTitle} id="account-title">
-        Your account
-      </h3>
-      <p className={styles.accountText}>Signed in. Your history is stored on our server.</p>
-      <div className={styles.accountActions}>
-        <button type="button" className={styles.secondaryButton} onClick={onSignOut}>
-          Sign out
-        </button>
-        <button
-          type="button"
-          className={`${styles.dangerButton} ${styles.accountDeleteButton}`}
-          onClick={() => setConfirming(true)}
-        >
-          <TrashIcon size={16} />
-          Delete my account and data
-        </button>
-      </div>
+    <div className={styles.accountActions}>
+      <button type="button" className={styles.secondaryButton} onClick={onSignOut}>
+        Sign out
+      </button>
+      <button
+        type="button"
+        className={`${styles.dangerButton} ${styles.accountDeleteButton}`}
+        onClick={() => setConfirming(true)}
+      >
+        <TrashIcon size={16} />
+        Delete account
+      </button>
 
       {confirming ? (
         <div className={styles.confirmOverlay}>
@@ -109,14 +82,11 @@ export function AccountSection({ signedIn, onSignOut, onDeleted }: AccountSectio
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="delete-account-title"
-            aria-describedby="delete-account-text"
           >
             <h2 className={styles.confirmTitle} id="delete-account-title">
               Delete your account?
             </h2>
-            <p className={styles.confirmText} id="delete-account-text">
-              This deletes your account, history and saved recordings. It cannot be undone.
-            </p>
+            <p className={styles.confirmText}>This cannot be undone.</p>
             <form className={styles.confirmForm} onSubmit={(event) => void handleDelete(event)}>
               <label className={styles.fieldLabel} htmlFor="delete-account-password">
                 Password
@@ -137,7 +107,7 @@ export function AccountSection({ signedIn, onSignOut, onDeleted }: AccountSectio
               ) : null}
               <div className={styles.confirmActions}>
                 <button type="button" className={styles.secondaryButton} onClick={close}>
-                  Keep my account
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -145,14 +115,14 @@ export function AccountSection({ signedIn, onSignOut, onDeleted }: AccountSectio
                   disabled={busy || password.length === 0}
                 >
                   <TrashIcon size={16} />
-                  {busy ? "Deleting…" : "Delete everything"}
+                  Delete
                 </button>
               </div>
             </form>
           </div>
         </div>
       ) : null}
-    </section>
+    </div>
   );
 }
 

@@ -43,8 +43,7 @@ async function capture(page: Page, name: string): Promise<void> {
 
 async function startCall(page: Page) {
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
-  await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
 }
 
 test.beforeAll(async () => {
@@ -60,15 +59,13 @@ for (const viewport of VIEWPORTS) {
     await expect(page.getByRole("heading", { name: /Speak with/ })).toBeVisible();
     await capture(page, `landing-${viewport.name}`);
 
-    // 2. The scenario browser.
+    // 2. The pick screen.
     await page.getByRole("button", { name: "Start a practice call" }).click();
-    await expect(
-      page.getByRole("heading", { name: "Choose what you want to practise" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
     await capture(page, `scenarios-${viewport.name}`);
 
     // 3. The settings screen, with the recording off and then on.
-    await page.getByRole("button", { name: "Continue to settings" }).click();
+    await page.getByRole("button", { name: "Settings" }).click();
     await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
     await capture(page, `settings-recording-off-${viewport.name}`);
     const recording = page.getByRole("checkbox", {
@@ -78,6 +75,7 @@ for (const viewport of VIEWPORTS) {
     await expect(recording).toBeChecked();
     await capture(page, `settings-recording-on-${viewport.name}`);
     await recording.uncheck();
+    await page.getByRole("button", { name: "Back" }).click();
 
     // 4. The call screen, listening.
     const server = await installFakeVoiceServer(page, "silent");
@@ -91,7 +89,7 @@ for (const viewport of VIEWPORTS) {
     // 5. The call screen, the coach speaking.
     await page.getByRole("button", { name: "End" }).click();
     await page.getByRole("button", { name: "End call now" }).click();
-    await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Summary" })).toBeVisible();
     await capture(page, `summary-${viewport.name}`);
   });
 }
@@ -105,11 +103,10 @@ test("captures the coaching break, the states and the history", async ({ page })
     await page.goto("/");
     await startCall(page);
     await page.getByRole("button", { name: "Start live practice call" }).click();
-    await expect(page.getByRole("heading", { name: /Here is a quick look/ })).toBeVisible({
+    await expect(page.getByRole("heading", { name: "Quick feedback" })).toBeVisible({
       timeout: 10_000,
     });
     await capture(page, `coaching-break-${viewport.name}`);
-    await expect(page.getByText(/Counting filled pauses has not been validated/)).toBeVisible();
   }
 
   // The call screen while the coach is speaking.
@@ -143,7 +140,7 @@ test("captures the coaching break, the states and the history", async ({ page })
   await installFakeVoiceServer(page, "hanging");
   await startCall(page);
   await page.getByRole("button", { name: "Start live practice call" }).click();
-  await expect(page.getByTestId("call-status")).toContainText("Still connecting", {
+  await expect(page.getByTestId("call-status")).toContainText("Still working", {
     timeout: 10_000,
   });
   await capture(page, "call-still-connecting-1280");

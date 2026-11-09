@@ -19,6 +19,20 @@ const config: CapacitorConfig = {
   appName: 'Speaking Coach',
   webDir: 'www',
   loggingBehavior: 'none',
+  // The app background, so the WebView and the native window never flash a
+  // different colour at the edges.
+  backgroundColor: '#f7f6f2',
+  // SystemBars is bundled with @capacitor/core 8.6.0. `css` injects the
+  // --safe-area-inset-* variables the web layout uses as a fallback for
+  // env(safe-area-inset-*). Source:
+  // <https://capacitorjs.com/docs/apis/system-bars> (checked 2026-11-09).
+  plugins: {
+    SystemBars: {
+      insetsHandling: 'css',
+      style: 'DEFAULT',
+      hidden: false
+    }
+  },
   server: {
     url: appUrl,
     androidScheme: 'https',

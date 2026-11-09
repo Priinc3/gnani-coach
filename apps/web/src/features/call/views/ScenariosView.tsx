@@ -1,17 +1,22 @@
 "use client";
 
 /**
- * The scenario browser — Phase 04.
+ * The pick screen — Phase 17.
  *
- * Desktop area 3 of the Speakify reference (filter pills and scenario
- * cards) and mobile screen 2 of the same flow. The scenarios and their
- * presets come from the shared catalog; nothing is invented, and the
- * custom topic is transient — it is used for this call only and is never
- * saved.
+ * Scenario cards with an icon and a short name, one language dropdown, and
+ * one Call button. Presets are rare, so they sit behind a single More
+ * disclosure. The two honest lines stay: where the voice goes, and that
+ * recording is off unless the learner turns it on.
  */
 
 import styles from "../app.module.css";
-import { ArrowLeftIcon, PlusIcon } from "../components/Icon";
+import {
+  GlobeIcon,
+  MicIcon,
+  PlusIcon,
+  SparkIcon,
+  UsersIcon,
+} from "../components/Icon";
 import type { PracticeCatalog } from "../state/settings";
 
 export interface ScenariosViewProps {
@@ -19,11 +24,27 @@ export interface ScenariosViewProps {
   scenarioId: string;
   presetId: string | null;
   customTopic: string;
+  practiceLanguageId: string;
   onScenario: (scenarioId: string) => void;
   onPreset: (presetId: string | null) => void;
   onCustomTopic: (text: string) => void;
-  onContinue: () => void;
-  onBack: () => void;
+  onPracticeLanguage: (languageId: string) => void;
+  onStart: () => void;
+}
+
+function ScenarioIcon({ id }: { id: string }) {
+  switch (id) {
+    case "workplace":
+      return <UsersIcon size={22} />;
+    case "travel-social":
+      return <GlobeIcon size={22} />;
+    case "everyday":
+      return <SparkIcon size={22} />;
+    case "custom":
+      return <PlusIcon size={22} />;
+    default:
+      return <MicIcon size={22} />;
+  }
 }
 
 export function ScenariosView({
@@ -31,81 +52,48 @@ export function ScenariosView({
   scenarioId,
   presetId,
   customTopic,
+  practiceLanguageId,
   onScenario,
   onPreset,
   onCustomTopic,
-  onContinue,
-  onBack,
+  onPracticeLanguage,
+  onStart,
 }: ScenariosViewProps) {
   const scenario = catalog.scenarios.find((entry) => entry.id === scenarioId);
   const presets = scenario?.presets ?? [];
   const needsCustomTopic = scenario?.customTopic?.required === true;
   const maxLength = scenario?.customTopic?.maxLength ?? 200;
+  const language = catalog.languages.find((entry) => entry.id === practiceLanguageId);
 
   return (
-    <div className={styles.container}>
-      <button type="button" className={styles.ghostButton} onClick={onBack}>
-        <ArrowLeftIcon size={18} />
-        Back
-      </button>
+    <div className={styles.container} data-testid="pick-root">
+      <h1 className={styles.screenTitle}>Choose a scenario</h1>
 
-      <section aria-labelledby="scenarios-title">
-        <h2 className={styles.sectionTitle} id="scenarios-title">
-          Choose what you want to practise
-        </h2>
-        <p className={styles.sectionLede}>
-          Real-world situations, designed for practical learning. Your choice carries into the
-          settings and into the call.
-        </p>
-
-        <div className={styles.filterRow} role="group" aria-label="Filter scenarios">
-          <button
-            type="button"
-            className={`${styles.filterPill} ${styles.filterPillActive}`}
-            aria-pressed="true"
-          >
-            All
-          </button>
-          {catalog.scenarios.map((entry) => (
+      <div className={styles.scenarioGridSimple} role="group" aria-label="Scenarios">
+        {catalog.scenarios.map((entry) => {
+          const active = entry.id === scenarioId;
+          return (
             <button
               type="button"
               key={entry.id}
-              className={styles.filterPill}
-              aria-pressed={entry.id === scenarioId}
+              className={`${styles.scenarioCard} ${styles.scenarioCardSimple} ${
+                active ? styles.scenarioCardActive : ""
+              }`}
+              aria-pressed={active}
               onClick={() => onScenario(entry.id)}
             >
-              {entry.displayName}
+              <span className={styles.scenarioIcon} aria-hidden="true">
+                <ScenarioIcon id={entry.id} />
+              </span>
+              <span className={styles.scenarioName}>{entry.displayName}</span>
             </button>
-          ))}
-        </div>
-
-        <div className={styles.scenarioGrid}>
-          {catalog.scenarios.map((entry) => {
-            const active = entry.id === scenarioId;
-            return (
-              <button
-                type="button"
-                key={entry.id}
-                className={`${styles.scenarioCard} ${active ? styles.scenarioCardActive : ""}`}
-                aria-pressed={active}
-                onClick={() => onScenario(entry.id)}
-              >
-                <span className={styles.scenarioCardTitle}>
-                  {entry.id === "custom" ? <PlusIcon size={18} /> : null}
-                  {entry.displayName}
-                </span>
-                <p className={styles.scenarioCardText}>{entry.description}</p>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+          );
+        })}
+      </div>
 
       {presets.length > 0 ? (
-        <section className={styles.section} aria-labelledby="presets-title">
-          <h3 className={styles.panelTitle} id="presets-title">
-            Which one?
-          </h3>
+        <details className={styles.moreBlock}>
+          <summary className={styles.moreSummary}>More</summary>
           <div className={styles.presetList}>
             {presets.map((preset) => (
               <label className={styles.presetOption} key={preset.id}>
@@ -116,53 +104,53 @@ export function ScenariosView({
                   checked={presetId === preset.id}
                   onChange={() => onPreset(preset.id)}
                 />
-                <span>
-                  <span className={styles.presetName}>{preset.displayName}</span>
-                  <span className={styles.presetDescription}>{preset.description}</span>
-                </span>
+                <span className={styles.presetName}>{preset.displayName}</span>
               </label>
             ))}
           </div>
-        </section>
+        </details>
       ) : null}
 
       {needsCustomTopic ? (
-        <section className={styles.section} aria-labelledby="custom-topic-title">
-          <h3 className={styles.panelTitle} id="custom-topic-title">
-            What do you want to talk about?
-          </h3>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel} htmlFor="custom-topic">
-              Your topic
-            </label>
-            <input
-              type="text"
-              id="custom-topic"
-              className={styles.textInput}
-              maxLength={maxLength}
-              value={customTopic}
-              onChange={(event) => onCustomTopic(event.target.value)}
-              aria-describedby="custom-topic-help"
-            />
-            <p className={styles.fieldHelp} id="custom-topic-help">
-              Used for this call only. What you type is never saved, never stored with your history
-              and never shown to anyone else.
-            </p>
-          </div>
-        </section>
+        <input
+          type="text"
+          className={styles.textInput}
+          aria-label="Topic"
+          maxLength={maxLength}
+          value={customTopic}
+          onChange={(event) => onCustomTopic(event.target.value)}
+        />
       ) : null}
 
-      <div className={styles.stickyAction}>
-        <div className={styles.row}>
-          <button
-            type="button"
-            className={`${styles.primaryButton} ${styles.stickyActionButton}`}
-            onClick={onContinue}
-          >
-            Continue to settings
-          </button>
-        </div>
+      <div className={styles.languageRow}>
+        <select
+          className={styles.select}
+          aria-label="Speaking language"
+          value={practiceLanguageId}
+          onChange={(event) => onPracticeLanguage(event.target.value)}
+        >
+          {catalog.languages.map((entry) => (
+            <option key={entry.id} value={entry.id}>
+              {entry.displayName}
+            </option>
+          ))}
+        </select>
+        {language && !language.capabilities.conversationTested ? (
+          <span className={styles.capabilityBadge}>Not yet checked</span>
+        ) : null}
       </div>
+
+      <p className={styles.honestyLine}>Your voice is sent to our speech partners to reply.</p>
+      <p className={styles.honestyLine}>Recording off unless enabled.</p>
+
+      <button
+        type="button"
+        className={`${styles.primaryButton} ${styles.startBig}`}
+        onClick={onStart}
+        aria-label="Start live practice call"
+      >
+        Call
+      </button>
     </div>
   );
 }

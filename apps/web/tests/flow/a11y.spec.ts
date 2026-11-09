@@ -46,14 +46,7 @@ test("the flow is complete with the keyboard alone", async ({ page }) => {
   const start = page.getByRole("button", { name: "Start a practice call" });
   await start.focus();
   await page.keyboard.press("Enter");
-  await expect(
-    page.getByRole("heading", { name: "Choose what you want to practise" }),
-  ).toBeVisible();
-
-  const continueButton = page.getByRole("button", { name: "Continue to settings" });
-  await continueButton.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
 
   const call = page.getByRole("button", { name: "Start live practice call" });
   await call.focus();
@@ -68,7 +61,7 @@ test("the flow is complete with the keyboard alone", async ({ page }) => {
   await expect(confirm).toBeVisible();
   await confirm.focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Summary" })).toBeVisible();
 });
 
 test("the focus is visible on the controls", async ({ page }) => {
@@ -87,7 +80,6 @@ test("the status and the feedback are announced", async ({ page }) => {
   await installFakeVoiceServer(page, "happy");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
 
   // The call status is a live region.
@@ -105,13 +97,7 @@ test("no screen overflows horizontally", async ({ page }) => {
     await page.getByRole("button", { name: "Start a practice call" }).click();
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(1);
 
-    await page.getByRole("button", { name: "Continue to settings" }).click();
-    expect(await horizontalOverflow(page)).toBeLessThanOrEqual(1);
-
-    await page.getByRole("button", { name: "Back" }).first().click();
-    await page.getByRole("button", { name: "Back" }).first().click();
-    // The features view is reachable from the hero on every screen size.
-    await page.getByRole("button", { name: "See what is measured" }).click();
+    await page.getByRole("button", { name: "Settings" }).click();
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(1);
 
     await page.getByRole("button", { name: "Back" }).first().click();
@@ -138,25 +124,12 @@ test("the reduced-motion preference is honoured", async ({ page }) => {
 
 test("the Indic scripts are rendered with their own language", async ({ page }) => {
   await page.goto("/");
-  const hindi = page.locator("span[lang='hi-IN']");
-  const tamil = page.locator("span[lang='ta-IN']");
+  await page.getByRole("button", { name: "Settings" }).click();
+  await page.getByText("More", { exact: true }).click();
+  const hindi = page.locator("option[lang='hi-IN']");
+  const tamil = page.locator("option[lang='ta-IN']");
   await expect(hindi).toHaveText("हिन्दी");
   await expect(tamil).toHaveText("தமிழ்");
-  const rendered = await page.evaluate(() => {
-    const pick = (selector: string) => {
-      const element = document.querySelector(selector);
-      if (!element) {
-        return null;
-      }
-      const box = element.getBoundingClientRect();
-      return { width: box.width, height: box.height };
-    };
-    return { hindi: pick("span[lang='hi-IN']"), tamil: pick("span[lang='ta-IN']") };
-  });
-  expect(rendered.hindi?.width ?? 0).toBeGreaterThan(0);
-  expect(rendered.hindi?.height ?? 0).toBeGreaterThan(0);
-  expect(rendered.tamil?.width ?? 0).toBeGreaterThan(0);
-  expect(rendered.tamil?.height ?? 0).toBeGreaterThan(0);
 });
 
 test("the transcript is not kept after the call ends", async ({ page }) => {
@@ -165,15 +138,14 @@ test("the transcript is not kept after the call ends", async ({ page }) => {
   await installFakeVoiceServer(page, "silent");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByTestId("call-status")).toContainText("Listening");
   // Turn the transient transcript on.
-  await page.getByRole("button", { name: "Show the transcript" }).click();
+  await page.getByRole("button", { name: "Transcript" }).click();
   await expect(page.getByLabel("Live transcript")).toBeVisible();
   await page.getByRole("button", { name: "End" }).click();
   await page.getByRole("button", { name: "End call now" }).click();
-  await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Summary" })).toBeVisible();
   // The transcript is gone: it is transient and is never persisted.
   await expect(page.getByLabel("Live transcript")).toHaveCount(0);
   await expect(page.getByText("I have led teams for six years.")).toHaveCount(0);

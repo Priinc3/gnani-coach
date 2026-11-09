@@ -36,6 +36,10 @@ export interface CallState {
   reconnecting: boolean;
   /** How long the call has been running, in milliseconds. */
   elapsedMs: number;
+  /** How long since the last server message, in milliseconds. */
+  msSinceEvent: number;
+  /** The learner's microphone level, 0…1, for the live ring. */
+  micLevel: number;
   /** The learner's microphone is off. */
   muted: boolean;
   /** The coach's voice is audible. */
@@ -73,6 +77,8 @@ export const initialCallState: CallState = {
   notice: null,
   reconnecting: false,
   elapsedMs: 0,
+  msSinceEvent: 0,
+  micLevel: 0,
   muted: false,
   speakerOn: true,
   transcriptVisible: false,
@@ -99,7 +105,8 @@ export type CallAction =
   | { type: "round_feedback"; payload: RoundFeedbackPayload; turnId: string | null }
   | { type: "server_error"; error: PlainError }
   | { type: "local_error"; error: LocalError }
-  | { type: "tick"; elapsedMs: number }
+  | { type: "tick"; elapsedMs: number; msSinceEvent: number }
+  | { type: "mic_level"; level: number }
   | { type: "set_muted"; muted: boolean }
   | { type: "set_speaker"; on: boolean }
   | { type: "set_transcript_visible"; visible: boolean }
@@ -144,6 +151,8 @@ export function callReducer(state: CallState, action: CallAction): CallState {
         micFailure: null,
         warning: null,
         elapsedMs: 0,
+        msSinceEvent: 0,
+        micLevel: 0,
         transcript: [],
         partialTranscript: "",
         rounds: [],
@@ -169,11 +178,18 @@ export function callReducer(state: CallState, action: CallAction): CallState {
           status,
           statusDetail: detail,
           notice: stickyNotice,
+          msSinceEvent: 0,
           phase: "ended",
         };
       }
       if (status === "error") {
-        return { ...state, status, statusDetail: detail, notice: stickyNotice };
+        return {
+          ...state,
+          status,
+          statusDetail: detail,
+          notice: stickyNotice,
+          msSinceEvent: 0,
+        };
       }
       if (status === "reconnecting") {
         return {
@@ -181,6 +197,7 @@ export function callReducer(state: CallState, action: CallAction): CallState {
           status,
           statusDetail: detail,
           notice: stickyNotice,
+          msSinceEvent: 0,
           reconnecting: true,
         };
       }
@@ -193,23 +210,25 @@ export function callReducer(state: CallState, action: CallAction): CallState {
         status,
         statusDetail: detail,
         notice: stickyNotice,
+        msSinceEvent: 0,
         phase: state.phase === "ended" ? state.phase : "live",
         reconnecting: false,
       };
     }
 
     case "transcript_partial":
-      return { ...state, partialTranscript: action.text };
+      return { ...state, partialTranscript: action.text, msSinceEvent: 0 };
 
     case "transcript_final":
       return {
         ...state,
         partialTranscript: "",
         transcript: [...state.transcript, action.text],
+        msSinceEvent: 0,
       };
 
     case "coach_text":
-      return { ...state, coachText: action.text };
+      return { ...state, coachText: action.text, msSinceEvent: 0 };
 
     case "round_feedback":
       return {
@@ -217,20 +236,24 @@ export function callReducer(state: CallState, action: CallAction): CallState {
         feedback: action.payload,
         feedbackTurnId: action.turnId,
         rounds: [...state.rounds, action.payload],
+        msSinceEvent: 0,
         phase: "live",
       };
 
     case "server_error":
-      return { ...state, error: action.error };
+      return { ...state, error: action.error, msSinceEvent: 0 };
 
     case "local_error":
-      return { ...state, localError: action.error, phase: "failed" };
+      return { ...state, localError: action.error, msSinceEvent: 0, phase: "failed" };
 
     case "tick":
-      return { ...state, elapsedMs: action.elapsedMs };
+      return { ...state, elapsedMs: action.elapsedMs, msSinceEvent: action.msSinceEvent };
+
+    case "mic_level":
+      return { ...state, micLevel: action.level };
 
     case "set_muted":
-      return { ...state, muted: action.muted };
+      return { ...state, muted: action.muted, micLevel: action.muted ? 0 : state.micLevel };
 
     case "set_speaker":
       return { ...state, speakerOn: action.on };

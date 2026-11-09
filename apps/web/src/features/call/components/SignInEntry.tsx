@@ -1,11 +1,10 @@
 "use client";
 
 /**
- * The guest entry to the account page — Phase 10 FIX-1.
+ * The guest entry to the account page — Phase 17.
  *
- * One same-origin link, shown only to guests, in the landing view, the
- * empty Progress state and the Settings view. It stays inside the APK
- * WebView because it is a relative Next.js link.
+ * One same-origin link. It stays inside the APK WebView because it is a
+ * relative Next.js link.
  */
 
 import Link from "next/link";
@@ -21,9 +20,6 @@ export function SignInEntry() {
       >
         Sign in or create an account
       </Link>
-      <p className={styles.fieldHelp}>
-        Guests can still practise — the call works the same — but nothing is saved.
-      </p>
     </div>
   );
 }

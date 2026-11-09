@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The web app's canvas and brand colours. -->
+    <color name="colorPrimary">#10655a</color>
+    <color name="colorPrimaryDark">#f7f6f2</color>
+    <color name="colorAccent">#17a67f</color>
+    <color name="appBackground">#f7f6f2</color>
+</resources>

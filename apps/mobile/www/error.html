@@ -6,27 +6,34 @@
     <meta name="app-url" content="__APP_URL__" />
     <title>Speaking Coach — connection problem</title>
     <style>
-      :root { color-scheme: light dark; }
+      :root { color-scheme: light; }
       body {
         margin: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-items: center;
+        padding: max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px))
+                 max(env(safe-area-inset-right, 0px), var(--safe-area-inset-right, 0px))
+                 max(env(safe-area-inset-bottom, 0px), var(--safe-area-inset-bottom, 0px))
+                 max(env(safe-area-inset-left, 0px), var(--safe-area-inset-left, 0px));
         font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-        background: #101820;
-        color: #f4f7f9;
+        background: #f7f6f2;
+        color: #1b1d1f;
       }
       main { max-width: 22rem; padding: 2rem; text-align: center; }
       h1 { font-size: 1.4rem; margin: 0 0 0.75rem; }
-      p { line-height: 1.5; margin: 0 0 1.25rem; color: #c7d2da; }
+      p { line-height: 1.5; margin: 0 0 1.25rem; color: #4d545a; }
       button {
+        min-height: 48px;
         padding: 0.75rem 1.25rem;
         border: 0;
-        border-radius: 0.6rem;
-        background: #3ddc97;
-        color: #082018;
+        border-radius: 999px;
+        background: #10655a;
+        color: #ffffff;
         font: inherit;
         font-weight: 700;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
         cursor: pointer;
       }
     </style>

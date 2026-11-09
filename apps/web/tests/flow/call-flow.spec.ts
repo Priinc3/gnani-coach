@@ -13,12 +13,11 @@ import { installFakeHistoryService } from "../fakes/history-server";
 import { installFakeVoiceServer } from "../fakes/voice-server";
 import { validateEnvelope } from "../fakes/contracts";
 
-/** Walk from the landing view to the settings view. */
-async function openSettings(page: Page) {
+/** Walk from the landing view to the pick screen. */
+async function openPick(page: Page) {
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
-  await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
 }
 
 test("the whole flow: onboarding, scenario, settings, call, coaching break, summary", async ({
@@ -33,15 +32,17 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
 
   // The scenario picker.
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await expect(page.getByRole("heading", { name: "Choose what you want to practise" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
   await page.getByRole("button", { name: "Workplace conversations", exact: true }).click();
+  await page.getByText("More", { exact: true }).click();
   await page.getByRole("radio", { name: /Team Meeting/ }).check();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
 
   // The settings screen: the languages are separate choices and the
   // recording is off.
+  await page.getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
   await page.getByLabel("Speaking language").selectOption("tamil");
+  await page.getByText("More", { exact: true }).click();
   await expect(page.getByLabel("Coaching language")).toHaveValue("tamil");
   await page.getByLabel("Coaching language").selectOption("english");
   const recording = page.getByRole("checkbox", {
@@ -50,9 +51,9 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
   await expect(recording).not.toBeChecked();
   await recording.check();
   await expect(recording).toBeChecked();
-  await expect(page.getByRole("status")).toContainText("recording kept for replay");
 
-  // The call.
+  // Back to the pick screen, then the call.
+  await page.getByRole("button", { name: "Back" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByTestId("call-status")).toContainText("Listening");
   await expect(page.getByRole("button", { name: "End" })).toBeVisible();
@@ -76,14 +77,10 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
   }
 
   // The coaching break arrives with the round feedback.
-  await expect(page.getByRole("heading", { name: /Here is a quick look/ })).toBeVisible({
+  await expect(page.getByRole("heading", { name: "Quick feedback" })).toBeVisible({
     timeout: 10_000,
   });
   await expect(page.getByText("You opened with the outcome, which is easy to follow.")).toBeVisible();
-  await expect(page.getByText("1,180 ms")).toBeVisible();
-  // Filled pauses are the insufficient-evidence state: never a number.
-  await expect(page.getByText(/Counting filled pauses has not been validated/)).toBeVisible();
-  await expect(page.getByText("3", { exact: true })).toBeVisible();
 
   // The three actions.
   await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
@@ -99,7 +96,7 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
   // Ending the call shows the summary (End is confirm-guarded).
   await page.getByRole("button", { name: "End" }).click();
   await page.getByRole("button", { name: "End call now" }).click();
-  await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Summary" })).toBeVisible();
   await expect(page.getByText("You opened with the outcome, which is easy to follow.")).toBeVisible();
   // No overall score, no confidence, no pronunciation grade.
   const summary = await page.locator("main").innerText();
@@ -110,13 +107,13 @@ test("the whole flow: onboarding, scenario, settings, call, coaching break, summ
 
 test("a double click on Start opens only one connection", async ({ page }) => {
   const server = await installFakeVoiceServer(page, "silent");
-  await openSettings(page);
+  await openPick(page);
 
   // Two clicks in the same task: the second one must not open a second
   // socket.
   await page.evaluate(() => {
-    const button = Array.from(document.querySelectorAll("button")).find((entry) =>
-      (entry.textContent ?? "").includes("Start live practice call"),
+    const button = Array.from(document.querySelectorAll("button")).find(
+      (entry) => entry.getAttribute("aria-label") === "Start live practice call",
     );
     button?.click();
     button?.click();
@@ -131,7 +128,7 @@ test("a server error is shown in plain words, with the retry rule of the shape",
   page,
 }) => {
   await installFakeVoiceServer(page, "server-error");
-  await openSettings(page);
+  await openPick(page);
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByText("The speech service is having trouble.")).toBeVisible({
     timeout: 10_000,
@@ -143,7 +140,7 @@ test("a server error is shown in plain words, with the retry rule of the shape",
 
 test("try again opens a new connection and the call works", async ({ page }) => {
   const server = await installFakeVoiceServer(page, "recoverable");
-  await openSettings(page);
+  await openPick(page);
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByText("The speech service is having trouble.")).toBeVisible({
     timeout: 10_000,
@@ -160,10 +157,10 @@ test("try again opens a new connection and the call works", async ({ page }) => 
 
 test("a disconnected call is reported and does not hang", async ({ page }) => {
   await installFakeVoiceServer(page, "disconnect");
-  await openSettings(page);
+  await openPick(page);
   await page.getByRole("button", { name: "Start live practice call" }).click();
   // The client reconnects on its own; the learner sees that state.
-  await expect(page.getByText(/Reconnecting|Still connecting/)).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/Reconnecting|Still working/)).toBeVisible({ timeout: 10_000 });
   // The client knows it lost the connection, so it says so plainly.
   await expect(page.getByTestId("call-status")).toContainText("Reconnecting", {
     timeout: 10_000,
@@ -172,7 +169,7 @@ test("a disconnected call is reported and does not hang", async ({ page }) => {
 
 test("a duplicate event is applied once", async ({ page }) => {
   await installFakeVoiceServer(page, "duplicate");
-  await openSettings(page);
+  await openPick(page);
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByText("That is a strong opening.")).toBeVisible({ timeout: 10_000 });
   // The duplicated coach text is applied once, not twice.

@@ -45,9 +45,11 @@ test("the microphone is opened only after the learner asks for the call", async 
   // Reading the landing page, the scenarios and the settings asks for
   // nothing at all.
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
+  await expect(page.getByRole("heading", { name: "Choose a scenario" })).toBeVisible();
+  await page.getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("heading", { name: "Practice settings" })).toBeVisible();
   expect(await micRequests(page)).toBe(0);
+  await page.getByRole("button", { name: "Back" }).click();
 
   // The gesture that starts the call is what opens it.
   await page.getByRole("button", { name: "Start live practice call" }).click();
@@ -59,12 +61,11 @@ test("nothing about the call is written to the browser storage", async ({ page }
   await installFakeVoiceServer(page, "happy");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
 
   // The learner's own words are on the screen…
   await expect(page.getByTestId("call-status")).toContainText("Listening", { timeout: 10_000 });
-  await expect(page.getByRole("heading", { name: /Here is a quick look/ })).toBeVisible({
+  await expect(page.getByRole("heading", { name: "Quick feedback" })).toBeVisible({
     timeout: 10_000,
   });
 
@@ -86,13 +87,12 @@ test("ending the call releases the socket and the microphone", async ({ page }) 
   const server = await installFakeVoiceServer(page, "silent");
   await page.goto("/");
   await page.getByRole("button", { name: "Start a practice call" }).click();
-  await page.getByRole("button", { name: "Continue to settings" }).click();
   await page.getByRole("button", { name: "Start live practice call" }).click();
   await expect(page.getByTestId("call-status")).toContainText("Listening", { timeout: 10_000 });
 
   await page.getByRole("button", { name: "End" }).click();
   await page.getByRole("button", { name: "End call now" }).click();
-  await expect(page.getByRole("heading", { name: "Session summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Summary" })).toBeVisible();
 
   // The client says goodbye in the frozen envelope.
   await server.waitFor("end", 5_000);

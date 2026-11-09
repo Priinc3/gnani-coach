@@ -1,26 +1,20 @@
 "use client";
 
 /**
- * The call experience — **Phase 04 owns this tree**.
+ * The call experience — Phase 17.
  *
- * The frozen seam is unchanged:
+ * The frozen seam is unchanged: `CallExperience` is a React component, its
+ * only prop is `{ catalog }`, and `apps/web/src/app/page.tsx` renders it.
  *
- * - `CallExperience` is a React component;
- * - its only prop is `{ catalog }`, the shared catalog from
- *   `@gnani/contracts/data/catalog.json`;
- * - `apps/web/src/app/page.tsx` renders it and nothing else.
+ * Phase 17 removes the extra pages and most of the sentences. One obvious
+ * thing per screen:
  *
- * What changed in Phase 04: the stub's honest starter notice is replaced by
- * the real browser side of the product — onboarding, the scenario picker,
- * the language and settings screen, the live call, the coaching break, the
- * session summary and the progress list — all built against the frozen
- * seams in `docs/contracts/`.
- *
- * The visual target is the Speakify reference (`prompts/phase-04-call-ui/
- * UI-REFERENCE.md` and `UI.png`): a warm near-white canvas, softly raised
- * white panels, dark pill-shaped primary buttons, mint highlights and bold
- * sans-serif headings. Every colour, radius and type step comes from the
- * frozen tokens in `apps/web/src/app/globals.css`.
+ * - Landing: the illustration and one Start button.
+ * - Pick: scenario cards, one language dropdown, one Call button.
+ * - Call: one status word, the avatar, Mute and End.
+ * - Summary: three short lines and two buttons.
+ * - Progress: date, minutes, language.
+ * - Settings: language, recording toggle, account actions.
  */
 
 import { useCallback, useMemo, useReducer, useRef, useState } from "react";
@@ -32,17 +26,15 @@ import { signOut, useSession } from "@/lib/auth";
 import { deriveVoiceHttpUrl, setRecordingRetentionConsent, useCallSession } from "@/lib/session-ui";
 
 import styles from "./app.module.css";
-import { HomeIcon, PracticeIcon, ProgressIcon, SparkIcon } from "./components/Icon";
+import { HomeIcon, PracticeIcon, ProgressIcon, SettingsIcon, SparkIcon } from "./components/Icon";
 import {
   buildSessionSettings,
-  describePlan,
   initialSettings,
   settingsReducer,
   type PracticeCatalog,
 } from "./state/settings";
 import { CallView } from "./views/CallView";
 import { CoachingView } from "./views/CoachingView";
-import { FeaturesView } from "./views/FeaturesView";
 import { HistoryView } from "./views/HistoryView";
 import { LandingView } from "./views/LandingView";
 import { ScenariosView } from "./views/ScenariosView";
@@ -56,19 +48,11 @@ export interface CallExperienceProps {
   catalog: CallCatalog;
 }
 
-type View =
-  | "landing"
-  | "features"
-  | "scenarios"
-  | "settings"
-  | "call"
-  | "coaching"
-  | "summary"
-  | "history";
+type View = "landing" | "scenarios" | "settings" | "call" | "coaching" | "summary" | "history";
 
 const NAV_ITEMS: { id: View; label: string }[] = [
-  { id: "features", label: "Features" },
-  { id: "scenarios", label: "Scenarios" },
+  { id: "landing", label: "Home" },
+  { id: "scenarios", label: "Practice" },
   { id: "history", label: "Progress" },
 ];
 
@@ -87,28 +71,18 @@ export function CallExperience({ catalog }: CallExperienceProps) {
     () => buildSessionSettings(settings, practiceCatalog),
     [settings, practiceCatalog],
   );
-  const planSummary = useMemo(
-    () => describePlan(settings, practiceCatalog),
-    [settings, practiceCatalog],
-  );
   const httpBaseUrl = useMemo(() => deriveVoiceHttpUrl(VOICE_WS_URL), []);
   const sessionState = useSession();
   const signedIn = sessionState.status === "authenticated";
 
-  const handleRecording = useCallback(
-    (enabled: boolean) => {
-      dispatchSettings({
-        type: "recording",
-        enabled,
-        grantedAt: enabled ? new Date().toISOString() : null,
-      });
-      // The decision is also recorded on the service. The flag travels in the
-      // `start` event as well, and the service re-checks it when it writes,
-      // so a failure here never silently keeps an audio file.
-      void setRecordingRetentionConsent(enabled);
-    },
-    [],
-  );
+  const handleRecording = useCallback((enabled: boolean) => {
+    dispatchSettings({
+      type: "recording",
+      enabled,
+      grantedAt: enabled ? new Date().toISOString() : null,
+    });
+    void setRecordingRetentionConsent(enabled);
+  }, []);
 
   const session = useCallSession({
     settings: built.settings,
@@ -127,22 +101,8 @@ export function CallExperience({ catalog }: CallExperienceProps) {
     }
   }, []);
 
-  // The "Languages" navigation entry scrolls to the language list on the
-  // landing view, so the destination is never a dead link.
-  const scrollToLanguages = useCallback(() => {
-    setView("landing");
-    if (typeof document === "undefined") {
-      return;
-    }
-    const node = document.getElementById("languages");
-    if (node) {
-      node.scrollIntoView({ block: "start" });
-    }
-  }, []);
-
   const handleStart = useCallback(async () => {
     if (startingRef.current) {
-      // A second click on Start must never open a second connection.
       return;
     }
     startingRef.current = true;
@@ -160,14 +120,6 @@ export function CallExperience({ catalog }: CallExperienceProps) {
     setView("summary");
   }, [session]);
 
-  /**
-   * Sign out from a live call.
-   *
-   * `signOut()` ends the session and runs the sign-out handlers, one of
-   * which tears down the call socket and the microphone. The reset is
-   * belt-and-braces: even a failed sign-out must not leave a live socket
-   * behind. The app returns to the landing view as a guest.
-   */
   const handleSignOut = useCallback(() => {
     void (async () => {
       try {
@@ -179,24 +131,12 @@ export function CallExperience({ catalog }: CallExperienceProps) {
     })();
   }, [session]);
 
-  /**
-   * The account and every row and recording were deleted by the settings
-   * screen. `deleteAccount` has already moved the session to guest; the
-   * app returns to the landing view with a short confirmation.
-   */
   const handleAccountDeleted = useCallback(() => {
     session.reset();
-    setAccountNotice("Your account, history and saved recordings were deleted.");
+    setAccountNotice("Account deleted.");
     navigate("landing");
   }, [navigate, session]);
 
-  /**
-   * "Try again" — a fresh connection.
-   *
-   * The old socket is closed and the microphone is released before the new
-   * call starts, so a retry never leaves two connections or two open
-   * microphones behind.
-   */
   const handleRetry = useCallback(async () => {
     if (startingRef.current) {
       return;
@@ -215,14 +155,6 @@ export function CallExperience({ catalog }: CallExperienceProps) {
     const names: Record<string, string> = {};
     for (const language of practiceCatalog.languages) {
       names[language.id] = language.displayName;
-    }
-    return names;
-  }, [practiceCatalog]);
-
-  const scenarioNames = useMemo(() => {
-    const names: Record<string, string> = {};
-    for (const scenario of practiceCatalog.scenarios) {
-      names[scenario.id] = scenario.displayName;
     }
     return names;
   }, [practiceCatalog]);
@@ -255,12 +187,8 @@ export function CallExperience({ catalog }: CallExperienceProps) {
         state={session.state}
         onEnd={handleEnd}
         onMute={session.setMuted}
-        onSpeaker={session.setSpeaker}
         onTranscriptVisible={session.setTranscriptVisible}
-        onCoachNow={() => session.coachingChoice("coach_now")}
         onRetry={() => void handleRetry()}
-        signedIn={signedIn}
-        onSignOut={handleSignOut}
       />
     );
   }
@@ -279,25 +207,29 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             {NAV_ITEMS.map((item) => (
               <button
                 type="button"
-                key={item.label}
-                className={`${styles.navLink} ${view === item.id ? styles.navLinkActive : ""}`}
+                key={item.id}
+                className={`${styles.navLink} ${
+                  view === item.id ||
+                  (item.id === "scenarios" && view === "settings")
+                    ? styles.navLinkActive
+                    : ""
+                }`}
                 aria-current={view === item.id ? "page" : undefined}
                 onClick={() => navigate(item.id)}
               >
                 {item.label}
               </button>
             ))}
-            <button type="button" className={styles.navLink} onClick={scrollToLanguages}>
-              Languages
-            </button>
           </nav>
           <div className={styles.headerActions}>
             <button
               type="button"
-              className={`${styles.primaryButton} ${styles.headerCta}`}
-              onClick={() => navigate("scenarios")}
+              className={styles.iconButton}
+              aria-label="Settings"
+              title="Settings"
+              onClick={() => navigate("settings")}
             >
-              Get started
+              <SettingsIcon size={20} />
             </button>
           </div>
         </div>
@@ -306,16 +238,10 @@ export function CallExperience({ catalog }: CallExperienceProps) {
       <main className={styles.main}>
         {view === "landing" ? (
           <LandingView
-            catalog={practiceCatalog}
             onStart={() => navigate("scenarios")}
-            onSeeFeatures={() => navigate("features")}
             signedIn={signedIn}
             notice={accountNotice}
           />
-        ) : null}
-
-        {view === "features" ? (
-          <FeaturesView catalog={practiceCatalog} onBack={() => navigate("landing")} />
         ) : null}
 
         {view === "scenarios" ? (
@@ -324,11 +250,14 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             scenarioId={settings.scenarioId}
             presetId={settings.scenarioPresetId}
             customTopic={settings.customTopic}
+            practiceLanguageId={settings.practiceLanguageId}
             onScenario={(scenarioId) => dispatchSettings({ type: "scenario", scenarioId })}
             onPreset={(presetId) => dispatchSettings({ type: "preset", presetId })}
             onCustomTopic={(text) => dispatchSettings({ type: "custom_topic", text })}
-            onContinue={() => navigate("settings")}
-            onBack={() => navigate("landing")}
+            onPracticeLanguage={(languageId) =>
+              dispatchSettings({ type: "practice_language", languageId })
+            }
+            onStart={() => void handleStart()}
           />
         ) : null}
 
@@ -339,12 +268,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             coachingLanguageId={settings.coachingLanguageId}
             levelId={settings.levelId}
             recordingRetention={settings.recordingRetention}
-            subtitles={settings.subtitles}
             signedIn={signedIn}
-            customTopic={settings.customTopic}
-            scenarioId={settings.scenarioId}
-            presetId={settings.scenarioPresetId}
-            planSummary={planSummary}
             problems={built.problems}
             onPracticeLanguage={(languageId) =>
               dispatchSettings({ type: "practice_language", languageId })
@@ -354,9 +278,6 @@ export function CallExperience({ catalog }: CallExperienceProps) {
             }
             onLevel={(levelId) => dispatchSettings({ type: "level", levelId })}
             onRecording={handleRecording}
-            onSubtitles={(enabled) => dispatchSettings({ type: "subtitles", enabled })}
-            onCustomTopic={(text) => dispatchSettings({ type: "custom_topic", text })}
-            onStart={() => void handleStart()}
             onBack={() => navigate("scenarios")}
             onSignOut={handleSignOut}
             onDeleted={handleAccountDeleted}
@@ -367,7 +288,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
           <SummaryView
             state={session.state}
             onDone={() => navigate("landing")}
-            onOpenHistory={() => navigate("history")}
+            onRetry={() => void handleRetry()}
           />
         ) : null}
 
@@ -375,8 +296,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
           <HistoryView
             httpBaseUrl={httpBaseUrl}
             languageNames={languageNames}
-            scenarioNames={scenarioNames}
-            onBack={() => navigate("landing")}
+            onStart={() => navigate("scenarios")}
           />
         ) : null}
       </main>
@@ -384,9 +304,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
       <nav className={styles.bottomNav} aria-label="Main" data-testid="bottom-tab-bar">
         <button
           type="button"
-          className={`${styles.bottomNavItem} ${
-            view === "landing" || view === "features" ? styles.bottomNavItemActive : ""
-          }`}
+          className={`${styles.bottomNavItem} ${view === "landing" ? styles.bottomNavItemActive : ""}`}
           onClick={() => navigate("landing")}
         >
           <HomeIcon size={20} />
@@ -404,9 +322,7 @@ export function CallExperience({ catalog }: CallExperienceProps) {
         </button>
         <button
           type="button"
-          className={`${styles.bottomNavItem} ${
-            view === "history" ? styles.bottomNavItemActive : ""
-          }`}
+          className={`${styles.bottomNavItem} ${view === "history" ? styles.bottomNavItemActive : ""}`}
           onClick={() => navigate("history")}
         >
           <ProgressIcon size={20} />
