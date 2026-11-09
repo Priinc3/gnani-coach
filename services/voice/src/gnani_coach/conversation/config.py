@@ -101,10 +101,18 @@ MAX_CALL_SUBMISSIONS = 24
 MAX_CALL_AUDIO_SECONDS = 300.0
 
 #: The reasoning deadline for one coach reply, in seconds.
-REASONING_DEADLINE_S = 20.0
+#:
+#: Phase 18: a live long turn measured ~9.6 s for one Gemini reply with
+#: ``thinking_level=low`` and 300 output tokens, so the old 20 s deadline
+#: left no room for a retry. 30 s is still below the browser's 45 s idle
+#: watchdog, which heartbeats reset every 15 s.
+REASONING_DEADLINE_S = 30.0
 
 #: The per-attempt ceiling for one coach reply, in seconds.
-REASONING_ATTEMPT_TIMEOUT_S = 10.0
+#:
+#: Phase 18: raised from 10 s because a normal reply already took ~9.6 s;
+#: the old bound timed out twice on a 39-word learner turn.
+REASONING_ATTEMPT_TIMEOUT_S = 20.0
 
 # ---------------------------------------------------------------------------
 # content bounds (Phase 05)
