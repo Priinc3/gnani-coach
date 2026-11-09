@@ -1,0 +1,4 @@
+097720f phase-18: raise coach reasoning timeout after live long-turn timeout
+7df1755 phase-18: ship web and voice; record B5 live-check result
+7186341 phase-16: record report commit hash
+9a373fc phase-16: keep call loop live and stream stt while speaking

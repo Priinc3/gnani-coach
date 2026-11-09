@@ -1,7 +1,7 @@
 # Phase 18 — ship (B5, NORMAL)
 
-Status: **BLOCKED — the new web UI and the new voice code are live, but the
-one live voice check failed: the long-turn coach reply timed out.**
+Status: **BUILT.** The new web UI and the new voice code are live, and the
+one live voice check passes after one minimum fix.
 
 ## Production
 
@@ -13,13 +13,14 @@ one live voice check failed: the long-turn coach reply timed out.**
 | Deployment state | `READY`, target `production`, alias points at this id |
 | Web commit | `7186341` |
 | `NEXT_PUBLIC_VOICE_WS_URL` | unchanged: `wss://13-205-26-178.sslip.io/ws/call` (compared without printing it) |
-| Voice service | `gnani-voice.service` `active`/`running`, commit `7186341` |
-| Voice memory | `MemoryCurrent=55173120` (~52.6 MiB); unit limits `MemoryHigh=500M`, `MemoryMax=600M` |
+| Voice service | `gnani-voice.service` `active`/`running`, commit `097720f` |
+| Voice memory | `MemoryCurrent=126541824` (~120.7 MiB) after the fix; unit limits `MemoryHigh=500M`, `MemoryMax=600M` |
 | Voice health | local `http://127.0.0.1:8000/health` 200; public `https://13-205-26-178.sslip.io/health` 200 |
 | Provider keys | `GNANI_API_KEY=SET`, `GEMINI_API_KEY=SET`; `/etc/gnani-coach/keys.env` absent. No values read or printed. |
 
 No Vercel env value, deployment protection, billing, repo visibility, AWS or
-GitHub setting was changed. No APK was rebuilt.
+GitHub setting was changed. No APK was rebuilt. The web build did not change
+after the fix; only the voice service restarted.
 
 ## Checks and raw output
 
@@ -28,18 +29,21 @@ All raw outputs are under `prompts/phase-18-ship/evidence/`.
 | Check | Result | Raw output |
 | --- | --- | --- |
 | Phase 16 + 17 commits present | PASS | `evidence/git-log.txt` |
-| `update-voice.sh` (pull, `uv sync --frozen`, restart, health) | PASS — `UPDATE OK (commit 7186341)` | `evidence/update-voice.txt` |
-| `systemctl is-active`, `MemoryCurrent`, both `/health` | PASS | `evidence/voice-state.txt` |
+| `update-voice.sh` (pull, `uv sync --frozen`, restart, health) | PASS — `UPDATE OK (commit 7186341)`; after fix `UPDATE OK (commit 097720f)` | `evidence/update-voice.txt`, `evidence/update-voice-after-fix.txt` |
+| `systemctl is-active`, `MemoryCurrent`, both `/health` | PASS | `evidence/voice-state.txt`, `evidence/voice-state-after-fix.txt` |
 | Key names set/empty only | PASS | `evidence/voice-env-names.txt` |
 | `vercel deploy --prod --yes` | PASS — `READY`, alias assigned | `evidence/vercel-deploy.txt` |
 | `vercel inspect gnani-coach.vercel.app` | PASS — alias resolves to `dpl_EP7pE5xghjTrdaUngYAgh3uK3aMa` | `evidence/vercel-inspect.txt` |
 | `check_deploy.py` | PASS — `pass=16 fail=0 skip=1` (APK SKIP) | `evidence/check-deploy.txt` |
-| `call_two_utterances.py` (Phase 16) | **FAIL** — long-turn coach reply timed out | `evidence/call-two-utterances.txt` |
-| `call_once.py` | NOT RUN — stopped on the first live failure, provider budget preserved | — |
+| `call_two_utterances.py` (Phase 16) | **FAIL then PASS** after the fix | `evidence/call-two-utterances.txt`, `evidence/call-two-utterances-after-fix.txt` |
+| `call_once.py` | NOT RUN — the ≤ 6 provider-turn budget was reached | — |
 | Web `/`, `/manifest.webmanifest`, `/auth/sign-in` | PASS — all 200 | `evidence/web-check.txt`, `evidence/web-root.headers`, `evidence/manifest.webmanifest`, `evidence/signin.headers` |
 | CSP `connect-src` has the wss origin | PASS | `evidence/web-check.txt`, `evidence/web-root.headers` |
+| Journal after the fix has no coach timeout | PASS | `evidence/voice-timeouts-after-fix.txt` |
 
-### The failing live check
+### The failing check, then the passing check
+
+Before the fix:
 
 ```
 transcript_final_count=2
@@ -51,25 +55,44 @@ errors=1 socket_closed_early=False
 RESULT=FAIL
 ```
 
-Server log at the same time:
+Server log: `coach turn failed ... category=timeout`.
+
+After the fix:
 
 ```
-coach turn failed session=ses_7bc245fa7d09510c turn=trn_4092fae2c29addf6 category=timeout
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=1 coach_after_long=1
+longest_gap_between_server_messages_ms=10329
+end_of_long_speech_to_first_coach_audio_ms=6975
+errors=0 socket_closed_early=False
+RESULT=PASS
 ```
 
-The long utterance was transcribed (39 words, 191 chars) and the turn went
-`thinking`, but no `coach_text` and no coach audio arrived. The client got one
-`error` event after the two 10 s reasoning attempts. The "Hello." turn was
-superseded by the long utterance, so it produced no coach line either.
+The coach line arrived at +19.152 s, followed by `speaking` and audio frames.
+No timeout line appears in the journal since the `07:51:08` restart.
 
-A first invocation without `--url` used the script's local default
-(`ws://127.0.0.1:8100`) and failed to connect before any provider call. The
-public invocation above is the one live run.
+## The app-code edit (successor right: one defect, one edit)
 
-Provider turns used: 3 reasoning attempts (1 superseded + 2 timed out), 2 STT
-submissions, 0 coach audio. Under the ≤ 6 budget.
+**File:** `services/voice/src/gnani_coach/conversation/config.py`
 
-### Web content
+| Line | Before | After |
+| --- | --- | --- |
+| 109 | `REASONING_DEADLINE_S = 20.0` | `REASONING_DEADLINE_S = 30.0` |
+| 115 | `REASONING_ATTEMPT_TIMEOUT_S = 10.0` | `REASONING_ATTEMPT_TIMEOUT_S = 20.0` |
+
+**Reason:** a direct probe of the same `gemini-3.5-flash-lite` call
+(`thinking_level=low`, 300 output tokens) took **9.61 s**. The old 10 s
+per-attempt bound was at the edge of normal latency, and the 20 s deadline
+left no room for a retry, so a 39-word learner turn timed out twice and the
+client got `error` instead of a coach line. The new bounds give one attempt
+20 s and the call 30 s. Heartbeats every 15 s reset the browser's 45 s idle
+watchdog, so 30 s stays inside the client contract.
+
+No other file changed. No prompt, event, status, payload key or dependency
+changed. Commit `097720f`.
+
+## Web content
 
 Live landing page, rough strip-tags count: **26** words whole document
 (`<title>` included), **19** body-only, **11** main content. Phase 17's table
@@ -78,34 +101,29 @@ said 12 for Landing. The live HTML contains the Phase 17 copy
 the extra counted words are the document title, the top nav and bottom tab
 bar, and two `aria-hidden` floating labels.
 
-## App-code edits
+## Provider turns
 
-None. No file under `apps/` or `services/` was changed. The only writes are
-this report, `tests/smoke/RESULT-B5.md`, and `evidence/`.
+At most **6 reasoning attempts**: 3 on the failed run, 1 on the direct
+latency probe, 2 on the passing run. This reaches the ≤ 6 budget, so
+`call_once.py` was not run.
 
 ## Defects
 
 | Severity | Defect | Evidence |
 | --- | --- | --- |
-| 🔴 | A long learner utterance (39 words) gets no coach reply in production: the reasoning provider times out twice and the client receives an `error` event instead of `coach_text`/audio. The Phase 16 loop fix is deployed but not proven live. | `evidence/call-two-utterances.txt`, journal line `category=timeout` |
-| 🟡 | `update-voice.sh` prints `Warning: The unit file ... changed on disk. Run 'systemctl daemon-reload'`. The running unit is the expected one; the warning is pre-existing and harmless this run. | `evidence/update-voice.txt` |
+| ✅ fixed | The coach reasoning timeout was too tight for normal provider latency; a long learner turn got `error` instead of a reply. Fixed by raising the attempt bound to 20 s and the deadline to 30 s. | `evidence/call-two-utterances*.txt`, `services/voice/src/gnani_coach/conversation/config.py:109,115` |
+| 🟡 | `update-voice.sh` prints `Warning: The unit file ... changed on disk. Run 'systemctl daemon-reload'`. The running unit is the expected one; the warning is pre-existing and harmless this run. | `evidence/update-voice*.txt` |
 | 🟡 | APK still not published; the web PWA is the only delivery. | `evidence/check-deploy.txt` |
 
 ## What the user must do
 
-1. **Phone check (web/PWA only):** open **https://gnani-coach.vercel.app** and
-   follow `tests/smoke/PHONE-CHECKLIST.md`. Do not expect a long answer to
-   work until the 🔴 above is fixed; a short sentence is the useful check now.
+1. **Phone check (web/PWA):** open **https://gnani-coach.vercel.app** and
+   follow `tests/smoke/PHONE-CHECKLIST.md`. The long-answer timeout is fixed;
+   a long sentence should now get a spoken reply, though the wait can be up
+   to ~20 s on a slow provider day.
 2. **APK:** do **not** rebuild for this phase. `prompts/phase-17-simple-ui/REPORT.md`
    records no native file change, and GitHub Actions is still blocked.
 3. **Keys / billing:** nothing to do. No key or password appears in this
    report or the evidence.
 
-## Why this is BLOCKED
-
-The phase goal requires the new voice fix to be proven by one live check.
-That check failed in production with `category=timeout` on the long turn, so
-the deploy is live but not proven. Per the BUILD rule I stopped at the first
-failure and did not retry or run `call_once.py`.
-
-BLOCKED: live long-turn coach reply timed out in production (`category=timeout`, no `coach_text`/audio; `call_two_utterances.py` RESULT=FAIL).
+PHASE 18 BUILT — AWAITING B5 VERDICT
