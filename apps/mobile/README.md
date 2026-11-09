@@ -2,27 +2,22 @@
 
 Capacitor 8 shell that loads the hosted Speaking Coach web app in an Android WebView. Debug-signed, sideload only.
 
-## Build it on GitHub Actions
+## Build it on this machine
 
-1. The workflow must exist on `main`; it only runs after it is pushed there.
-2. Run it with the https URL of the hosted app:
+```bash
+bash scripts/mobile/build-apk.sh          # writes apps/mobile/dist/speaking-coach.apk
+bash scripts/mobile/install-apk.sh        # adb install + launch, if a device is connected
+```
 
-   `gh workflow run android-apk.yml -f app_url=https://your-app.example`
+Full prerequisites, install and troubleshooting: [docs/release/APK-LOCAL.md](../../docs/release/APK-LOCAL.md).
 
-   If `app_url` is omitted, the repository variable `APP_URL` is used.
-3. Open the run in the Actions tab and download the `speaking-coach-debug-apk` artifact. It contains `app-debug.apk` and is kept for 14 days.
-
-## Download URL
-
-The published build is at:
-
-https://13-205-26-178.sslip.io/apk/speaking-coach.apk
-
-Phase 13 publishes the APK there.
+The APK is **not published at any URL**. Phase 13's sslip.io host serves the
+voice service only. GitHub Actions (`android-apk.yml`) remains the future CI
+path but is currently blocked by billing.
 
 ## Install (sideload)
 
-1. Copy `app-debug.apk` to the phone.
+1. Copy `speaking-coach.apk` to the phone.
 2. Open it and allow "install unknown apps" for the app you opened it from (Files, Chrome, and so on).
 3. Confirm the install, then open Speaking Coach.
 

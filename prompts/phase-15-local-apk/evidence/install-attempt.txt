@@ -1,0 +1,12 @@
+adb was not found, so no device can be checked.
+
+Enable USB debugging and install platform-tools:
+  - Phone: Settings > About phone > tap "Build number" 7 times, then
+    Settings > System > Developer options > USB debugging.
+  - Mac: install platform-tools (Android Studio, or:
+    sdkmanager "platform-tools"), plug the phone in, and accept the
+    "Allow USB debugging" prompt.
+  - Or start an emulator from Android Studio > Device Manager.
+
+Then re-run: bash scripts/mobile/install-apk.sh
+exit=0

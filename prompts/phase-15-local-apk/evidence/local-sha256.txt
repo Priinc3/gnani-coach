@@ -1,0 +1,1 @@
+0b2b39c7a2298032b226a71d6b8f477d6e3790ce36ac2c08cb4bfb5132bfc040  apps/mobile/dist/speaking-coach.apk
