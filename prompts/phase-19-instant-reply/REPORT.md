@@ -210,6 +210,6 @@ Limits of this evidence:
 * the client playback behaviour is covered by `tsc` and the unit-tested
   reducer/transport, not by Playwright (not run, per the box limits).
 
-Commit: `phase-19: instant reply with backchannels and streaming`.
+Commit: `4efc3ee` (`phase-19: instant reply with backchannels and streaming`).
 
 PHASE 19 BUILT — NEEDS RESTART OF gnani-voice AND A VERCEL DEPLOY
