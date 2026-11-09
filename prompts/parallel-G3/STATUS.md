@@ -1,4 +1,4 @@
 | Phase | State | Updated | Doing now | Need |
 |---|---|---|---|---|
-| 16 | ACTIVE | 2026-11-09 07:20 | proving call-loop cause | nothing |
-| 17 | BUILT | 2026-11-09 09:30 | simple UI, slow-server states, Android safe areas | nothing |
+| 16 | DONE | 2026-11-09 07:32 | report + commit | restart gnani-voice in Phase 18 |
+| 17 | NOT STARTED | 2026-11-09 07:20 | - | - |

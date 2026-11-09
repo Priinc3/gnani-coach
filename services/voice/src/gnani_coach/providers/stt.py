@@ -304,11 +304,23 @@ class GnaniSttSession:
         self._queue: asyncio.Queue[object] = asyncio.Queue(maxsize=512)
         self._receiver: asyncio.Task[None] | None = None
         self._connected_event: asyncio.Event = asyncio.Event()
+        #: Wall-clock milliseconds spent in the last handshake. Numbers
+        #: only; the caller logs it, never the audio.
+        self.last_connect_ms: float = 0.0
         self._closed = False
         self._fenced = False
         self._seen_ids: set[str] = set()
         self._max_index: int | None = None
         self._stop_reason = "not-started"
+        #: Live pump mode (Phase 16): frames are sent while the learner is
+        #: still speaking, so no clip is replayed at the end of a turn.
+        #: The same connection is kept for the next turn; a `commit`
+        #: control frame is not needed because the turn's own hold silence
+        #: closes the provider's VAD window.
+        self._live_mode = False
+        self._live_event = asyncio.Event()
+        self._live_seen = 0
+        self._live_frames = 0
 
     # -- lifecycle -----------------------------------------------------
     async def __aenter__(self) -> GnaniSttSession:
@@ -324,6 +336,7 @@ class GnaniSttSession:
         await self.aclose(reason="context-exit")
 
     async def _connect(self) -> None:
+        connect_started = time.monotonic()
         if self.budget is not None:
             # Order matters: the connection is charged first, so a refused
             # budget never leaves a half-open transport behind.
@@ -366,6 +379,7 @@ class GnaniSttSession:
             raise ProtocolError(
                 "provider did not send a 'connected' frame after the handshake"
             )
+        self.last_connect_ms = (time.monotonic() - connect_started) * 1000.0
 
     async def aclose(self, *, reason: str = "done") -> None:
         """Close exactly once. Safe to call from cancellation paths."""
@@ -419,21 +433,38 @@ class GnaniSttSession:
                 except asyncio.TimeoutError:
                     if self._closed:
                         return
-                    self._queue.put_nowait(("idle", None))
+                    if not self._live_mode:
+                        self._queue.put_nowait(("idle", None))
                     continue
                 except ConnectionClosed:
-                    self._queue.put_nowait(("closed", None))
+                    if self._live_mode:
+                        self._live_event.set()
+                    else:
+                        self._queue.put_nowait(("closed", None))
                     return
                 except ProviderError as exc:
                     self._pending_error = exc
-                    self._queue.put_nowait(("error", None))
+                    if self._live_mode:
+                        self._live_event.set()
+                    else:
+                        self._queue.put_nowait(("error", None))
                     return
                 try:
                     notice = self._handle(raw)
                 except ProviderError as exc:
                     self._pending_error = exc
-                    self._queue.put_nowait(("error", None))
+                    if self._live_mode:
+                        self._live_event.set()
+                    else:
+                        self._queue.put_nowait(("error", None))
                     return
+                if self._live_mode:
+                    # In live mode the caller waits on the transcript
+                    # event; queue notices would only grow the bounded
+                    # queue over a long utterance.
+                    if notice == "closed":
+                        self._live_event.set()
+                    continue
                 self._queue.put_nowait((notice, None))
         except asyncio.CancelledError:
             raise
@@ -529,6 +560,81 @@ class GnaniSttSession:
                 learner_clock_samples=self.clock.submitted_samples,
                 status=status,  # type: ignore[arg-type]
             )
+        )
+        if self._live_mode:
+            self._live_event.set()
+
+    # -- live pump (Phase 16) -----------------------------------------
+    async def start_live(self) -> None:
+        """Open the live pump: send frames while the learner speaks.
+
+        The documented sending rule is real-time cadence, never a burst
+        (https://docs.gnani.ai/api/STT/stt-websocket, "Sending rules"), so
+        the caller forwards each 32 ms frame as it arrives. The connection
+        is kept across turns; the turn's own hold silence closes the VAD
+        window, so no ``commit`` frame is needed.
+        """
+        if self._closed:
+            raise CancelledError("session is closed", provider=PROVIDER)
+        if self._transport is None:
+            await self._connect()
+        if self.budget is not None:
+            self.budget.check_plan(1, 0.0)
+            token = self.budget.begin_call(f"{PROVIDER}:live")
+            self.budget.admit_attempt(f"{PROVIDER}:live", call=token)
+        self._live_seen = len(self.transcripts)
+        self._live_mode = True
+        self._live_event.clear()
+
+    async def send_live_frame(self, frame: bytes) -> None:
+        """Send one frame at the cadence the caller supplies it."""
+        if self._closed or self._transport is None:
+            raise CancelledError("session is closed", provider=PROVIDER)
+        await self._transport.send(frame)
+        samples = len(frame) // 2
+        self.clock.advance(samples)
+        self._live_frames += 1
+        if self.budget is not None:
+            self.budget.spend_audio(samples / self.config.sample_rate)
+
+    async def collect_live(self, *, grace_ms: int) -> SttResult:
+        """Return the segments closed since the previous live collect.
+
+        Waits at most ``grace_ms`` for a segment to arrive, and then a
+        further ``grace_ms`` of quiet after the last one, so a segment
+        split by an internal pause is not lost.
+        """
+        loop = asyncio.get_running_loop()
+        deadline: float | None = None
+        while True:
+            if self._pending_error is not None:
+                raise self._pending_error
+            timeout = (
+                grace_ms / 1000.0
+                if deadline is None
+                else max(0.0, deadline - loop.time())
+            )
+            try:
+                await asyncio.wait_for(self._live_event.wait(), timeout=timeout)
+            except asyncio.TimeoutError:
+                break
+            self._live_event.clear()
+            if self._pending_error is not None:
+                raise self._pending_error
+            if len(self.transcripts) > self._live_seen:
+                deadline = loop.time() + grace_ms / 1000.0
+            elif self._closed:
+                break
+        new = self.transcripts[self._live_seen :]
+        self._live_seen = len(self.transcripts)
+        return SttResult(
+            transcripts=list(new),
+            processing_count=self.processing_count,
+            sample_clock=self.clock,
+            server_config=dict(self.server_config),
+            errors=list(self.errors),
+            frames_sent=self._live_frames,
+            closed_cleanly=not self._closed,
         )
 
     # -- send ----------------------------------------------------------

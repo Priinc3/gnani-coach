@@ -45,6 +45,11 @@ class _SttSession:
     def __init__(self, session: GnaniSttSession) -> None:
         self._session = session
 
+    @property
+    def last_connect_ms(self) -> float:
+        """The milliseconds spent in the last provider handshake."""
+        return float(getattr(self._session, "last_connect_ms", 0.0) or 0.0)
+
     async def stream_pcm(
         self, raw_pcm: bytes, *, trailing_silence_ms: int = 800
     ) -> SttRunResult:
@@ -69,6 +74,22 @@ class _SttSession:
     async def iter_transcripts(self) -> AsyncIterator[TranscriptSegment]:
         async for event in self._session.iter_transcripts():
             yield _segment_from_event(event)
+
+    # -- live pump (Phase 16) -----------------------------------------
+    @property
+    def live_capable(self) -> bool:
+        """Whether this session can stream frames while the learner speaks."""
+        return callable(getattr(self._session, "send_live_frame", None))
+
+    async def start_live(self) -> None:
+        await self._session.start_live()
+
+    async def send_live_frame(self, frame: bytes) -> None:
+        await self._session.send_live_frame(frame)
+
+    async def collect_live(self, *, grace_ms: int) -> tuple[TranscriptSegment, ...]:
+        result = await self._session.collect_live(grace_ms=grace_ms)
+        return tuple(_segment_from_event(event) for event in result.transcripts)
 
     async def aclose(self, *, reason: str = "done") -> None:
         await self._session.aclose(reason=reason)

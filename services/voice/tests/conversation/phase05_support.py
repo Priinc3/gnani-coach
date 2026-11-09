@@ -91,6 +91,10 @@ class FakeSttSession:
     async def stream_pcm(
         self, raw_pcm: bytes, *, trailing_silence_ms: int = 800
     ) -> SttRunResult:
+        if self._port.delay:
+            # A slow recogniser: the runtime must keep reading frames and
+            # sending the heartbeat while this runs.
+            await asyncio.sleep(self._port.delay)
         self.submissions += 1
         self._port.submissions += 1
         segments = self._port.recognise(raw_pcm)
@@ -113,9 +117,16 @@ class FakeSttSession:
 class FakeSttPort:
     """A recogniser that closes a segment per run of speech."""
 
-    def __init__(self, texts: list[str] | None = None, *, fail: bool = False) -> None:
+    def __init__(
+        self,
+        texts: list[str] | None = None,
+        *,
+        fail: bool = False,
+        delay: float = 0.0,
+    ) -> None:
         self._texts = list(texts or ["one two three four five"])
         self.fail = fail
+        self.delay = delay
         self.submissions = 0
         self.max_clip_bytes = 0
         self.sessions: list[FakeSttSession] = []

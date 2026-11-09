@@ -205,15 +205,24 @@ def turn_is_complete(
     *,
     min_words: int,
     max_turn_ms: int = MAX_TURN_MS,
+    closed_segment: bool = False,
 ) -> bool:
     """Whether a turn may be completed right now.
 
-    Both the hold and the word count must hold. A turn that has been open
-    for too long is completed anyway, so a very quiet learner still moves
-    the conversation on — the turn is then reported as *too little
-    speech*, never as a measured zero.
+    The hold must always have elapsed. The word count is a rule for a
+    *coaching round*, not a gate on a learner's turn: when the recogniser
+    closed a segment at the end of this turn, the learner finished an
+    utterance and the coach may answer briefly — "Hello." is a valid turn.
+    The count still applies to a submission that closed nothing, so a
+    stray noise does not become a turn.
+
+    A turn that has been open for too long is completed anyway, so a very
+    quiet learner still moves the conversation on — the turn is then
+    reported as *too little speech*, never as a measured zero.
     """
-    if endpointing.hold_expired() and turn.word_count >= min_words:
+    if endpointing.hold_expired() and (
+        closed_segment or turn.word_count >= min_words
+    ):
         return True
     return turn.duration_ms >= max_turn_ms
 

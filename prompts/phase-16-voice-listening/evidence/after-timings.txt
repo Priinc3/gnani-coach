@@ -1,0 +1,11 @@
+# Content-free stage timings from the final (live-pump) local server.
+
+# Run 1 (after.txt)
+turn timings turn=trn_3b8a0c4ccd6b3967 frames_buffered=434 pending_audio_ms=10176 stt_collect_ms=901 stt_connect_ms=0 llm_ms=1865 tts_first_byte_ms=196 queue_depth_max=20 loop_blocked_ms_max=216 turn_latency_ms=2062
+
+# Run 2 (after-run2.txt)
+turn timings turn=trn_8cb0ac0f3624bf44 frames_buffered=199 pending_audio_ms=10176 stt_collect_ms=900 stt_connect_ms=0 llm_ms=6489 tts_first_byte_ms=178 queue_depth_max=6 loop_blocked_ms_max=148 turn_latency_ms=6668
+
+# Intermediate clip-path run, before the live pump (after-clip-path-run2.txt).
+# It shows the replay cost the live pump removed, and the reconnect cost.
+turn timings turn=trn_292df2ea7b557f4e frames_buffered=461 pending_audio_ms=10144 stt_collect_ms=13891 stt_connect_ms=128 llm_ms=3325 tts_first_byte_ms=190 queue_depth_max=0 loop_blocked_ms_max=1 turn_latency_ms=3516

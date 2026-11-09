@@ -246,6 +246,19 @@ class _TurnRecord:
 
 
 @dataclass
+class _TurnTiming:
+    """Content-free stage timings of one turn. Numbers only."""
+
+    frames_buffered: int = 0
+    speech_frames: int = 0
+    pending_audio_ms: int = 0
+    stt_collect_ms: int = 0
+    stt_connect_ms: int = 0
+    llm_ms: int = 0
+    tts_first_byte_ms: int = 0
+
+
+@dataclass
 class _RuntimeState:
     """The mutable state of one call."""
 
@@ -286,6 +299,22 @@ class CallRuntime:
         self._reader: asyncio.Task[None] | None = None
         self._coach_task: asyncio.Task[Any] | None = None
         self._coach_turn_id: TurnId | None = None
+        #: The one in-flight recognition submission of this call. It runs
+        #: off the main loop so frames, endpointing and the heartbeat keep
+        #: moving while the recogniser replays a clip.
+        self._collect_task: asyncio.Task[Any] | None = None
+        self._collect_turn_id: TurnId | None = None
+        #: Incremented whenever the learner speaks again while a
+        #: submission is in flight. A result from an older epoch may be
+        #: appended, but it must not complete the turn.
+        self._speech_epoch = 0
+        #: A failure raised inside a background task, re-raised by the
+        #: main loop so the call ends with the frozen error shape.
+        self._fatal_failure: CallFailure | None = None
+        #: Per-turn stage timings, logged once with numbers only.
+        self._timings: dict[TurnId, _TurnTiming] = {}
+        self._queue_depth_max = 0
+        self._loop_blocked_ms_max = 0
         self._stream: RecognitionStream | None = None
         self._tts_session: Any | None = None
         self._endpointing = Endpointing(
@@ -616,27 +645,47 @@ class CallRuntime:
     # the main loop
     # ------------------------------------------------------------------
     async def _main_loop(self) -> None:
-        """Consume events until the call ends."""
+        """Consume events until the call ends.
+
+        Every handler is timed, so a future regression that blocks the
+        loop shows up as ``loop_blocked_ms_max`` in the per-turn log
+        instead of as a silent disconnect.
+        """
         while True:
+            if self._fatal_failure is not None:
+                raise self._fatal_failure
             timeout = self._next_timeout()
             try:
                 event = await asyncio.wait_for(self._events.get(), timeout=timeout)
             except asyncio.TimeoutError:
+                started = time.monotonic()
                 await self._on_timeout()
+                self._note_blocked(started)
                 continue
+            self._queue_depth_max = max(self._queue_depth_max, self._events.qsize())
+            started = time.monotonic()
             if isinstance(event, DisconnectEvent):
                 await self._send_status("ended", "the client left")
                 raise CallEnded
             if isinstance(event, FrameEvent):
                 await self._on_frame(event)
+                self._note_blocked(started)
                 continue
             await self._on_control(event)
+            self._note_blocked(started)
+
+    def _note_blocked(self, started: float) -> None:
+        """Record the longest time a handler held the main loop."""
+        blocked = int(round((time.monotonic() - started) * 1000.0))
+        self._loop_blocked_ms_max = max(self._loop_blocked_ms_max, blocked)
 
     def _next_timeout(self) -> float:
         """The next deadline: heartbeat, idle or the call cap."""
         now = time.monotonic()
         deadlines = [
-            now + HEARTBEAT_INTERVAL_S,
+            # The heartbeat deadline is measured from the last message
+            # actually sent, so a long recognition cannot push it out.
+            self._last_sent_at + HEARTBEAT_INTERVAL_S,
             self._last_client_frame_at + IDLE_TIMEOUT_S,
             self._started_at + self._options.call_cap_seconds,
         ]
@@ -653,6 +702,11 @@ class CallRuntime:
             raise CallEnded
         if now - self._last_sent_at >= HEARTBEAT_INTERVAL_S:
             await self._send_status("heartbeat")
+        # Silence arrives as frames on a real client, but a timeout is
+        # also a chance to end a turn when the last frames already made
+        # the hold expire (for example after a slow submission finished).
+        if self._turn is not None and not self._state.speaking:
+            await self._maybe_finish_turn()
 
     # ------------------------------------------------------------------
     # frames
@@ -668,6 +722,18 @@ class CallRuntime:
         speech = self._endpointing.observe(event.data)
         if speech:
             self._awaiting_speech = False
+            if self._turn is not None and self._is_fenced(self._turn.turn_id):
+                # The learner spoke again after an interrupt: the fenced
+                # turn can never complete, so the new speech starts a
+                # fresh turn instead of being swallowed by it.
+                self._timings.pop(self._turn.turn_id, None)
+                self._turn = None
+                self._endpointing.reset()
+            if self._collect_task is not None and not self._collect_task.done():
+                # The learner kept talking while a clip was being
+                # recognised: its result may be appended, but it must not
+                # complete the turn.
+                self._speech_epoch += 1
         if self._recording is not None:
             self._append_recording(event.data)
         if (
@@ -686,6 +752,10 @@ class CallRuntime:
             turn.ended_clock_ms = self._endpointing.clock_ms
             if len(turn.audio) < MAX_TURN_AUDIO_BYTES:
                 turn.audio.extend(event.data)
+            timing = self._timings.setdefault(turn.turn_id, _TurnTiming())
+            timing.frames_buffered += 1
+            if speech:
+                timing.speech_frames += 1
         if self._stream is not None:
             await self._stream.push_frame(event.data)
         await self._maybe_finish_turn()
@@ -693,11 +763,13 @@ class CallRuntime:
     def _current_turn(self) -> LearnerTurn | None:
         """The open turn, opened by the first frame of the call."""
         if self._turn is None:
+            turn_id = new_turn_id()
             self._turn = LearnerTurn(
-                turn_id=new_turn_id(),
+                turn_id=turn_id,
                 round_id=self._state.round_id,
                 started_clock_ms=self._endpointing.clock_ms,
             )
+            self._timings[turn_id] = _TurnTiming()
         return self._turn
 
     def _append_recording(self, data: bytes) -> None:
@@ -715,34 +787,89 @@ class CallRuntime:
         self._recording.extend(data)
 
     async def _maybe_finish_turn(self) -> None:
-        """Close the turn when the end-of-turn policy fires."""
+        """Start closing the turn when the end-of-turn policy fires.
+
+        The recognition itself runs in :meth:`_collect_turn`, off this
+        loop. Awaiting it here is what used to block frames, endpointing
+        and the heartbeat for the whole real-time replay of the clip.
+        """
         turn = self._turn
         if turn is None or self._state.speaking or self._awaiting_speech:
             return
+        if self._collect_task is not None and not self._collect_task.done():
+            return
         if not self._endpointing.hold_expired():
             return
+        timing = self._timings.get(turn.turn_id)
+        if timing is not None and timing.speech_frames == 0:
+            # The turn is leading or idle silence. It is not submitted:
+            # an empty first submission was pure replay cost.
+            self._turn = None
+            self._timings.pop(turn.turn_id, None)
+            self._endpointing.reset()
+            return
+        # The learner stopped speaking and the turn is being recognised.
+        # An existing status value is sent at once, so the client sees
+        # progress long before the first coach audio.
+        self._state.state = "thinking"
+        await self._send_status("thinking", turn_id=turn.turn_id)
+        self._awaiting_speech = True
+        self._collect_turn_id = turn.turn_id
+        self._collect_task = asyncio.create_task(
+            self._collect_turn(turn), name="call-collect"
+        )
+
+    async def _collect_turn(self, turn: LearnerTurn) -> None:
+        """Recognise one turn in the background, then let the coach answer.
+
+        At most one submission is in flight. A result that belongs to a
+        turn the learner has left, an interrupted turn, or a turn they
+        started speaking into again is never allowed to complete it.
+        """
         stream = self._stream
-        if stream is not None:
-            try:
-                segments = await stream.collect(grace_ms=SEGMENT_GRACE_MS)
-            except Exception as exc:  # noqa: BLE001 - the call survives
-                failure = call_errors.from_exception(exc)
-                LOGGER.warning(
-                    "recognition failed session=%s category=%s",
-                    self._session_id,
-                    failure.category,
+        timing = self._timings.setdefault(turn.turn_id, _TurnTiming())
+        epoch = self._speech_epoch
+        segments: tuple[Any, ...] = ()
+        try:
+            if stream is not None:
+                timing.pending_audio_ms = int(
+                    getattr(stream, "pending_audio_ms", 0) or 0
                 )
-                if failure is call_errors.BUDGET_EXHAUSTED:
-                    # The call's own allowance is gone: the call ends
-                    # cleanly with the frozen error shape.
-                    raise CallFailure(failure, close_code=1000) from exc
-                with contextlib.suppress(Exception):
-                    await self._send_failure(failure)
-                # Reconnect with the same VAD object and keep the call
-                # alive: the learner may keep talking.
-                with contextlib.suppress(Exception):
-                    await stream.reopen()
-                self._awaiting_speech = True
+                try:
+                    segments = await stream.collect(grace_ms=SEGMENT_GRACE_MS)
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:  # noqa: BLE001 - the call survives
+                    failure = call_errors.from_exception(exc)
+                    LOGGER.warning(
+                        "recognition failed session=%s category=%s",
+                        self._session_id,
+                        failure.category,
+                    )
+                    if failure is call_errors.BUDGET_EXHAUSTED:
+                        # The call's own allowance is gone: the main loop
+                        # ends it with the frozen error shape.
+                        self._fatal_failure = CallFailure(
+                            failure, close_code=1000
+                        )
+                        return
+                    with contextlib.suppress(Exception):
+                        await self._send_failure(failure)
+                    # Reconnect with the same VAD object and keep the call
+                    # alive: the learner may keep talking.
+                    with contextlib.suppress(Exception):
+                        await stream.reopen()
+                    self._awaiting_speech = True
+                    return
+                timing.stt_collect_ms = int(
+                    getattr(stream, "last_collect_ms", 0) or 0
+                )
+                timing.stt_connect_ms = int(
+                    getattr(stream, "last_connect_ms", 0) or 0
+                )
+            if self._turn is not turn or self._is_fenced(turn.turn_id):
+                # A late result of a turn that is gone is never sent and
+                # never completes anything.
                 return
             for segment in segments:
                 turn.add_segment(segment)
@@ -751,18 +878,41 @@ class CallRuntime:
                     _transcript_payload(segment),
                     turn_id=turn.turn_id,
                 )
-        turn.ended_clock_ms = self._endpointing.clock_ms
-        if not turn_is_complete(
-            turn,
-            self._endpointing,
-            min_words=self._options.min_words,
-            max_turn_ms=MAX_TURN_MS,
-        ):
-            # Not enough words yet: the turn stays open, the hold is
-            # extended and the learner may keep talking.
-            self._awaiting_speech = True
-            return
-        await self._complete_turn(turn)
+            turn.ended_clock_ms = self._endpointing.clock_ms
+            if self._speech_epoch != epoch:
+                # The learner resumed while this clip was recognised. The
+                # segments are real, but they do not end the turn; the
+                # audio they spoke meanwhile is already buffered and the
+                # next hold will submit it.
+                self._awaiting_speech = False
+                await self._return_to_listening(turn.turn_id)
+                return
+            if not turn_is_complete(
+                turn,
+                self._endpointing,
+                min_words=self._options.min_words,
+                max_turn_ms=MAX_TURN_MS,
+                closed_segment=bool(segments),
+            ):
+                # Nothing closed and the count is not met: the turn stays
+                # open, the hold is extended and the learner may keep
+                # talking. A closed segment does advance the turn, even
+                # when it is one word ("Hello.").
+                self._awaiting_speech = True
+                await self._return_to_listening(turn.turn_id)
+                return
+            await self._complete_turn(turn)
+        finally:
+            if self._collect_task is asyncio.current_task():
+                self._collect_task = None
+                self._collect_turn_id = None
+
+    async def _return_to_listening(self, turn_id: TurnId) -> None:
+        """Undo the ``thinking`` status when a submission did not end a turn."""
+        if self._state.state == "thinking":
+            self._state.state = "listening"
+            with contextlib.suppress(Exception):
+                await self._send_status("listening", turn_id=turn_id)
 
     async def _complete_turn(self, turn: LearnerTurn) -> None:
         """Finish a learner turn: measure it, then let the coach answer."""
@@ -832,9 +982,11 @@ class CallRuntime:
         """Produce and speak one coach reply."""
         providers = self._options.providers
         assert providers is not None
+        timing = self._timings.setdefault(turn.turn_id, _TurnTiming())
         try:
-            self._state.state = "thinking"
-            await self._send_status("thinking", turn_id=turn.turn_id)
+            if self._state.state != "thinking":
+                self._state.state = "thinking"
+                await self._send_status("thinking", turn_id=turn.turn_id)
             transcript = sanitize_transcript(turn.text, max_chars=MAX_TRANSCRIPT_CHARS)
             request = ReasoningRequest(
                 recognized_text=transcript or "",
@@ -849,7 +1001,9 @@ class CallRuntime:
                 level=self._level(),
                 reply_language=self._options.coaching_language,
             )
+            llm_started = time.monotonic()
             reply = await providers.reasoning.reply(request)
+            timing.llm_ms = int(round((time.monotonic() - llm_started) * 1000.0))
             if self._is_fenced(turn.turn_id):
                 # A late reply of a fenced turn is never adopted.
                 return
@@ -900,6 +1054,8 @@ class CallRuntime:
         self._tts_session = session
         self._state.speaking = True
         descriptor_sent = False
+        timing = self._timings.setdefault(turn_id, _TurnTiming())
+        speak_started = time.monotonic()
         try:
             await self._send_status("speaking", turn_id=turn_id)
 
@@ -910,6 +1066,9 @@ class CallRuntime:
                     return
                 if not descriptor_sent:
                     descriptor_sent = True
+                    timing.tts_first_byte_ms = int(
+                        round((time.monotonic() - speak_started) * 1000.0)
+                    )
                     await self._send(
                         "audio.frame.descriptor",
                         {
@@ -950,11 +1109,23 @@ class CallRuntime:
             return
         self._latency_recorded.add(turn_id)
         measured = latency_registry.record((time.monotonic() - ready_at) * 1000.0)
+        timing = self._timings.pop(turn_id, _TurnTiming())
         LOGGER.info(
-            "turn latency session=%s connection=%s turn=%s turn_latency_ms=%d",
+            "turn timings session=%s connection=%s turn=%s "
+            "frames_buffered=%d pending_audio_ms=%d stt_collect_ms=%d "
+            "stt_connect_ms=%d llm_ms=%d tts_first_byte_ms=%d "
+            "queue_depth_max=%d loop_blocked_ms_max=%d turn_latency_ms=%d",
             self._session_id,
             self._connection_id,
             turn_id,
+            timing.frames_buffered,
+            timing.pending_audio_ms,
+            timing.stt_collect_ms,
+            timing.stt_connect_ms,
+            timing.llm_ms,
+            timing.tts_first_byte_ms,
+            self._queue_depth_max,
+            self._loop_blocked_ms_max,
             measured,
         )
 
@@ -1319,6 +1490,10 @@ class CallRuntime:
         if self._closed:
             return
         self._closed = True
+        if self._collect_task is not None and not self._collect_task.done():
+            self._collect_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError, Exception):
+                await self._collect_task
         if self._coach_task is not None and not self._coach_task.done():
             self._coach_task.cancel()
             with contextlib.suppress(asyncio.CancelledError, Exception):

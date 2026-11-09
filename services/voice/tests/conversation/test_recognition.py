@@ -50,6 +50,35 @@ async def test_a_submission_returns_the_segments() -> None:
 
 
 @pytest.mark.anyio
+async def test_a_silence_only_clip_is_not_submitted() -> None:
+    """Leading/idle silence never reaches the recogniser."""
+    port = FakeSttPort()
+    stream = PortRecognitionStream(port=port, request=_request())
+    for _ in range(50):
+        await stream.push_frame(silent_frame())
+    assert await stream.collect(grace_ms=10) == ()
+    assert port.submissions == 0, "silence is not a submission"
+    assert stream.pending_audio_ms == 0
+    await stream.close(reason="done")
+
+
+@pytest.mark.anyio
+async def test_leading_silence_is_trimmed_to_a_short_pre_roll() -> None:
+    """A clip starts near the first speech frame, not at the call's start."""
+    port = FakeSttPort()
+    stream = PortRecognitionStream(port=port, request=_request())
+    for _ in range(100):  # 3.2 s of leading silence
+        await stream.push_frame(silent_frame())
+    await stream.push_frame(loud_frame())
+    await stream.push_frame(silent_frame())
+    await stream.collect(grace_ms=10)
+    # Three pre-roll frames plus the speech frame plus the closing
+    # silence, never the three seconds that preceded the first word.
+    assert port.max_clip_bytes <= 6 * 1024
+    await stream.close(reason="done")
+
+
+@pytest.mark.anyio
 async def test_the_pending_buffer_is_bounded() -> None:
     """A burst of frames is submitted as it goes, not buffered whole."""
     port = FakeSttPort()

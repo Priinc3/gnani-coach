@@ -29,9 +29,14 @@ for the ``HELP:`` item about the missing live-send capability.
 from __future__ import annotations
 
 import asyncio
+import math
+import time
 from typing import Protocol, runtime_checkable
 
-from gnani_coach.conversation.config import MAX_CALL_SUBMISSIONS
+from gnani_coach.conversation.config import (
+    ENDPOINTING_GATE_DBFS,
+    MAX_CALL_SUBMISSIONS,
+)
 from gnani_coach.ports.speech_to_text import (
     SpeechToTextPort,
     SpeechToTextSession,
@@ -48,6 +53,21 @@ TRAILING_SILENCE_MS = 800
 #: submitted. A burst of frames must not grow the process's memory: the
 #: audio is submitted as it goes.
 MAX_PENDING_AUDIO_BYTES = 4 * 1024 * 1024
+
+#: How much audio before the first speech frame is kept as pre-roll. A
+#: short pre-roll preserves the attack of the first word without submitting
+#: the leading silence of a call (which used to be replayed on every turn).
+PRE_ROLL_MS = 96
+PRE_ROLL_BYTES = 3 * 1024  # three 32 ms frames at 16 kHz mono s16le
+
+#: The live pump (Phase 16, deliverable B6). When a recogniser can accept
+#: frames while the learner speaks, they are forwarded at real-time
+#: cadence instead of being replayed at the end of the turn. Set this to
+#: ``False`` to revert to the clip path in one line.
+LIVE_PUMP_ENABLED = True
+
+#: One frame's cadence at 16 kHz mono s16le.
+FRAME_SECONDS = 1024 / (16000 * 2)
 
 
 @runtime_checkable
@@ -94,6 +114,23 @@ class PortRecognitionStream:
         self._request = request
         self._session: SpeechToTextSession | None = None
         self._pending = bytearray()
+        #: The last few frames before the first speech frame, kept so the
+        #: attack of the first word is not clipped.
+        self._pre_roll = bytearray()
+        #: False until the clip being accumulated has seen a speech frame.
+        #: A clip with no speech is never submitted.
+        self._speech_started = False
+        #: The live pump's state. ``None`` means "not tried yet", ``True``
+        #: means frames are being forwarded as they arrive, ``False``
+        #: means the provider cannot (or stopped) and the clip path is
+        #: used for the rest of the call.
+        self._live_active: bool | None = None
+        self._live_pending_bytes = 0
+        self._last_live_send_at = 0.0
+        #: Stage timings of the last submission. Numbers only; the runtime
+        #: logs them, never the audio.
+        self.last_connect_ms = 0.0
+        self.last_collect_ms = 0.0
         #: How many times the provider closed a session and the stream had
         #: to reconnect. Counted, never hidden.
         self.reconnects = 0
@@ -113,6 +150,11 @@ class PortRecognitionStream:
     async def push_frame(self, frame: bytes) -> None:
         """Buffer one frame of learner audio.
 
+        Leading and idle silence is kept only as a short pre-roll: a clip
+        starts at the first speech frame, so a call no longer replays the
+        silence from its own start on every turn. A clip that never sees a
+        speech frame is never submitted at all.
+
         The buffer is bounded: when it reaches its ceiling the audio is
         submitted, so a burst of frames cannot grow the process's memory.
         """
@@ -122,6 +164,22 @@ class PortRecognitionStream:
             # The submission ceiling is reached: the frame is dropped
             # rather than buffered, because it could never be submitted.
             return
+        prefix = b""
+        if not self._speech_started:
+            if not _is_speech_frame(frame):
+                self._pre_roll.extend(frame)
+                if len(self._pre_roll) > PRE_ROLL_BYTES:
+                    del self._pre_roll[: len(self._pre_roll) - PRE_ROLL_BYTES]
+                return
+            self._speech_started = True
+            prefix = bytes(self._pre_roll)
+            self._pre_roll = bytearray()
+
+        if LIVE_PUMP_ENABLED and self._live_active is not False:
+            if await self._push_live(prefix, frame):
+                return
+
+        self._pending.extend(prefix)
         if (
             self._pending
             and len(self._pending) + len(frame) > MAX_PENDING_AUDIO_BYTES
@@ -129,10 +187,73 @@ class PortRecognitionStream:
             await self.collect(grace_ms=0)
         self._pending.extend(frame)
 
+    async def _push_live(self, prefix: bytes, frame: bytes) -> bool:
+        """Forward frames to a live recogniser; False means "use the clip path"."""
+        session = self._ensure_session()
+        if not getattr(session, "live_capable", False):
+            self._live_active = False
+            return False
+        try:
+            if not self._live_active:
+                await session.start_live()
+                self._live_active = True
+            for chunk in (prefix, frame):
+                if not chunk:
+                    continue
+                now = time.monotonic()
+                wait = self._last_live_send_at + FRAME_SECONDS - now
+                if self._last_live_send_at and wait > 0:
+                    await asyncio.sleep(wait)
+                await session.send_live_frame(chunk)
+                self._last_live_send_at = time.monotonic()
+                self._live_pending_bytes += len(chunk)
+            return True
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 - fall back to the clip path
+            self._live_active = False
+            return False
+
+    @property
+    def pending_audio_ms(self) -> int:
+        """The audio waiting to be submitted, in milliseconds."""
+        buffered = (
+            self._live_pending_bytes
+            if self._live_active
+            else len(self._pending)
+        )
+        return buffered * 1000 // (16000 * 2)
+
+    def _reset_clip(self) -> None:
+        self._pending = bytearray()
+        self._pre_roll = bytearray()
+        self._speech_started = False
+
     async def collect(self, *, grace_ms: int) -> tuple[TranscriptSegment, ...]:
-        """Return the segments recognised for the audio pushed so far."""
+        """Return the segments recognised for the audio pushed so far.
+
+        A clip that carries no speech frame is discarded without calling
+        the provider: silence is not a submission.
+        """
         if self._closed:
             return ()
+        if self._live_active:
+            # The frames are already on the provider's wire; there is no
+            # clip to submit. Only the segments closed since the last
+            # collect are returned.
+            self._reset_clip()
+            self._live_pending_bytes = 0
+            session = self._ensure_session()
+            started = time.monotonic()
+            try:
+                segments = await session.collect_live(grace_ms=grace_ms)
+            except asyncio.CancelledError:
+                raise
+            except Exception:  # noqa: BLE001 - fall back to the clip path
+                self._live_active = False
+                return ()
+            self.last_collect_ms = (time.monotonic() - started) * 1000.0
+            return tuple(segments)
         if self.submissions >= self._max_submissions:
             # The per-call submission ceiling is reached. The stream stops
             # submitting: the call survives, the recogniser is not called
@@ -141,11 +262,16 @@ class PortRecognitionStream:
                 "the call reached its speech-to-text submission ceiling "
                 f"({self._max_submissions})"
             )
-        if not self._pending:
+        if not self._speech_started or not self._pending:
+            # Nothing but silence: it is discarded, never submitted.
+            self._reset_clip()
             return ()
         clip = bytes(self._pending)
-        self._pending = bytearray()
+        # New frames that arrive while the clip is in flight belong to the
+        # next clip, so they are not lost and do not grow this one.
+        self._reset_clip()
         self.submissions += 1
+        started = time.monotonic()
         try:
             result = await self._submit(clip)
         except CancelledError:
@@ -155,17 +281,25 @@ class PortRecognitionStream:
             self.reconnects += 1
             await self._close_session()
             result = await self._submit(clip)
+        self.last_collect_ms = (time.monotonic() - started) * 1000.0
         return tuple(result.segments)
 
     async def _submit(self, clip: bytes):
         session = self._ensure_session()
-        return await session.stream_pcm(
+        result = await session.stream_pcm(
             clip, trailing_silence_ms=TRAILING_SILENCE_MS
         )
+        self.last_connect_ms = float(
+            getattr(session, "last_connect_ms", 0.0) or 0.0
+        )
+        return result
 
     async def reopen(self, *, language_code: str | None = None) -> None:
         """Open a new session, carrying the same VAD settings object."""
         await self._close_session()
+        self._live_active = None
+        self._live_pending_bytes = 0
+        self._last_live_send_at = 0.0
         if language_code is not None:
             self._request = SttOpenRequest(
                 language_code=language_code,
@@ -189,7 +323,8 @@ class PortRecognitionStream:
         if self._closed:
             return
         self._closed = True
-        self._pending = bytearray()
+        self._reset_clip()
+        self._live_active = False
         await self._close_session()
 
 
@@ -223,6 +358,27 @@ class BufferedRecognitionStream:
 
     async def close(self, *, reason: str = "done") -> None:
         del reason
+
+
+def _is_speech_frame(frame: bytes, gate_dbfs: float = ENDPOINTING_GATE_DBFS) -> bool:
+    """The same cheap energy gate the endpointing uses.
+
+    It only decides whether a clip contains speech at all, so leading
+    silence is not submitted; it is not a measurement.
+    """
+    if not frame:
+        return False
+    count = len(frame) // 2
+    if count == 0:
+        return False
+    total = 0
+    for index in range(0, len(frame) - 1, 2):
+        sample = int.from_bytes(frame[index : index + 2], "little", signed=True)
+        total += sample * sample
+    rms = math.sqrt(total / count)
+    if rms <= 0:
+        return False
+    return 20.0 * math.log10(rms / 32768.0) >= gate_dbfs
 
 
 async def drain_stream(stream: RecognitionStream, *, grace_ms: int = 0) -> tuple[TranscriptSegment, ...]:

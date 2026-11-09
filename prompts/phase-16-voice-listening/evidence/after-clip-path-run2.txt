@@ -1,0 +1,78 @@
+url=ws://127.0.0.1:8100/ws/call origin=https://gnani-coach.vercel.app
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.433  status state=connecting
+  +   0.433  status state=ready
+  +   0.434  status state=listening
+  +   2.125  status state=thinking
+  +   7.325  transcript_final chars=5 words=1
+  +   7.325  status state=listening
+  +  13.351  status state=thinking
+  +  27.243  transcript_final chars=186 words=39
+  +  30.776  coach_text
+  +  30.777  status state=speaking
+  +  30.967  audio.frame.descriptor
+  +  30.967  binary bytes=2560
+  +  30.967  binary bytes=1024
+  +  30.982  binary bytes=512
+  +  30.982  binary bytes=1024
+  +  30.983  binary bytes=512
+  +  30.983  binary bytes=2560
+  +  30.998  binary bytes=1024
+  +  30.998  binary bytes=1536
+  +  30.999  binary bytes=1024
+  +  30.999  binary bytes=1024
+  +  31.015  binary bytes=1024
+  +  31.017  binary bytes=1024
+  +  31.018  binary bytes=4096
+  +  31.031  binary bytes=512
+  +  31.032  binary bytes=4096
+  +  31.044  binary bytes=512
+  +  31.044  binary bytes=512
+  +  31.046  binary bytes=1024
+  +  31.047  binary bytes=2560
+  +  31.060  binary bytes=512
+  +  31.061  binary bytes=2048
+  +  31.062  binary bytes=1024
+  +  31.062  binary bytes=3072
+  +  31.150  binary bytes=1024
+  +  31.150  binary bytes=3072
+  +  31.166  binary bytes=1024
+  +  31.166  binary bytes=1536
+  +  31.166  binary bytes=1024
+  +  31.166  binary bytes=1024
+  +  31.180  binary bytes=1024
+  +  31.181  binary bytes=512
+  +  31.181  binary bytes=1024
+  +  31.182  binary bytes=512
+  +  31.182  binary bytes=3584
+  +  31.270  binary bytes=1024
+  +  31.270  binary bytes=3072
+  +  31.290  binary bytes=512
+  +  31.290  binary bytes=2048
+  +  31.290  binary bytes=2048
+  +  31.305  binary bytes=1024
+  +  31.305  binary bytes=512
+  +  31.306  binary bytes=1024
+  +  31.308  binary bytes=1024
+  +  31.309  binary bytes=3072
+  +  31.322  binary bytes=512
+  +  31.323  binary bytes=1024
+  +  31.323  binary bytes=512
+  +  31.323  binary bytes=2560
+  +  31.342  binary bytes=512
+  +  31.342  binary bytes=3584
+  +  31.356  binary bytes=512
+  +  31.356  binary bytes=512
+  +  31.357  binary bytes=512
+  +  31.357  binary bytes=2560
+  +  31.358  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=1 coach_after_long=1
+longest_gap_between_server_messages_ms=13891
+end_of_long_speech_to_first_coach_audio_ms=18620
+errors=0 socket_closed_early=False
+RESULT=PASS

@@ -106,9 +106,14 @@ def test_a_turn_completes_once_the_hold_elapses(harness) -> None:
         call.close()
 
 
-def test_a_turn_with_too_few_words_stays_open(harness) -> None:
-    """A turn that carries too few words is not completed."""
-    stt = FakeSttPort(texts=["yes"])
+def test_a_one_word_turn_advances_the_conversation(harness) -> None:
+    """A closed one-word segment is a turn: "Hello." must be answered.
+
+    Phase 16 changed the old rule that a turn needed three words. The
+    count still governs a coaching round, but a closed segment proves the
+    learner finished an utterance, so the coach may answer briefly.
+    """
+    stt = FakeSttPort(texts=["Hello"])
     reasoning = FakeReasoning()
     options = _options(stt=stt, reasoning=reasoning)
     call = harness(options)
@@ -116,9 +121,60 @@ def test_a_turn_with_too_few_words_stays_open(harness) -> None:
         call.start()
         call.speech(8)
         call.silence(45)
-        _flush(call)
-        assert stt.submissions >= 1, "the recogniser was asked"
-        assert reasoning.requests == [], "one word is not a turn"
+        events = call.events_until({"coach_text"}, limit=60)
+        assert stt.submissions == 1, "the recogniser was asked once"
+        assert len(reasoning.requests) == 1, "one word is a valid turn"
+        assert any(event["type"] == "coach_text" for event in events)
+    finally:
+        call.close()
+
+
+def test_the_loop_keeps_reading_and_heartbeats_during_a_slow_recognition(
+    harness, monkeypatch
+) -> None:
+    """A slow recogniser must not stop frames, control events or heartbeats."""
+    import gnani_coach.conversation.runtime as runtime_module
+
+    monkeypatch.setattr(runtime_module, "HEARTBEAT_INTERVAL_S", 0.2)
+    stt = FakeSttPort(delay=1.2)
+    reasoning = FakeReasoning()
+    options = _options(stt=stt, reasoning=reasoning, hold_ms=200)
+    call = harness(options)
+    try:
+        call.start()
+        call.speech(8)
+        call.silence(10)  # 320 ms: the hold has expired, collect is slow
+        events = call.events_until({"coach_text"}, limit=80, timeout=8.0)
+        heartbeats = [
+            event
+            for event in events
+            if event["type"] == "status"
+            and event.get("payload", {}).get("state") == "heartbeat"
+        ]
+        assert heartbeats, "the main loop must keep sending heartbeats"
+        assert stt.submissions == 1
+        assert reasoning.requests, "the turn still completes after the wait"
+    finally:
+        call.close()
+
+
+def test_a_fenced_recognition_result_is_dropped(harness) -> None:
+    """A result of a turn fenced while it was recognised never completes it."""
+    stt = FakeSttPort(delay=0.6)
+    reasoning = FakeReasoning()
+    options = _options(stt=stt, reasoning=reasoning, hold_ms=200)
+    call = harness(options)
+    try:
+        call.start()
+        call.speech(8)
+        call.silence(10)  # the hold expired: recognition is now in flight
+        call.send(control_event("interrupt"))
+        call.silence(30)
+        events = call.drain(limit=60, timeout=1.0)
+        assert not any(
+            event["type"] == "coach_text" for event in events
+        ), "a fenced result must not produce a coach line"
+        assert reasoning.requests == []
     finally:
         call.close()
 

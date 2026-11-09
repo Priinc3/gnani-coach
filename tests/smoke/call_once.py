@@ -266,7 +266,7 @@ async def main_async(args: argparse.Namespace) -> int:
         return 1
     frames = load_frames(fixture)
     print(f"fixture={fixture.name} frames={len(frames)} duration_s={len(frames)*FRAME_SECONDS:.2f}")
-    print(f"voice={VOICE_BASE} origin={ORIGIN}")
+    print(f"url={args.url} origin={ORIGIN}")
 
     results = []
     results.append(await scenario_happy(frames))
@@ -294,9 +294,17 @@ async def main_async(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
+    global WS_URL, ORIGIN
     parser = argparse.ArgumentParser()
     parser.add_argument("--audio", default=str(DEFAULT_FIXTURE))
-    return asyncio.run(main_async(parser.parse_args()))
+    # A local throw-away server (Phase 16 verification) can be used
+    # without changing the deployed defaults.
+    parser.add_argument("--url", default=WS_URL)
+    parser.add_argument("--origin", default=ORIGIN)
+    args = parser.parse_args()
+    WS_URL = args.url
+    ORIGIN = args.origin
+    return asyncio.run(main_async(args))
 
 
 if __name__ == "__main__":

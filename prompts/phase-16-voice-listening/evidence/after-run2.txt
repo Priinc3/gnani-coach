@@ -1,0 +1,89 @@
+url=ws://127.0.0.1:8100/ws/call origin=https://gnani-coach.vercel.app
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.427  status state=connecting
+  +   0.427  status state=ready
+  +   0.428  status state=listening
+  +   2.275  status state=thinking
+  +   3.176  transcript_final chars=5 words=1
+  +   8.115  coach_text
+  +   8.116  status state=speaking
+  +   8.120  status state=listening
+  +  13.596  status state=thinking
+  +  14.497  transcript_final chars=186 words=39
+  +  21.041  coach_text
+  +  21.041  status state=speaking
+  +  21.219  audio.frame.descriptor
+  +  21.219  binary bytes=512
+  +  21.219  binary bytes=3072
+  +  21.230  binary bytes=1024
+  +  21.231  binary bytes=1536
+  +  21.231  binary bytes=2048
+  +  21.250  binary bytes=1024
+  +  21.251  binary bytes=512
+  +  21.252  binary bytes=3072
+  +  21.260  binary bytes=1024
+  +  21.263  binary bytes=512
+  +  21.264  binary bytes=2560
+  +  21.264  binary bytes=2048
+  +  21.275  binary bytes=1024
+  +  21.276  binary bytes=512
+  +  21.276  binary bytes=1024
+  +  21.276  binary bytes=2048
+  +  21.289  binary bytes=1024
+  +  21.291  binary bytes=1024
+  +  21.291  binary bytes=2560
+  +  21.304  binary bytes=1024
+  +  21.305  binary bytes=1536
+  +  21.306  binary bytes=1024
+  +  21.306  binary bytes=3072
+  +  21.319  binary bytes=1024
+  +  21.319  binary bytes=3072
+  +  21.333  binary bytes=1024
+  +  21.334  binary bytes=3584
+  +  21.350  binary bytes=2048
+  +  21.350  binary bytes=4096
+  +  21.350  binary bytes=512
+  +  21.362  binary bytes=1536
+  +  21.362  binary bytes=2560
+  +  21.378  binary bytes=1536
+  +  21.378  binary bytes=3072
+  +  21.392  binary bytes=1024
+  +  21.392  binary bytes=3072
+  +  21.392  binary bytes=512
+  +  21.393  binary bytes=2048
+  +  21.477  binary bytes=1536
+  +  21.478  binary bytes=3072
+  +  21.492  binary bytes=1536
+  +  21.492  binary bytes=512
+  +  21.493  binary bytes=2048
+  +  21.508  binary bytes=1024
+  +  21.509  binary bytes=4096
+  +  21.509  binary bytes=1024
+  +  21.509  binary bytes=512
+  +  21.523  binary bytes=1536
+  +  21.523  binary bytes=1024
+  +  21.523  binary bytes=1536
+  +  21.523  binary bytes=512
+  +  21.539  binary bytes=1536
+  +  21.540  binary bytes=2560
+  +  21.554  binary bytes=1024
+  +  21.554  binary bytes=512
+  +  21.554  binary bytes=2560
+  +  21.555  binary bytes=512
+  +  21.555  binary bytes=2048
+  +  21.569  binary bytes=1024
+  +  21.570  binary bytes=3584
+  +  21.584  binary bytes=1024
+  +  21.584  binary bytes=3072
+  +  21.584  binary bytes=512
+  +  21.597  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=2 coach_after_long=1
+longest_gap_between_server_messages_ms=6543
+end_of_long_speech_to_first_coach_audio_ms=8882
+errors=0 socket_closed_early=False
+RESULT=PASS
