@@ -5,6 +5,8 @@ was interrupted). The scripts are the deliverable and are portable; they ran
 unmodified on the Colab Linux VM. The Mac still has no Android SDK, so a local
 re-run needs `scripts/mobile/setup-mac.sh` first.
 
+Build commit: `5e513ed5fe70ab5e55106d89c78cc38a86785bb6` (`phase-15: local mac apk build`).
+
 ## Files changed
 
 - `scripts/mobile/build-apk.sh` (new) — preflight, APP_URL injection + trap restore,
