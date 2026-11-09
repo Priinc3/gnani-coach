@@ -1,0 +1,15 @@
+landing / rough visible words (whole document, title included): 26
+landing / body visible words: 19
+landing / body words: Speaking Coach Home Practice Progress Listening Feedback Speak with confidence Practice out loud. Start Sign in Home Practice Progress
+$ curl -sS -o /dev/null -w "%{http_code}" https://gnani-coach.vercel.app/
+200
+$ curl -sS -o /dev/null -w "%{http_code}" https://gnani-coach.vercel.app/manifest.webmanifest
+200
+$ curl -sS -o /dev/null -w "%{http_code}" https://gnani-coach.vercel.app/auth/sign-in
+200
+$ grep -i content-security-policy web-root.headers
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' wss://13-205-26-178.sslip.io https://13-205-26-178.sslip.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+$ grep -o "connect-src[^;]*" web-root.headers
+connect-src 'self' wss://13-205-26-178.sslip.io https://13-205-26-178.sslip.io
+$ cat manifest.webmanifest
+{"name":"Speaking Coach — practice speaking out loud","short_name":"Speaking Coach","description":"Practise a real conversation out loud with a live voice coach, then see what was measured in your own audio.","id":"/","start_url":"/","scope":"/","display":"standalone","orientation":"portrait-primary","background_color":"#f7f6f2","theme_color":"#10655a","icons":[{"src":"/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"/icons/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]}

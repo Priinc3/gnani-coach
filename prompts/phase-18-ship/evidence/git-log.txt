@@ -1,0 +1,6 @@
+7186341 phase-16: record report commit hash
+9a373fc phase-16: keep call loop live and stream stt while speaking
+1cdca4b phase-17: record report commit hash
+5215224 phase-17: simple ui, slow-server states, android safe areas
+1400b66 phase-15: record report commit hash
+5e513ed phase-15: local mac apk build

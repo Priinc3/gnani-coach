@@ -1,0 +1,41 @@
+Vercel CLI 65.9.0
+  Inspect         https://vercel.com/0-prince-0s-projects/gnani-coach/EP7pE5xghjTrdaUngYAgh3uK3aMa
+  Production      https://gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app
+▲ Aliased         https://gnani-coach.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_EP7pE5xghjTrdaUngYAgh3uK3aMa",
+    "url": "https://gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app",
+    "productionUrl": "https://gnani-coach.vercel.app",
+    "inspectorUrl": "https://vercel.com/0-prince-0s-projects/gnani-coach/EP7pE5xghjTrdaUngYAgh3uK3aMa",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_EP7pE5xghjTrdaUngYAgh3uK3aMa",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "message": "Deployment gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app ready. Production URL: https://gnani-coach.vercel.app",
+  "next": [
+    {
+      "command": "vercel curl https://gnani-coach.vercel.app",
+      "when": "Verify deployment, including when Deployment Protection is enabled"
+    },
+    {
+      "command": "vercel inspect gnani-coach-6ox4341pr-0-prince-0s-projects.vercel.app --scope 0-prince-0s-projects",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod --scope 0-prince-0s-projects",
+      "when": "Promote to production"
+    }
+  ]
+}

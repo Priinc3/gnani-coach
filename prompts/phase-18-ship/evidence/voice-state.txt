@@ -1,0 +1,11 @@
+$ systemctl is-active gnani-voice
+active
+$ systemctl show gnani-voice -p ActiveState -p SubState -p MainPID -p MemoryCurrent
+ActiveState=active
+SubState=running
+MainPID=766487
+MemoryCurrent=55119872
+$ curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/health
+200
+$ curl -s -o /dev/null -w "%{http_code}" https://13-205-26-178.sslip.io/health
+200

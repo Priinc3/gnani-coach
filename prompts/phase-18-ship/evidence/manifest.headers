@@ -1,0 +1,28 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 202
+cache-control: private, no-store, no-cache, must-revalidate, max-age=0
+content-disposition: inline; filename="manifest.webmanifest"
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'self' wss://13-205-26-178.sslip.io https://13-205-26-178.sslip.io; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+content-type: application/manifest+json; charset=utf-8
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+date: Mon, 09 Nov 2026 07:46:10 GMT
+etag: "34cb73a6662c1b542b3e045e54825237"
+expires: 0
+last-modified: Mon, 09 Nov 2026 07:42:47 GMT
+permissions-policy: camera=(), microphone=(self), geolocation=(), payment=(), usb=()
+pragma: no-cache
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=31536000; includeSubDomains
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-frame-options: DENY
+x-matched-path: /manifest.webmanifest
+x-permitted-cross-domain-policies: none
+x-vercel-cache: HIT
+x-vercel-id: bom1::j896v-1794210370181-d8465cfa38ea
+content-length: 630
+

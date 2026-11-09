@@ -1,0 +1,26 @@
+url=wss://13-205-26-178.sslip.io/ws/call origin=https://gnani-coach.vercel.app
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.444  status state=connecting
+  +   0.444  status state=ready
+  +   0.444  status state=listening
+  +   2.358  status state=thinking
+  +   3.259  transcript_final chars=5 words=1
+  +   3.259  status state=listening
+  +  13.555  status state=thinking
+  +  14.456  transcript_final chars=186 words=39
+  +  29.457  status state=heartbeat
+  +  34.644  error
+  +  34.644  status state=listening
+  +  49.647  status state=heartbeat
+  +  64.647  status state=heartbeat
+  +  75.988  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=0 coach_after_long=0
+longest_gap_between_server_messages_ms=15002
+end_of_long_speech_to_first_coach_audio_ms=None
+errors=1 socket_closed_early=False
+RESULT=FAIL
