@@ -31,11 +31,16 @@ from typing import Any
 from fastapi import APIRouter, WebSocket
 
 from gnani_coach import security
-from gnani_coach.conversation import catalog
+from gnani_coach.conversation import catalog, logging_setup
 from gnani_coach.conversation.connections import registry
 from gnani_coach.conversation.providers import build_call_providers
 from gnani_coach.conversation.runtime import CallOptions, CallRuntime
 from gnani_coach.ports.origins import origin_allowed
+
+# Phase 19: make the call path visible in the journal at INFO. The root
+# logger is at WARNING in production, so every call-path ``LOGGER.info``
+# was dropped there; this configures the ``gnani_coach`` family only.
+logging_setup.configure()
 
 LOGGER = logging.getLogger("gnani_coach.conversation")
 
@@ -177,4 +182,7 @@ def _build_options(websocket: WebSocket) -> CallOptions:
         recording_store=recording_store,
         consent_checker=_consent_checker(recording_store),
         connections=registry,
+        backchannel_enabled=bool(
+            getattr(settings, "backchannel_enabled", True)
+        ),
     )

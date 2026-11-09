@@ -259,7 +259,8 @@ class FakeReasoning:
     """A model whose answers are scripted.
 
     ``delay`` makes the model slow (so an interrupt can land while it is
-    thinking) and ``error`` makes it fail.
+    thinking) and ``error`` makes it fail. ``stream_deltas`` makes the
+    optional streaming surface available, one piece at a time.
     """
 
     def __init__(
@@ -268,10 +269,12 @@ class FakeReasoning:
         *,
         delay: float = 0.0,
         error: BaseException | None = None,
+        stream_deltas: list[str] | None = None,
     ) -> None:
         self.replies = list(replies or ["That sounds like a good point."])
         self.delay = delay
         self.error = error
+        self.stream_deltas = stream_deltas
         self.requests: list[Any] = []
 
     async def reply(self, request: Any) -> ReasoningReply:
@@ -284,6 +287,57 @@ class FakeReasoning:
         return ReasoningReply(
             text=text, model="fake-model", stored=False, tools_enabled=False
         )
+
+    async def stream(self, request: Any):
+        del request
+        for delta in self.stream_deltas or []:
+            await asyncio.sleep(0)
+            yield delta
+
+
+class FakeRecognitionStream:
+    """A live-shaped recogniser for the Phase 19 speculation tests.
+
+    ``closed`` is what the runtime's fast hold and speculation look at;
+    ``batches`` are returned by successive ``collect`` calls.
+    """
+
+    def __init__(self, batches: list[list[TranscriptSegment]] | None = None) -> None:
+        self._batches = list(batches or [])
+        self.closed = False
+        self.pushed = bytearray()
+        self.collects = 0
+
+    @property
+    def has_closed_segment(self) -> bool:
+        return self.closed
+
+    @property
+    def pending_text(self) -> str:
+        if not self.closed or not self._batches:
+            return ""
+        return " ".join(segment.text for segment in self._batches[0])
+
+    @property
+    def pending_audio_ms(self) -> int:
+        return 0
+
+    async def push_frame(self, frame: bytes) -> None:
+        self.pushed.extend(frame)
+
+    async def collect(self, *, grace_ms: int) -> tuple[TranscriptSegment, ...]:
+        del grace_ms
+        self.collects += 1
+        self.closed = False
+        if self._batches:
+            return tuple(self._batches.pop(0))
+        return ()
+
+    async def reopen(self, *, language_code: str | None = None) -> None:
+        del language_code
+
+    async def close(self, *, reason: str = "done") -> None:
+        del reason
 
 
 # ---------------------------------------------------------------------------
@@ -460,6 +514,8 @@ def build_options(
     hold_ms: int = 1200,
     min_words: int = 3,
     call_cap_seconds: float = 600.0,
+    stream_factory: Any = None,
+    backchannel_enabled: bool = True,
 ) -> CallOptions:
     """The options one call needs, with fakes everywhere."""
     providers = CallProviders(
@@ -486,6 +542,8 @@ def build_options(
         hold_ms=hold_ms,
         min_words=min_words,
         call_cap_seconds=call_cap_seconds,
+        stream_factory=stream_factory,
+        backchannel_enabled=backchannel_enabled,
     )
 
 

@@ -34,6 +34,15 @@ A type may only travel in its own direction; the schema rejects the other
 combination. Every payload is closed: an unknown payload key is rejected,
 so adding a field is a contract change, not a guess.
 
+**Phase 19 addition (one optional field).** `coach_text` and
+`audio.frame.descriptor` accept an optional `kind`: `"reply"` (the default)
+or `"backchannel"`. A backchannel is a short spoken reaction ("mm-hmm")
+sent under **its own `turnId`**. It never fences or replaces the real
+reply; it never sets the main `speaking` status; it is dropped rather than
+queued while the learner is speaking; and the learner's speech over it does
+not produce the "You spoke over the coach" message. No other payload field
+was added.
+
 ---
 
 ## 2. The sequence

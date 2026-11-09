@@ -56,6 +56,18 @@ START_DEADLINE_S = 15.0
 #: The silence that ends a learner turn, counted from the last speech.
 DEFAULT_TURN_HOLD_MS = 1200
 
+#: Phase 19: the shorter hold used when the recogniser has already closed a
+#: segment for this turn. A closed segment means the learner finished an
+#: utterance, so waiting the full hold only adds dead air before the model.
+#: The longer hold is kept when nothing has been recognised yet, so a
+#: thinking pause is not cut.
+FAST_TURN_HOLD_MS = 700
+
+#: Phase 19: how much silence inside an open turn counts as a pause for a
+#: speculative reasoning call. The recogniser must already have closed a
+#: segment, so the speculation has real text to work on.
+SPECULATION_SILENCE_MS = 400
+
 #: The fewest words a completed turn must carry.
 DEFAULT_MIN_TURN_WORDS = 3
 
@@ -80,6 +92,42 @@ ENDPOINTING_HANGOVER_MS = 240
 #: How much the hold grows when the learner asks for more time (the
 #: frozen client vocabulary carries "give me a moment" as a mute event).
 MUTE_HOLD_EXTENSION_MS = 5000
+
+# ---------------------------------------------------------------------------
+# backchannels (Phase 19)
+# ---------------------------------------------------------------------------
+
+#: One switch for every spoken reaction ("mm-hmm"). Set to ``False`` to
+#: turn all of them off without touching the call loop.
+BACKCHANNEL_ENABLED = True
+
+#: The longest a cached filler may be, in milliseconds of audio. A filler
+#: that synthesised longer is not used: the real reply must not wait behind
+#: a long clip.
+MAX_BACKCHANNEL_AUDIO_MS = 800
+
+#: The most clips cached in memory at once. Four phrases in each of the
+#: catalog languages is well inside this bound.
+MAX_BACKCHANNEL_CLIPS = 24
+
+#: Mid-sentence backchannels need this much continuous speech before a
+#: pause is long enough to react to.
+MID_TURN_MIN_SPEECH_MS = 4000
+
+#: The pause inside a turn that may carry a mid-sentence backchannel.
+MID_TURN_PAUSE_MS = 500
+
+#: No more than one mid-sentence backchannel in this window.
+MID_TURN_INTERVAL_MS = 12_000
+
+#: No mid-sentence backchannel in the first seconds of a call.
+MID_TURN_START_GRACE_MS = 3000
+
+#: A mid-sentence backchannel is dropped if the learner resumes within this
+#: long of the trigger, so it never talks over them. The phase requires at
+#: least 150 ms; the reaction is also gated by the fast end-of-turn hold, so
+#: a pause shorter than this window simply gets no reaction.
+MID_TURN_RESUME_GUARD_MS = 150
 
 # ---------------------------------------------------------------------------
 # provider budget (Phase 05, on top of the Phase 02 limits)

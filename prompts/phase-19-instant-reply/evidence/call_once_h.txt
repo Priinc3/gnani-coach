@@ -1,0 +1,7 @@
+fixture=spoken-smoke.wav frames=93 duration_s=2.98
+url=ws://127.0.0.1:8100/ws/call origin=http://localhost:3000
+
+[PASS] H one real turn: events[audio.frame.descriptor=1, binary=1, coach_text=1, status=6, transcript_final=1] coach_turns=1 first_audio=True latency_ms_from_end_of_speech=1422
+
+budget: coach_turns=1 (limit 6); learner_clips_submitted=1; server-side wire attempts are not exposed to the client
+SUMMARY pass=1 fail=0

@@ -448,10 +448,16 @@
     "coachTextPayload": {
       "type": "object",
       "additionalProperties": false,
-      "description": "The coach's spoken line as text, so the UI can show what was said. Transient only.",
+      "description": "The coach's spoken line as text, so the UI can show what was said. Transient only. Phase 19 adds an optional kind: a backchannel is a short spoken reaction, not the real reply.",
       "required": ["text"],
       "properties": {
-        "text": { "type": "string", "maxLength": 4000 }
+        "text": { "type": "string", "maxLength": 4000 },
+        "kind": {
+          "type": "string",
+          "enum": ["reply", "backchannel"],
+          "default": "reply",
+          "description": "Phase 19: reply (the default) is the coach's answer; backchannel is a short acknowledgement or mm-hmm. A client must not treat a backchannel as the main coach turn."
+        }
       }
     },
     "roundFeedbackPayload": {
@@ -601,6 +607,12 @@
           "type": "integer",
           "minimum": 0,
           "description": "Index of the first sample of the run on the learner-audio sample clock."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["reply", "backchannel"],
+          "default": "reply",
+          "description": "Phase 19: reply (the default) is the real answer; backchannel is a short spoken reaction with its own turn id. A backchannel never sets the main speaking status, is dropped rather than queued while the learner speaks, and does not produce the 'You spoke over the coach' message."
         }
       }
     }

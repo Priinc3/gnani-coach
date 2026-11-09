@@ -186,6 +186,9 @@ async def scenario_happy(frames: list[bytes]) -> dict:
         speech_end = time.monotonic()
         await stream_frames(ws, [b"\x00" * FRAME_BYTES] * SPEECH_END_PAD_FRAMES)
         got_audio = await wait_for(lambda: collector.first_audio_at is not None, timeout=30)
+        # Phase 19: the first sound may be a short acknowledgement; wait for
+        # the real coach line before ending, or the turn count is zero.
+        got_coach = await wait_for(lambda: collector.coach_turns >= 1, timeout=30)
         await ws.send(json.dumps(control_event("end")))
         await asyncio.sleep(0.5)
         reader.cancel()
@@ -196,7 +199,7 @@ async def scenario_happy(frames: list[bytes]) -> dict:
     )
     return {
         "name": "H one real turn",
-        "pass": got_audio and collector.coach_turns >= 1,
+        "pass": got_audio and got_coach and collector.coach_turns >= 1,
         "detail": f"{collector.summary()} coach_turns={collector.coach_turns} "
         f"first_audio={got_audio} latency_ms_from_end_of_speech={latency_ms}",
         "latency_ms": latency_ms,
@@ -269,9 +272,13 @@ async def main_async(args: argparse.Namespace) -> int:
     print(f"url={args.url} origin={ORIGIN}")
 
     results = []
-    results.append(await scenario_happy(frames))
-    results.append(await scenario_silence())
-    results.append(await scenario_drop_then_clean(frames))
+    only = getattr(args, "only", "all")
+    if only in ("all", "h"):
+        results.append(await scenario_happy(frames))
+    if only in ("all", "e1"):
+        results.append(await scenario_silence())
+    if only in ("all", "e2"):
+        results.append(await scenario_drop_then_clean(frames))
 
     print()
     for result in results:
@@ -301,6 +308,12 @@ def main() -> int:
     # without changing the deployed defaults.
     parser.add_argument("--url", default=WS_URL)
     parser.add_argument("--origin", default=ORIGIN)
+    parser.add_argument(
+        "--only",
+        choices=("all", "h", "e1", "e2"),
+        default="all",
+        help="Run one scenario only (the provider-turn budget is finite).",
+    )
     args = parser.parse_args()
     WS_URL = args.url
     ORIGIN = args.origin

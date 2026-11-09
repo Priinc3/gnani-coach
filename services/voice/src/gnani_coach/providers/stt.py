@@ -564,6 +564,26 @@ class GnaniSttSession:
         if self._live_mode:
             self._live_event.set()
 
+    @property
+    def has_pending_live_segments(self) -> bool:
+        """True when the provider closed a segment not yet collected.
+
+        Phase 19 uses this to start the end-of-turn hold early: a closed
+        segment means the learner finished an utterance. It reads no text.
+        """
+        return self._live_mode and len(self.transcripts) > self._live_seen
+
+    @property
+    def pending_live_segments(self) -> tuple[object, ...]:
+        """The closed segments not yet collected, without consuming them.
+
+        Phase 19 reads their text for a speculative reasoning call; the
+        normal collect still returns them, so the transcript is sent once.
+        """
+        if not self._live_mode:
+            return ()
+        return tuple(self.transcripts[self._live_seen :])
+
     # -- live pump (Phase 16) -----------------------------------------
     async def start_live(self) -> None:
         """Open the live pump: send frames while the learner speaks.

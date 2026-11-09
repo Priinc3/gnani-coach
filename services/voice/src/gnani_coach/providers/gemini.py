@@ -140,7 +140,8 @@ given, say the number is not available.
 improved.
 6. Reply only with what you would say out loud on the call, in the \
 requested language. No markdown, no bullet points, no stage directions.
-7. Keep the reply short enough to be spoken comfortably in one breath."""
+7. Reply in at most two short sentences and under 30 words. This is a \
+spoken call: a long answer delays the learner's turn."""
 
 _DELIMITER_OPEN = "<learner_speech>"
 _DELIMITER_CLOSE = "</learner_speech>"
@@ -188,7 +189,9 @@ class CoachRequest:
 class GeminiConfig:
     model: str | None
     store: bool = False
-    max_output_tokens: int = 300
+    #: Phase 19: a turn reply is at most two short sentences, so 120 output
+    #: tokens is enough and keeps the model's own time down.
+    max_output_tokens: int = 120
     thinking_level: str | None = "low"
 
     def validate(self) -> None:
@@ -459,6 +462,104 @@ class GeminiCoach:
                 tools_enabled=False,
             )
 
+    async def stream(self, request: CoachRequest):
+        """Yield the reply as text deltas.
+
+        The pinned SDK (``google-genai`` 2.31.0) exposes
+        ``AsyncInteractions.create(..., stream=True)`` returning an
+        ``AsyncStream`` of ``InteractionSSEEvent`` objects; a ``step.delta``
+        whose ``delta`` is a ``TextDelta`` carries the next piece of text.
+        Surface checked in the installed package and in
+        https://ai.google.dev/gemini-api/docs/interactions (read 2026-11-09).
+
+        This path uses **one** wire attempt and the same budget admission as
+        :meth:`reply`. Streaming has no caller-side retry: a partial reply
+        already spoken cannot be un-spoken.
+        """
+        request.validate()
+        if self._fenced:
+            raise CancelledError(
+                f"this turn was fenced ({self._fence_reason}); no reply may be adopted"
+            )
+        call_kind = f"{PROVIDER}:stream"
+        call_token = None
+        if self.budget is not None:
+            call_token = self.budget.begin_call(call_kind)
+            self.budget.admit_attempt(call_kind, call=call_token)
+
+        prompt = request.build_prompt()
+        generation_config: dict[str, object] = {
+            "max_output_tokens": self.config.max_output_tokens,
+        }
+        if self.config.thinking_level:
+            generation_config["thinking_level"] = self.config.thinking_level
+
+        client = None
+        stream = None
+        try:
+            client = self._build_client()
+            self.lifecycle.created += 1
+            interactions = _async_interactions(client)
+            stream = await asyncio.wait_for(
+                interactions.create(
+                    model=self.config.model,
+                    system_instruction=_SYSTEM_INSTRUCTION,
+                    input=prompt,
+                    store=self.config.store,
+                    generation_config=generation_config,
+                    stream=True,
+                ),
+                timeout=self.attempt_timeout,
+            )
+            deadline_at = time.monotonic() + self.deadline
+            while True:
+                if self._fenced:
+                    raise CancelledError(
+                        f"this turn was fenced ({self._fence_reason}); "
+                        "a late reply is not adopted"
+                    )
+                remaining = deadline_at - time.monotonic()
+                if remaining <= 0:
+                    raise UpstreamTimeoutError(
+                        "Gemini stream exceeded the call deadline; the last "
+                        "attempt may still be running provider-side"
+                    )
+                try:
+                    event = await asyncio.wait_for(
+                        stream.__anext__(), timeout=min(remaining, self.attempt_timeout)
+                    )
+                except StopAsyncIteration:
+                    break
+                delta = _extract_stream_delta(event)
+                if delta:
+                    yield delta
+            self.attempts_made.append({"attempt": 1, "outcome": "ok"})
+        except asyncio.CancelledError:
+            self.fence("cancelled by the caller")
+            raise
+        except asyncio.TimeoutError as exc:
+            self.attempts_made.append({"attempt": 1, "outcome": "local_timeout"})
+            raise UpstreamTimeoutError(
+                "Gemini stream exceeded its local bound; the request may still "
+                "be running provider-side (a local wait is not a cancellation)"
+            ) from exc
+        except ProviderError as exc:
+            self.attempts_made.append({"attempt": 1, "outcome": exc.category})
+            raise
+        except Exception as exc:  # noqa: BLE001 - categorised, not dumped
+            categorised = _categorise(exc)
+            self.attempts_made.append({"attempt": 1, "outcome": categorised.category})
+            raise categorised from exc
+        finally:
+            if stream is not None:
+                try:
+                    await stream.close()
+                except Exception:  # noqa: BLE001 - close must not mask
+                    pass
+            if client is not None:
+                await self._close_client(client)
+                self.lifecycle.closed += 1
+
     def _may_retry(
         self, attempt_number: int, error: ProviderError, deadline_at: float
     ) -> bool:
@@ -566,6 +667,19 @@ def _async_interactions(client: object) -> object:
             "the installed google-genai SDK exposes no async Interactions API"
         )
     return resource
+
+
+def _extract_stream_delta(event: object) -> str:
+    """The text piece of one streaming event, or an empty string.
+
+    ``step.delta`` events carry a union; only the text variant is spoken.
+    Thinking summaries, annotations and tool deltas are ignored.
+    """
+    if getattr(event, "event_type", None) != "step.delta":
+        return ""
+    delta = getattr(event, "delta", None)
+    text = getattr(delta, "text", None)
+    return text if isinstance(text, str) else ""
 
 
 def _extract_text(interaction: object) -> str:

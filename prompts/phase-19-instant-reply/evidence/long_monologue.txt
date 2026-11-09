@@ -1,0 +1,10 @@
+url=ws://127.0.0.1:8100/ws/call origin=http://localhost:3000
+speech_s=17.52 pauses=2 pause_ms=672
+backchannel_count=2
+backchannel_times_s=8.89,20.17
+loud_runs_s=0.43-8.11;8.82-16.50;17.22-19.28
+mid_turn_backchannels=1
+backchannels_during_speech=0
+backchannels_in_first_3s=0
+coach_text_at_s=22.304570514010265
+RESULT=PASS

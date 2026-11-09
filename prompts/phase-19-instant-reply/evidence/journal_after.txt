@@ -1,0 +1,8 @@
+# Content-free excerpt from the throw-away local uvicorn journal
+# (127.0.0.1:8100) for the passing call_two_utterances.py run.
+# No transcript, reply text, audio or key appears here.
+
+INFO gnani_coach.conversation speculation discarded session=ses_bbf71b3e0fc91066 reason=learner_resumed
+INFO gnani_coach.conversation turn timings session=ses_bbf71b3e0fc91066 connection=con_87bae126616a36a5 turn=trn_5bd940f1581b1c38 frames_buffered=417 pending_audio_ms=9664 stt_collect_ms=978 stt_connect_ms=0 llm_ms=1596 tts_first_byte_ms=176 queue_depth_max=26 loop_blocked_ms_max=764 turn_latency_ms=1760
+INFO gnani_coach.conversation call ended session=ses_bbf71b3e0fc91066 connection=con_87bae126616a36a5 turns=1 duration_ms=16545 guest=1
+INFO gnani_coach.conversation call closed session=ses_bbf71b3e0fc91066 connection=con_87bae126616a36a5 closed_by=client close_code=1000 elapsed_ms=17551 since_last_server_message_ms=1005 speculation_calls=1 speculation_discarded=1 backchannels=2

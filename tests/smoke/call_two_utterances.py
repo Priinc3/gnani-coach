@@ -125,6 +125,11 @@ class Collector:
         self.coach_after_long = 0
         self.first_audio_after_long: float | None = None
         self.errors = 0
+        #: Phase 19: which descriptor the next binary belongs to.
+        self.descriptor_kind = "reply"
+        self.backchannel_count = 0
+        #: (arrival, kind) for every binary chunk.
+        self.audio_kinds: list[tuple[float, str]] = []
 
     async def run(self, ws) -> None:  # type: ignore[no-untyped-def]
         try:
@@ -132,7 +137,10 @@ class Collector:
                 at = time.monotonic() - self.started
                 if isinstance(message, bytes):
                     self.types["binary"] += 1
-                    self.arrivals.append((at, f"binary bytes={len(message)}"))
+                    self.audio_kinds.append((at, self.descriptor_kind))
+                    self.arrivals.append(
+                        (at, f"binary bytes={len(message)} kind={self.descriptor_kind}")
+                    )
                     continue
                 try:
                     event = json.loads(message)
@@ -155,6 +163,12 @@ class Collector:
                 elif kind == "coach_text":
                     if self.long_end_at is not None and at >= self.long_end_at:
                         self.coach_after_long += 1
+                elif kind == "audio.frame.descriptor":
+                    payload = event.get("payload") or {}
+                    self.descriptor_kind = str(payload.get("kind") or "reply")
+                    if self.descriptor_kind == "backchannel":
+                        self.backchannel_count += 1
+                    detail = f"descriptor kind={self.descriptor_kind}"
                 elif kind == "error":
                     self.errors += 1
                 self.arrivals.append((at, detail))
@@ -255,16 +269,29 @@ async def run(args: argparse.Namespace) -> int:
     first_audio_after_long = next(
         (
             at
-            for at, detail in collector.arrivals
-            if detail.startswith("binary")
-            and long_end_at is not None
-            and at >= long_end_at
+            for at, kind in collector.audio_kinds
+            if long_end_at is not None and at >= long_end_at
         ),
         None,
     )
     first_audio_after_long_ms = (
         int((first_audio_after_long - long_end_at) * 1000)
         if first_audio_after_long is not None and long_end_at is not None
+        else None
+    )
+    # (ii) the first word of the *real reply*: the first binary whose
+    # descriptor carried kind=reply (a backchannel has its own turn).
+    first_reply_audio_after_long = next(
+        (
+            at
+            for at, kind in collector.audio_kinds
+            if kind == "reply" and long_end_at is not None and at >= long_end_at
+        ),
+        None,
+    )
+    first_reply_audio_after_long_ms = (
+        int((first_reply_audio_after_long - long_end_at) * 1000)
+        if first_reply_audio_after_long is not None and long_end_at is not None
         else None
     )
 
@@ -293,6 +320,15 @@ async def run(args: argparse.Namespace) -> int:
         "end_of_long_speech_to_first_coach_audio_ms="
         f"{first_audio_after_long_ms}"
     )
+    print(
+        "end_of_long_speech_to_first_sound_of_any_kind_ms="
+        f"{first_audio_after_long_ms}"
+    )
+    print(
+        "end_of_long_speech_to_first_word_of_real_reply_ms="
+        f"{first_reply_audio_after_long_ms}"
+    )
+    print(f"backchannel_count={collector.backchannel_count}")
     print(f"errors={collector.errors} socket_closed_early={collector.closed}")
     print(f"RESULT={'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1

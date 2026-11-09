@@ -81,6 +81,19 @@ class _SttSession:
         """Whether this session can stream frames while the learner speaks."""
         return callable(getattr(self._session, "send_live_frame", None))
 
+    @property
+    def has_pending_live_segments(self) -> bool:
+        """Whether the provider closed a segment not yet collected."""
+        return bool(
+            getattr(self._session, "has_pending_live_segments", False)
+        )
+
+    @property
+    def pending_live_segments(self) -> tuple[object, ...]:
+        """The closed segments not yet collected, without consuming them."""
+        events = getattr(self._session, "pending_live_segments", ())
+        return tuple(_segment_from_event(event) for event in events)
+
     async def start_live(self) -> None:
         await self._session.start_live()
 
@@ -237,29 +250,54 @@ class GeminiReasoningAdapter:
         attempt_timeout: float | None = None,
         deadline: float | None = None,
     ) -> None:
-        config = GeminiConfig(model=model, store=False)
-        kwargs: dict[str, Any] = {
+        self._config = GeminiConfig(model=model, store=False)
+        self._api_key = api_key
+        self._kwargs: dict[str, Any] = {
             "budget": budget,
             "client_factory": client_factory,
         }
         if attempt_timeout is not None:
-            kwargs["attempt_timeout"] = attempt_timeout
+            self._kwargs["attempt_timeout"] = attempt_timeout
         if deadline is not None:
-            kwargs["deadline"] = deadline
-        self._coach = GeminiCoach(config, api_key, **kwargs)
+            self._kwargs["deadline"] = deadline
+        #: Kept for inspection, but each logical call gets its own coach.
+        self._coach = self._new_coach()
 
-    async def reply(self, request: ReasoningRequest) -> ReasoningReply:
-        coach_request = CoachRequest(
+    def _new_coach(self) -> GeminiCoach:
+        """One coach per logical call.
+
+        Phase 19: ``GeminiCoach.fence()`` is permanent for the instance,
+        and an interrupt cancels the in-flight reply. Reusing one coach for
+        the whole call would therefore make every later turn raise
+        ``CancelledError``. The runtime has its own per-turn fence, so the
+        provider-level fence only needs to cover the call it belongs to.
+        """
+        return GeminiCoach(self._config, self._api_key, **self._kwargs)
+
+    def _coach_request(self, request: ReasoningRequest) -> CoachRequest:
+        return CoachRequest(
             recognized_text=request.recognized_text,
             system_instruction=request.instruction,
             scenario=request.scenario,
             level=request.level,
             reply_language=request.reply_language,
         )
-        event = await self._coach.reply(coach_request)
+
+    async def reply(self, request: ReasoningRequest) -> ReasoningReply:
+        event = await self._new_coach().reply(self._coach_request(request))
         return ReasoningReply(
             text=event.text,
             model=event.model,
             stored=event.store,
             tools_enabled=event.tools_enabled,
         )
+
+    async def stream(self, request: ReasoningRequest):
+        """Yield the coach's reply as text deltas.
+
+        This is an optional extension of the port: a caller checks for it
+        with ``getattr`` and keeps the non-streaming ``reply`` path when it
+        is absent.
+        """
+        async for delta in self._new_coach().stream(self._coach_request(request)):
+            yield delta

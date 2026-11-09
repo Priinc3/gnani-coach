@@ -215,6 +215,36 @@ class PortRecognitionStream:
             return False
 
     @property
+    def has_closed_segment(self) -> bool:
+        """True when a live recogniser has a segment ready to collect.
+
+        Only the live path can answer before a submission: the clip path
+        learns its segments only when the clip is submitted. A False here
+        therefore keeps the longer hold, which is the safe choice.
+        """
+        if not self._live_active:
+            return False
+        session = self._session
+        if session is None:
+            return False
+        return bool(getattr(session, "has_pending_live_segments", False))
+
+    @property
+    def pending_text(self) -> str:
+        """The text of closed live segments not yet collected.
+
+        It is a *peek*, not a collect: the segments are still returned by
+        the turn's own ``collect``. Phase 19 uses it to start the reasoning
+        call early without sending the transcript twice.
+        """
+        if not self._live_active or self._session is None:
+            return ""
+        segments = getattr(self._session, "pending_live_segments", ())
+        return " ".join(
+            getattr(segment, "text", "") or "" for segment in segments
+        ).strip()
+
+    @property
     def pending_audio_ms(self) -> int:
         """The audio waiting to be submitted, in milliseconds."""
         buffered = (

@@ -48,11 +48,16 @@ from typing import Any, Callable
 
 from gnani_coach.conversation import errors as call_errors
 from gnani_coach.conversation.audio import pcm_duration_ms, wav_bytes
+from gnani_coach.conversation.backchannel import (
+    MID_TURN_PHRASE,
+    BackchannelCache,
+)
 from gnani_coach.conversation.config import (
     BINARY_FRAME_BYTES,
     DEFAULT_MIN_TURN_WORDS,
     DEFAULT_TURN_HOLD_MS,
     ENDPOINTING_HANGOVER_MS,
+    FAST_TURN_HOLD_MS,
     HEARTBEAT_INTERVAL_S,
     IDLE_TIMEOUT_S,
     MAX_CALL_SECONDS,
@@ -61,8 +66,14 @@ from gnani_coach.conversation.config import (
     MAX_TRANSCRIPT_CHARS,
     MAX_TURN_AUDIO_BYTES,
     MAX_TURN_MS,
+    MID_TURN_INTERVAL_MS,
+    MID_TURN_MIN_SPEECH_MS,
+    MID_TURN_PAUSE_MS,
+    MID_TURN_RESUME_GUARD_MS,
+    MID_TURN_START_GRACE_MS,
     MUTE_HOLD_EXTENSION_MS,
     SEGMENT_GRACE_MS,
+    SPECULATION_SILENCE_MS,
     START_DEADLINE_S,
 )
 from gnani_coach.conversation.envelope import (
@@ -105,6 +116,13 @@ from gnani_coach.ports.reasoning import ReasoningPort, ReasoningRequest
 from gnani_coach.ports.speech_to_text import SttOpenRequest
 from gnani_coach.ports.text_to_speech import SpeechChunk, TextToSpeechPort, TtsOpenRequest
 from gnani_coach.ports.types import ConnectionId, RoundId, SessionId, TurnId
+
+try:  # pragma: no cover - starlette is always present in the service
+    from starlette.websockets import WebSocketDisconnected
+except Exception:  # pragma: no cover - a test double without starlette
+
+    class WebSocketDisconnected(Exception):  # type: ignore[no-redef]
+        """Fallback type so the runtime can still be imported."""
 
 LOGGER = logging.getLogger("gnani_coach.conversation")
 
@@ -216,6 +234,9 @@ class CallOptions:
     #: Builds the providers for a practice language id. ``None`` when the
     #: credentials or the catalog entry are missing.
     providers_factory: Callable[[str], CallProviders | None] | None = None
+    #: Builds the recognition stream (the tests supply a fake). ``None``
+    #: means the frozen port-backed stream.
+    stream_factory: Callable[[CallProviders], Any] | None = None
     practice_language: str = "English"
     coaching_language: str = "English"
     #: The consent captured at the ``start`` event.
@@ -233,6 +254,9 @@ class CallOptions:
     min_words: int = DEFAULT_MIN_TURN_WORDS
     call_cap_seconds: float = MAX_CALL_SECONDS
     keep_recording: bool = True
+    #: Phase 19: spoken reactions ("mm-hmm", the immediate acknowledgement).
+    #: The process setting can turn all of them off.
+    backchannel_enabled: bool = True
 
 
 @dataclass
@@ -343,6 +367,30 @@ class CallRuntime:
         #: The durable write has already run (so ``_shutdown`` does not
         #: repeat it after an explicit end).
         self._persisted = False
+        #: Phase 19: one collect at a time, so a speculative collect and the
+        #: turn's own collect cannot read the same live segments twice.
+        self._stream_lock = asyncio.Lock()
+        #: One speculative reasoning call per turn. The reply is adopted at
+        #: the real turn boundary; a learner who resumes discards it.
+        self._speculation_task: asyncio.Task[Any] | None = None
+        self._speculation_turn_id: TurnId | None = None
+        self._speculation_reply: Any | None = None
+        self._speculated_turns: set[TurnId] = set()
+        self._speculation_calls = 0
+        self._speculation_discarded = 0
+        #: The immediate acknowledgement and the mid-sentence reaction.
+        self._backchannel: BackchannelCache | None = None
+        self._filler_task: asyncio.Task[Any] | None = None
+        self._filler_turn_id: TurnId | None = None
+        self._mid_backchannel_task: asyncio.Task[Any] | None = None
+        self._mid_backchannel_armed = False
+        self._last_mid_backchannel_ms = 0
+        self._backchannels_sent = 0
+        self._warm_task: asyncio.Task[Any] | None = None
+        #: Who closed the socket and with which code, for the close log.
+        self._closed_by = "server"
+        self._close_code = 1000
+        self._close_logged = False
 
     # ------------------------------------------------------------------
     # ids and state
@@ -453,6 +501,13 @@ class CallRuntime:
             await self._end_socket()
         except CallFailure as failure:
             await self._fail(failure)
+        except WebSocketDisconnected:
+            # The client sent its close before the server's next message.
+            # The old code reported this as an internal failure; it is the
+            # client going away, and the close log must say so.
+            self._closed_by = "client"
+            self._close_code = 1006
+            await self._shutdown(reason="client_gone")
         except asyncio.CancelledError:
             await self._shutdown(reason="cancelled")
             raise
@@ -465,6 +520,7 @@ class CallRuntime:
             await self._fail(CallFailure(call_errors.INTERNAL, close_code=1011))
         finally:
             await self._shutdown(reason="done")
+            self._log_close()
 
     async def _receive_start(self) -> None:
         """Wait for the first message and validate it as a ``start``."""
@@ -569,7 +625,9 @@ class CallRuntime:
         """Open the recognition stream for this connection."""
         providers = self._options.providers
         assert providers is not None  # checked in _handle_start_message
-        if self._stream_factory is not None:
+        if self._options.stream_factory is not None:
+            self._stream = self._options.stream_factory(providers)
+        elif self._stream_factory is not None:
             self._stream = self._stream_factory(providers)
         else:
             from gnani_coach.conversation.recognition import PortRecognitionStream
@@ -583,6 +641,19 @@ class CallRuntime:
                     connection_id=self._connection_id,
                 ),
             )
+        if self._backchannel is None:
+            self._backchannel = BackchannelCache(
+                tts=providers.tts,
+                voice=providers.tts_voice,
+                model=providers.tts_model,
+                language=providers.tts_language,
+                enabled=self._options.backchannel_enabled,
+            )
+            if self._backchannel.enabled:
+                # Warm the fixed clips while the learner is still talking.
+                self._warm_task = asyncio.create_task(
+                    self._backchannel.warm(), name="call-warm-backchannel"
+                )
         await self._send_status("listening")
 
     # ------------------------------------------------------------------
@@ -665,7 +736,10 @@ class CallRuntime:
             self._queue_depth_max = max(self._queue_depth_max, self._events.qsize())
             started = time.monotonic()
             if isinstance(event, DisconnectEvent):
-                await self._send_status("ended", "the client left")
+                self._closed_by = "client"
+                self._close_code = int(event.code)
+                with contextlib.suppress(Exception):
+                    await self._send_status("ended", "the client left")
                 raise CallEnded
             if isinstance(event, FrameEvent):
                 await self._on_frame(event)
@@ -695,9 +769,13 @@ class CallRuntime:
         """Handle the deadlines."""
         now = time.monotonic()
         if now - self._started_at >= self._options.call_cap_seconds:
+            self._closed_by = "server"
+            self._close_code = 1000
             await self._send_status("ended", "the call reached its time limit")
             raise CallEnded
         if now - self._last_client_frame_at >= IDLE_TIMEOUT_S:
+            self._closed_by = "server"
+            self._close_code = 1000
             await self._send_status("ended", "the call was idle")
             raise CallEnded
         if now - self._last_sent_at >= HEARTBEAT_INTERVAL_S:
@@ -722,6 +800,12 @@ class CallRuntime:
         speech = self._endpointing.observe(event.data)
         if speech:
             self._awaiting_speech = False
+            # The learner resumed: a speculative reply is stale and a
+            # mid-sentence reaction must not talk over them.
+            self._discard_speculation(reason="learner_resumed")
+            self._cancel_mid_backchannel()
+            self._cancel_filler()
+            self._mid_backchannel_armed = True
             if self._turn is not None and self._is_fenced(self._turn.turn_id):
                 # The learner spoke again after an interrupt: the fenced
                 # turn can never complete, so the new speech starts a
@@ -758,6 +842,8 @@ class CallRuntime:
                 timing.speech_frames += 1
         if self._stream is not None:
             await self._stream.push_frame(event.data)
+        if not speech:
+            self._maybe_mid_backchannel()
         await self._maybe_finish_turn()
 
     def _current_turn(self) -> LearnerTurn | None:
@@ -798,7 +884,12 @@ class CallRuntime:
             return
         if self._collect_task is not None and not self._collect_task.done():
             return
-        if not self._endpointing.hold_expired():
+        # Phase 19: start the reasoning call on the text the recogniser
+        # already closed. This is checked before the hold, because a live
+        # segment often arrives after the fast hold would have expired;
+        # starting it here overlaps the model with the collect below.
+        self._maybe_start_speculation(turn)
+        if not self._turn_hold_expired(turn):
             return
         timing = self._timings.get(turn.turn_id)
         if timing is not None and timing.speech_frames == 0:
@@ -813,11 +904,52 @@ class CallRuntime:
         # progress long before the first coach audio.
         self._state.state = "thinking"
         await self._send_status("thinking", turn_id=turn.turn_id)
+        # Phase 19: the immediate acknowledgement goes out with the same
+        # ``thinking`` moment. It is skipped when the speculative reply is
+        # already in hand (the real reply will arrive within 1.2 s).
+        if self._should_send_filler(turn):
+            self._filler_turn_id = turn.turn_id
+            self._filler_task = asyncio.create_task(
+                self._play_filler(turn.turn_id), name="call-filler"
+            )
         self._awaiting_speech = True
         self._collect_turn_id = turn.turn_id
         self._collect_task = asyncio.create_task(
             self._collect_turn(turn), name="call-collect"
         )
+
+    def _turn_hold_expired(self, turn: LearnerTurn) -> bool:
+        """Whether this turn's silence has reached its end-of-turn hold.
+
+        A turn whose recogniser already closed a segment uses the fast
+        hold: the learner finished an utterance, so the full hold is dead
+        air. A turn with nothing recognised yet keeps the long hold so a
+        thinking pause is not cut. "Give me a moment" always keeps the
+        extended hold.
+        """
+        return self._endpointing.silence_ms >= self._effective_hold(turn)
+
+    def _effective_hold(self, turn: LearnerTurn) -> int:
+        """The hold that applies to this turn (fast once a segment closed)."""
+        if self._endpointing.extended_by_ms:
+            return self._endpointing.hold_ms
+        closed = bool(turn.segments) or bool(
+            getattr(self._stream, "has_closed_segment", False)
+        )
+        if closed:
+            return min(self._endpointing.hold_ms, FAST_TURN_HOLD_MS)
+        return self._endpointing.hold_ms
+
+    def _should_send_filler(self, turn: LearnerTurn) -> bool:
+        cache = self._backchannel
+        if cache is None or not cache.enabled:
+            return False
+        if self._speculation_reply is not None:
+            # The reasoning call already finished: the real reply is about
+            # to start, so a filler would only delay it.
+            return False
+        timing = self._timings.get(turn.turn_id)
+        return timing is not None and timing.speech_frames > 0
 
     async def _collect_turn(self, turn: LearnerTurn) -> None:
         """Recognise one turn in the background, then let the coach answer.
@@ -836,7 +968,7 @@ class CallRuntime:
                     getattr(stream, "pending_audio_ms", 0) or 0
                 )
                 try:
-                    segments = await stream.collect(grace_ms=SEGMENT_GRACE_MS)
+                    segments = await self._collect_segments(stream, turn)
                 except asyncio.CancelledError:
                     raise
                 except Exception as exc:  # noqa: BLE001 - the call survives
@@ -892,7 +1024,8 @@ class CallRuntime:
                 self._endpointing,
                 min_words=self._options.min_words,
                 max_turn_ms=MAX_TURN_MS,
-                closed_segment=bool(segments),
+                closed_segment=bool(segments) or bool(turn.segments),
+                hold_ms=self._effective_hold(turn),
             ):
                 # Nothing closed and the count is not met: the turn stays
                 # open, the hold is extended and the learner may keep
@@ -907,12 +1040,273 @@ class CallRuntime:
                 self._collect_task = None
                 self._collect_turn_id = None
 
+    async def _collect_segments(self, stream: Any, turn: LearnerTurn) -> tuple[Any, ...]:
+        """Collect the turn's segments, retrying a late live segment.
+
+        Phase 19 uses a shorter hold, so the first collect can run just
+        before the recogniser publishes its closed segment. A single empty
+        result must not leave the turn waiting for speech that has already
+        finished: two short retries catch the late segment.
+        """
+        for attempt in range(3):
+            grace = SEGMENT_GRACE_MS if attempt == 0 else 250
+            async with self._stream_lock:
+                segments = await stream.collect(grace_ms=grace)
+            if segments:
+                return tuple(segments)
+            if self._turn is not turn or self._is_fenced(turn.turn_id):
+                return ()
+            if self._endpointing.speech_run_ms:
+                # The learner resumed: the next hold will submit again.
+                return ()
+            if attempt < 2:
+                await asyncio.sleep(0.1)
+        return ()
+
     async def _return_to_listening(self, turn_id: TurnId) -> None:
         """Undo the ``thinking`` status when a submission did not end a turn."""
         if self._state.state == "thinking":
             self._state.state = "listening"
             with contextlib.suppress(Exception):
                 await self._send_status("listening", turn_id=turn_id)
+
+    # ------------------------------------------------------------------
+    # Phase 19: speculation, fillers and mid-sentence reactions
+    # ------------------------------------------------------------------
+    def _maybe_start_speculation(self, turn: LearnerTurn) -> None:
+        """Start one speculative reasoning call on the closed text so far.
+
+        Bounded to one call per turn. The reply is never sent unless the
+        turn really completes; a learner who resumes cancels it and the
+        output is discarded. The text is a **peek**: the turn's own collect
+        still returns the segments and sends the transcript once.
+        """
+        stream = self._stream
+        if stream is None:
+            return
+        if turn.turn_id in self._speculated_turns:
+            return
+        if self._speculation_task is not None and not self._speculation_task.done():
+            return
+        if not getattr(stream, "has_closed_segment", False):
+            return
+        if self._endpointing.silence_ms < SPECULATION_SILENCE_MS:
+            return
+        if self._endpointing.speech_run_ms:
+            return
+        text = getattr(stream, "pending_text", "") or ""
+        if not text.strip():
+            return
+        self._speculated_turns.add(turn.turn_id)
+        self._speculation_turn_id = turn.turn_id
+        self._speculation_calls += 1
+        self._speculation_task = asyncio.create_task(
+            self._speculate(turn, text), name="call-speculate"
+        )
+
+    async def _speculate(self, turn: LearnerTurn, text: str) -> None:
+        """Reason on the closed text while the turn is still being collected."""
+        providers = self._options.providers
+        if providers is None:
+            return
+        try:
+            reply = await providers.reasoning.reply(
+                self._reasoning_request_for_text(text)
+            )
+            if self._turn is not turn or self._is_fenced(turn.turn_id):
+                return
+            self._speculation_reply = reply
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:  # noqa: BLE001 - the real turn may still run
+            LOGGER.warning(
+                "speculation failed session=%s turn=%s category=%s",
+                self._session_id,
+                turn.turn_id,
+                call_errors.from_exception(exc).category,
+            )
+        finally:
+            if self._speculation_task is asyncio.current_task():
+                self._speculation_task = None
+
+    def _discard_speculation(self, *, reason: str) -> None:
+        """Cancel a speculative call and drop any reply it produced."""
+        discarded = False
+        task = self._speculation_task
+        if task is not None and not task.done():
+            task.cancel()
+            discarded = True
+        if self._speculation_reply is not None:
+            self._speculation_reply = None
+            discarded = True
+        self._speculation_turn_id = None
+        if discarded:
+            self._speculation_discarded += 1
+            LOGGER.info(
+                "speculation discarded session=%s reason=%s",
+                self._session_id,
+                reason,
+            )
+
+    async def _take_speculative_reply(self, turn: LearnerTurn) -> Any | None:
+        """The speculative reply of this turn, waiting for it if needed."""
+        task = self._speculation_task
+        if task is not None and self._speculation_turn_id == turn.turn_id:
+            try:
+                await task
+            except asyncio.CancelledError:
+                if not task.cancelled():
+                    raise
+            except Exception:  # noqa: BLE001 - fall back to a real call
+                pass
+        if (
+            self._speculation_reply is not None
+            and self._speculation_turn_id == turn.turn_id
+        ):
+            reply = self._speculation_reply
+            self._speculation_reply = None
+            self._speculation_turn_id = None
+            return reply
+        return None
+
+    async def _play_filler(self, turn_id: TurnId) -> None:
+        """Send one cached acknowledgement, as its own low-priority turn."""
+        cache = self._backchannel
+        if cache is None or not cache.enabled:
+            return
+        if self._endpointing.speech_run_ms:
+            return
+        pcm = await cache.clip(cache.next_phrase())
+        if not pcm or self._filler_turn_id != turn_id:
+            return
+        if self._endpointing.speech_run_ms:
+            return
+        await self._send_backchannel(pcm)
+
+    async def _await_filler(self, turn_id: TurnId) -> None:
+        """Let an acknowledgement finish before the real reply is spoken."""
+        task = self._filler_task
+        if task is None or self._filler_turn_id != turn_id:
+            return
+        if not task.done():
+            try:
+                await task
+            except asyncio.CancelledError:
+                if not task.cancelled():
+                    raise
+            except Exception:  # noqa: BLE001 - a filler is optional
+                pass
+        if self._filler_task is task:
+            self._filler_task = None
+            self._filler_turn_id = None
+
+    def _cancel_filler(self) -> None:
+        task = self._filler_task
+        if task is not None and not task.done():
+            task.cancel()
+        self._filler_task = None
+        self._filler_turn_id = None
+
+    def _maybe_mid_backchannel(self) -> None:
+        """React once to a real pause inside a long run of speech."""
+        cache = self._backchannel
+        if cache is None or not cache.enabled:
+            return
+        if self._mid_backchannel_task is not None and not self._mid_backchannel_task.done():
+            return
+        if not self._mid_backchannel_armed:
+            return
+        if self._turn is None or self._state.speaking or self._awaiting_speech:
+            return
+        # "Four seconds of continuous speech" is measured as speech in this
+        # turn, not as one unbroken run: any 32 ms inter-word gap resets a
+        # raw run, so a raw-run test would never fire on real speech.
+        timing = self._timings.get(self._turn.turn_id)
+        if timing is None or (
+            timing.speech_frames * FRAME_DURATION_MS < MID_TURN_MIN_SPEECH_MS
+        ):
+            return
+        if self._endpointing.silence_ms < MID_TURN_PAUSE_MS:
+            return
+        if (time.monotonic() - self._started_at) * 1000.0 < MID_TURN_START_GRACE_MS:
+            return
+        now_ms = time.monotonic() * 1000.0
+        if now_ms - self._last_mid_backchannel_ms < MID_TURN_INTERVAL_MS:
+            return
+        # One reaction per pause: re-armed only when speech resumes.
+        self._mid_backchannel_armed = False
+        self._last_mid_backchannel_ms = now_ms
+        self._mid_backchannel_task = asyncio.create_task(
+            self._mid_backchannel(), name="call-backchannel"
+        )
+
+    async def _mid_backchannel(self) -> None:
+        cache = self._backchannel
+        if cache is None:
+            return
+        # The learner may resume in the next 150 ms; in that case the
+        # reaction is dropped rather than talking over them.
+        await asyncio.sleep(MID_TURN_RESUME_GUARD_MS / 1000.0)
+        if self._endpointing.speech_run_ms:
+            return
+        if self._turn is None or self._state.speaking:
+            return
+        pcm = await cache.clip(MID_TURN_PHRASE)
+        if not pcm or self._endpointing.speech_run_ms:
+            return
+        await self._send_backchannel(pcm)
+
+    def _cancel_mid_backchannel(self) -> None:
+        task = self._mid_backchannel_task
+        if task is not None and not task.done():
+            task.cancel()
+        self._mid_backchannel_task = None
+
+    async def _send_backchannel(self, pcm: bytes) -> None:
+        """Send one cached clip as its own turn with ``kind: backchannel``."""
+        if not pcm or self._state.speaking:
+            return
+        turn_id = new_turn_id()
+        try:
+            await self._send(
+                "audio.frame.descriptor",
+                {
+                    "sampleRateHz": 16000,
+                    "sampleFormat": "s16le",
+                    "channels": 1,
+                    "frameByteLength": max(2, len(pcm)),
+                    "firstSampleIndex": self._endpointing.clock_ms * 16,
+                    "kind": "backchannel",
+                },
+                turn_id=turn_id,
+            )
+            await self._send_binary(pcm)
+            self._backchannels_sent += 1
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 - a reaction is optional
+            LOGGER.warning(
+                "backchannel send failed session=%s", self._session_id
+            )
+
+    def _reasoning_request(self, turn: LearnerTurn) -> ReasoningRequest:
+        return self._reasoning_request_for_text(turn.text)
+
+    def _reasoning_request_for_text(self, text: str) -> ReasoningRequest:
+        transcript = sanitize_transcript(text, max_chars=MAX_TRANSCRIPT_CHARS)
+        return ReasoningRequest(
+            recognized_text=transcript or "",
+            instruction=build_turn_instruction(
+                scenario=self._scenario(),
+                level=self._level(),
+                practice_language=self._options.practice_language,
+                coaching_language=self._options.coaching_language,
+                topic=self._topic(),
+            ),
+            scenario=self._scenario(),
+            level=self._level(),
+            reply_language=self._options.coaching_language,
+        )
 
     async def _complete_turn(self, turn: LearnerTurn) -> None:
         """Finish a learner turn: measure it, then let the coach answer."""
@@ -987,31 +1381,55 @@ class CallRuntime:
             if self._state.state != "thinking":
                 self._state.state = "thinking"
                 await self._send_status("thinking", turn_id=turn.turn_id)
-            transcript = sanitize_transcript(turn.text, max_chars=MAX_TRANSCRIPT_CHARS)
-            request = ReasoningRequest(
-                recognized_text=transcript or "",
-                instruction=build_turn_instruction(
-                    scenario=self._scenario(),
-                    level=self._level(),
-                    practice_language=self._options.practice_language,
-                    coaching_language=self._options.coaching_language,
-                    topic=self._topic(),
-                ),
-                scenario=self._scenario(),
-                level=self._level(),
-                reply_language=self._options.coaching_language,
-            )
+            request = self._reasoning_request(turn)
             llm_started = time.monotonic()
-            reply = await providers.reasoning.reply(request)
-            timing.llm_ms = int(round((time.monotonic() - llm_started) * 1000.0))
-            if self._is_fenced(turn.turn_id):
-                # A late reply of a fenced turn is never adopted.
+            # Phase 19: adopt the speculative reply when it exists. It was
+            # produced on the same text, so no second model call is spent.
+            reply = await self._take_speculative_reply(turn)
+            if reply is not None:
+                timing.llm_ms = int(round((time.monotonic() - llm_started) * 1000.0))
+                if self._is_fenced(turn.turn_id):
+                    return
+                text = sanitize_reply(reply.text)
+                if not text:
+                    return
+                await self._send(
+                    "coach_text", {"text": text[:MAX_REPLY_CHARS]}, turn_id=turn.turn_id
+                )
+                await self._speak(text, turn.turn_id)
                 return
-            text = sanitize_reply(reply.text)
-            if not text:
-                return
-            await self._send("coach_text", {"text": text[:MAX_REPLY_CHARS]}, turn_id=turn.turn_id)
-            await self._speak(text, turn.turn_id)
+            text: str | None = None
+            stream_method = getattr(providers.reasoning, "stream", None)
+            if callable(stream_method):
+                try:
+                    text = await self._reply_with_stream(
+                        stream_method, request, turn, timing
+                    )
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:  # noqa: BLE001 - fall back once
+                    if self._is_fenced(turn.turn_id):
+                        raise
+                    LOGGER.warning(
+                        "streaming reply failed session=%s turn=%s category=%s",
+                        self._session_id,
+                        turn.turn_id,
+                        call_errors.from_exception(exc).category,
+                    )
+                    text = None
+            if text is None:
+                reply = await providers.reasoning.reply(request)
+                timing.llm_ms = int(round((time.monotonic() - llm_started) * 1000.0))
+                if self._is_fenced(turn.turn_id):
+                    # A late reply of a fenced turn is never adopted.
+                    return
+                text = sanitize_reply(reply.text)
+                if not text:
+                    return
+                await self._send(
+                    "coach_text", {"text": text[:MAX_REPLY_CHARS]}, turn_id=turn.turn_id
+                )
+                await self._speak(text, turn.turn_id)
         except asyncio.CancelledError:
             raise
         except Exception as exc:  # noqa: BLE001 - a provider failure ends the line
@@ -1039,10 +1457,78 @@ class CallRuntime:
             await self._deliver_round_feedback()
         await self._apply_pending_choice(force=True)
 
-    async def _speak(self, text: str, turn_id: TurnId) -> None:
+    async def _reply_with_stream(
+        self,
+        stream_method: Any,
+        request: ReasoningRequest,
+        turn: LearnerTurn,
+        timing: _TurnTiming,
+    ) -> str | None:
+        """Stream the model, synthesising the first sentence immediately.
+
+        Returns the full sanitised text, or ``None`` when the stream ended
+        without usable text and no audio was sent (the caller may then use
+        the non-streaming path).
+        """
+        started = time.monotonic()
+        buffer = ""
+        first_sentence: str | None = None
+        tts_task: asyncio.Task[Any] | None = None
+        try:
+            async for delta in stream_method(request):
+                if self._is_fenced(turn.turn_id):
+                    if tts_task is not None:
+                        tts_task.cancel()
+                    return None
+                buffer += delta
+                clean = sanitize_reply(buffer)
+                if tts_task is None:
+                    sentence = _first_sentence(clean)
+                    if sentence:
+                        first_sentence = sentence
+                        timing.tts_first_byte_ms = int(
+                            round((time.monotonic() - started) * 1000.0)
+                        )
+                        tts_task = asyncio.create_task(
+                            self._speak(sentence, turn.turn_id, announce=True),
+                            name="call-speak-first",
+                        )
+        except asyncio.CancelledError:
+            if tts_task is not None:
+                tts_task.cancel()
+            raise
+        except Exception:
+            if tts_task is not None:
+                tts_task.cancel()
+            raise
+        timing.llm_ms = int(round((time.monotonic() - started) * 1000.0))
+        text = sanitize_reply(buffer)
+        if not text:
+            return None
+        await self._send(
+            "coach_text", {"text": text[:MAX_REPLY_CHARS]}, turn_id=turn.turn_id
+        )
+        if tts_task is None:
+            await self._speak(text, turn.turn_id, announce=True)
+            return text
+        await tts_task
+        if self._is_fenced(turn.turn_id):
+            return text
+        rest = text[len(first_sentence or "") :].strip()
+        if rest:
+            # The first sentence is already playing; the rest follows it.
+            await self._speak(rest, turn.turn_id, announce=False)
+        return text
+
+    async def _speak(
+        self, text: str, turn_id: TurnId, *, announce: bool = True
+    ) -> None:
         """Synthesise and send one coach line."""
         providers = self._options.providers
         assert providers is not None
+        # Phase 19: an acknowledgement is allowed to finish first; it is
+        # short and cached, and the real reply must not overlap it.
+        await self._await_filler(turn_id)
         session = providers.tts.open_session(
             TtsOpenRequest(
                 text=text,
@@ -1057,7 +1543,8 @@ class CallRuntime:
         timing = self._timings.setdefault(turn_id, _TurnTiming())
         speak_started = time.monotonic()
         try:
-            await self._send_status("speaking", turn_id=turn_id)
+            if announce:
+                await self._send_status("speaking", turn_id=turn_id)
 
             async def forward(chunk: SpeechChunk) -> None:
                 nonlocal descriptor_sent
@@ -1159,6 +1646,11 @@ class CallRuntime:
         latency = -1 if last_audio is None else int(round((now - last_audio) * 1000))
         self._state.interrupt_latency_ms = latency
         self._state.interrupt_count += 1
+        # A spoken reaction is never allowed to survive the learner's own
+        # speech, and a speculative reply of the fenced turn is dropped.
+        self._cancel_mid_backchannel()
+        self._cancel_filler()
+        self._discard_speculation(reason="interrupted")
         fence_latency = (
             -1 if since <= 0 else int(round((now - since) * 1000))
         )
@@ -1225,6 +1717,9 @@ class CallRuntime:
             self._state.muted = muted
             return
         if kind == "end":
+            # The learner's own client asked for the end.
+            self._closed_by = "client"
+            self._close_code = 1000
             # Persist *before* announcing the end, so a storage failure can
             # be told to the learner in the same ``status ended`` event.
             outcome = await self._persist_once()
@@ -1467,11 +1962,15 @@ class CallRuntime:
     # ------------------------------------------------------------------
     async def _end_socket(self) -> None:
         """Close the socket cleanly."""
+        if not self._close_code:
+            self._close_code = 1000
         with contextlib.suppress(Exception):
             await self._websocket.close(code=1000, reason="ended")
 
     async def _fail(self, failure: CallFailure) -> None:
         """Report a failure and close the socket."""
+        self._closed_by = "server"
+        self._close_code = int(failure.close_code)
         try:
             await self._send_failure(failure.failure)
         except Exception as exc:  # noqa: BLE001 - the close must still happen
@@ -1490,6 +1989,16 @@ class CallRuntime:
         if self._closed:
             return
         self._closed = True
+        for task in (
+            self._speculation_task,
+            self._filler_task,
+            self._mid_backchannel_task,
+            self._warm_task,
+        ):
+            if task is not None and not task.done():
+                task.cancel()
+                with contextlib.suppress(asyncio.CancelledError, Exception):
+                    await task
         if self._collect_task is not None and not self._collect_task.done():
             self._collect_task.cancel()
             with contextlib.suppress(asyncio.CancelledError, Exception):
@@ -1509,6 +2018,32 @@ class CallRuntime:
             with contextlib.suppress(Exception):
                 self._options.connections.release_user(self._user_id)
         await self._persist_once()
+
+    def _log_close(self) -> None:
+        """Log who closed this connection, and the two elapsed clocks.
+
+        Content-free: the ids, the close code and milliseconds only. It
+        answers the field-test question "did the browser's idle watchdog
+        fire, or did the network?" without guessing.
+        """
+        if self._close_logged:
+            return
+        self._close_logged = True
+        now = time.monotonic()
+        LOGGER.info(
+            "call closed session=%s connection=%s closed_by=%s close_code=%d "
+            "elapsed_ms=%d since_last_server_message_ms=%d "
+            "speculation_calls=%d speculation_discarded=%d backchannels=%d",
+            self._session_id,
+            self._connection_id,
+            self._closed_by,
+            self._close_code,
+            int(round((now - self._started_at) * 1000.0)),
+            int(round((now - self._last_sent_at) * 1000.0)),
+            self._speculation_calls,
+            self._speculation_discarded,
+            self._backchannels_sent,
+        )
 
     async def _persist_once(self) -> str:
         """Run the durable write exactly once, and report its outcome.
@@ -1657,6 +2192,20 @@ class CallRuntime:
             return bool(outcome)
         except Exception:  # noqa: BLE001 - an unknown state is not a consent
             return False
+
+
+def _first_sentence(text: str) -> str | None:
+    """The first sentence of a reply, or ``None`` until one is complete.
+
+    The boundary is a full stop, question mark or exclamation mark followed
+    by whitespace or the end of the text, plus the Hindi danda. A number
+    like ``3.5`` therefore does not split the line.
+    """
+    for index, character in enumerate(text):
+        if character in ".?!" or character == "\u0964":
+            if index + 1 >= len(text) or text[index + 1].isspace():
+                return text[: index + 1].strip()
+    return None
 
 
 def _transcript_payload(segment: Any) -> dict[str, Any]:

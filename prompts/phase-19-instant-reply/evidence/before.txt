@@ -1,0 +1,93 @@
+url=ws://127.0.0.1:8100/ws/call origin=http://localhost:3000
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.431  status state=connecting
+  +   0.431  status state=ready
+  +   0.431  status state=listening
+  +   3.551  status state=thinking
+  +   4.452  transcript_final chars=5 words=1
+  +   4.453  status state=listening
+  +  14.095  status state=thinking
+  +  14.996  transcript_final chars=186 words=39
+  +  16.956  coach_text
+  +  16.957  status state=speaking
+  +  17.154  audio.frame.descriptor
+  +  17.154  binary bytes=3584
+  +  17.166  binary bytes=1024
+  +  17.166  binary bytes=512
+  +  17.167  binary bytes=512
+  +  17.168  binary bytes=2048
+  +  17.168  binary bytes=512
+  +  17.182  binary bytes=1536
+  +  17.182  binary bytes=1024
+  +  17.183  binary bytes=1024
+  +  17.183  binary bytes=1024
+  +  17.198  binary bytes=2048
+  +  17.198  binary bytes=512
+  +  17.202  binary bytes=1024
+  +  17.202  binary bytes=2560
+  +  17.213  binary bytes=1024
+  +  17.213  binary bytes=512
+  +  17.215  binary bytes=1024
+  +  17.215  binary bytes=2048
+  +  17.229  binary bytes=1024
+  +  17.230  binary bytes=1024
+  +  17.231  binary bytes=2560
+  +  17.244  binary bytes=1024
+  +  17.246  binary bytes=512
+  +  17.246  binary bytes=4096
+  +  17.247  binary bytes=512
+  +  17.247  binary bytes=512
+  +  17.261  binary bytes=1536
+  +  17.261  binary bytes=512
+  +  17.261  binary bytes=2048
+  +  17.276  binary bytes=1024
+  +  17.276  binary bytes=512
+  +  17.277  binary bytes=3072
+  +  17.293  binary bytes=2048
+  +  17.293  binary bytes=4096
+  +  17.293  binary bytes=512
+  +  17.305  binary bytes=1024
+  +  17.306  binary bytes=3072
+  +  17.321  binary bytes=1024
+  +  17.322  binary bytes=1024
+  +  17.322  binary bytes=2560
+  +  17.336  binary bytes=1024
+  +  17.337  binary bytes=512
+  +  17.337  binary bytes=3072
+  +  17.337  binary bytes=2048
+  +  17.350  binary bytes=1024
+  +  17.351  binary bytes=3584
+  +  17.366  binary bytes=1536
+  +  17.366  binary bytes=2560
+  +  17.381  binary bytes=1024
+  +  17.382  binary bytes=1024
+  +  17.383  binary bytes=4096
+  +  17.383  binary bytes=512
+  +  17.395  binary bytes=1024
+  +  17.396  binary bytes=3584
+  +  17.409  binary bytes=1536
+  +  17.409  binary bytes=512
+  +  17.410  binary bytes=2048
+  +  17.426  binary bytes=2048
+  +  17.426  binary bytes=4096
+  +  17.426  binary bytes=512
+  +  17.437  binary bytes=1536
+  +  17.437  binary bytes=512
+  +  17.438  binary bytes=2560
+  +  17.453  binary bytes=1536
+  +  17.453  binary bytes=512
+  +  17.454  binary bytes=2560
+  +  17.467  binary bytes=1024
+  +  17.468  binary bytes=1024
+  +  17.469  binary bytes=4096
+  +  17.470  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=1 coach_after_long=1
+longest_gap_between_server_messages_ms=9642
+end_of_long_speech_to_first_coach_audio_ms=4748
+errors=0 socket_closed_early=False
+RESULT=PASS

@@ -216,7 +216,11 @@ class GnaniSpeechSettings(BaseSettings):
     #: connection, so a change needs a reconnect; the values are carried
     #: across that reconnect from :meth:`vad_settings`.
     vad_threshold: float = 0.7
-    vad_min_silence_ms: int = 500
+    #: Phase 19: the conversation range on the STT page is 600-900 ms; the
+    #: default 500 ms added avoidable delay before the recogniser closed a
+    #: segment. 600 is the documented floor for conversation.
+    #: https://docs.gnani.ai/api/STT/stt-websocket (VAD tuning), read 2026-11-09.
+    vad_min_silence_ms: int = 600
     vad_min_speech_ms: int = 100
     vad_min_segment_ms: int = 120
     vad_max_speech_s: float | None = None
@@ -297,6 +301,10 @@ class AppSettings(BaseSettings):
     #: Bearer token for the content-free latency endpoint. When unset the
     #: endpoint is not mounted at all (404), so an operator opts in.
     health_token: SecretStr | None = None
+    #: Phase 19: spoken reactions ("mm-hmm", the immediate acknowledgement).
+    #: On by default; ``SPEAKING_COACH_BACKCHANNEL_ENABLED=false`` turns
+    #: every one of them off without a code change.
+    backchannel_enabled: bool = True
     voice: GnaniSpeechSettings = Field(default_factory=GnaniSpeechSettings)
     gemini: GeminiSettings = Field(default_factory=GeminiSettings)
     supabase: SupabaseSettings = Field(default_factory=SupabaseSettings)

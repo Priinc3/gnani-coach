@@ -71,7 +71,11 @@ export interface CallClientOptions {
   /** A server event that passed the fence. */
   onEvent: (event: ServerEvent) => void;
   /** Binary audio that belongs to the current turn. */
-  onBinary: (data: ArrayBuffer, turnId: string) => void;
+  onBinary: (
+    data: ArrayBuffer,
+    turnId: string,
+    kind: "reply" | "backchannel",
+  ) => void;
   /** The connection moved. */
   onConnectionState: (state: ConnectionState, detail?: string) => void;
   /** A client-side failure. */
@@ -103,6 +107,7 @@ export class CallClient {
   private startSent = false;
   private serverReady = false;
   private activeDescriptorTurnId: string | null = null;
+  private activeDescriptorKind: "reply" | "backchannel" = "reply";
   private activeSampleRateHz: number;
   private lastStatus: StatusState | null = null;
   private idleTimer: number | null = null;
@@ -389,6 +394,7 @@ export class CallClient {
       case "audio.frame.descriptor": {
         const payload = event.payload as AudioFrameDescriptorPayload;
         this.activeDescriptorTurnId = event.turnId;
+        this.activeDescriptorKind = payload.kind ?? "reply";
         this.activeSampleRateHz = payload.sampleRateHz;
         break;
       }
@@ -415,7 +421,7 @@ export class CallClient {
     if (this.fence.currentTurn() !== turnId) {
       return;
     }
-    this.options.onBinary(data, turnId);
+    this.options.onBinary(data, turnId, this.activeDescriptorKind);
   }
 
   private handleUnexpectedClose(): void {
@@ -441,6 +447,7 @@ export class CallClient {
     // recognised when it arrives.
     this.fence.beginNewConnection();
     this.activeDescriptorTurnId = null;
+    this.activeDescriptorKind = "reply";
     this.reconnectTimer = this.setTimeoutFn(() => {
       this.reconnectTimer = null;
       this.openSocket("reconnecting");

@@ -119,6 +119,10 @@ class Endpointing:
         self._last_speech_ms: int | None = None
         self._clock_ms: int = 0
         self._speech_run_ms: int = 0
+        #: The length of the run of speech that just ended. Phase 19 uses
+        #: it to decide whether a pause inside a long turn is worth a
+        #: mid-sentence backchannel.
+        self._last_speech_run_ms: int = 0
         #: The clock at the start of the current run of speech.
         self._speech_onset_ms: int | None = None
         #: How much the learner asked for more time.
@@ -146,6 +150,8 @@ class Endpointing:
                 self._speech_onset_ms = max(0, self._clock_ms - FRAME_DURATION_MS)
             self._speech_run_ms += FRAME_DURATION_MS
         else:
+            if self._speech_run_ms:
+                self._last_speech_run_ms = self._speech_run_ms
             self._speech_run_ms = 0
             self._speech_onset_ms = None
         return speech
@@ -178,6 +184,16 @@ class Endpointing:
         """
         return self._speech_run_ms
 
+    @property
+    def last_speech_run_ms(self) -> int:
+        """How long the run of speech that just ended lasted.
+
+        Zero while the learner is speaking or before any speech. It is the
+        "continuous speech before the pause" figure Phase 19 uses for a
+        mid-sentence backchannel.
+        """
+        return self._last_speech_run_ms
+
     def hold_expired(self) -> bool:
         """True when the hold has elapsed since the last speech."""
         return self.silence_ms >= self.hold_ms
@@ -196,6 +212,7 @@ class Endpointing:
         """
         self._last_speech_ms = self._clock_ms
         self._speech_run_ms = 0
+        self._last_speech_run_ms = 0
         self._speech_onset_ms = None
 
 
@@ -206,6 +223,7 @@ def turn_is_complete(
     min_words: int,
     max_turn_ms: int = MAX_TURN_MS,
     closed_segment: bool = False,
+    hold_ms: int | None = None,
 ) -> bool:
     """Whether a turn may be completed right now.
 
@@ -220,7 +238,8 @@ def turn_is_complete(
     quiet learner still moves the conversation on — the turn is then
     reported as *too little speech*, never as a measured zero.
     """
-    if endpointing.hold_expired() and (
+    effective_hold = endpointing.hold_ms if hold_ms is None else int(hold_ms)
+    if endpointing.silence_ms >= effective_hold and (
         closed_segment or turn.word_count >= min_words
     ):
         return True

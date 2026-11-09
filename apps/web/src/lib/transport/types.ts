@@ -138,8 +138,12 @@ export interface TranscriptPayload {
   segmentId?: string;
 }
 
+/** Phase 19: a short spoken reaction is not the real reply. */
+export type CoachAudioKind = "reply" | "backchannel";
+
 export interface CoachTextPayload {
   text: string;
+  kind?: CoachAudioKind;
 }
 
 /** The metric keys the evidence chips may carry. */
@@ -198,6 +202,8 @@ export interface AudioFrameDescriptorPayload {
   channels: 1;
   frameByteLength: number;
   firstSampleIndex: number;
+  /** Phase 19: defaults to "reply" when absent. */
+  kind?: CoachAudioKind;
 }
 
 /** A server event with its payload typed. */

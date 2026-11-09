@@ -90,6 +90,9 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
   const lastEventAtRef = useRef(0);
   //: Throttle the microphone level so the ring does not re-render every frame.
   const lastLevelAtRef = useRef(0);
+  //: True while the current frame carries the learner's voice. A spoken
+  //: reaction is dropped rather than queued while this is true.
+  const learnerSpeakingRef = useRef(false);
   const sampleRateRef = useRef(CAPTURE_SAMPLE_RATE_HZ);
   const stateRef = useRef(state);
   const optionsRef = useRef(options);
@@ -169,6 +172,11 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
         context,
         onFrame: (frame) => {
           clientRef.current?.sendFrame(frame);
+          const level = rmsOfFrame(frame);
+          // The same cheap level the ring uses: a frame above the speech
+          // threshold means the learner is talking now, so a low-priority
+          // backchannel arriving this instant is dropped.
+          learnerSpeakingRef.current = level >= 0.02;
           const now = Date.now();
           if (now - lastLevelAtRef.current >= 100) {
             lastLevelAtRef.current = now;
@@ -176,7 +184,7 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
             // decorative level, never a measurement shown to the learner.
             dispatch({
               type: "mic_level",
-              level: Math.min(1, rmsOfFrame(frame) * 5),
+              level: Math.min(1, level * 5),
             });
           }
         },
@@ -198,10 +206,14 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
           });
         },
         onSpeechStart: () => {
+          learnerSpeakingRef.current = true;
           const clientNow = clientRef.current;
           if (!clientNow) {
             return;
           }
+          // A spoken reaction stops without any message; only the real
+          // coach turn produces the "You spoke over the coach" note.
+          playerRef.current?.stopBackchannels();
           const status = clientNow.currentStatus();
           if (status === "speaking" || status === "coaching") {
             // The learner spoke over the coach: stop the audio at once and
@@ -358,8 +370,14 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
       onEvent: (event: ServerEvent) => {
         handleServerEvent(event);
       },
-      onBinary: (data, turnId) => {
-        playerRef.current?.appendChunk(turnId, new Uint8Array(data), sampleRateRef.current);
+      onBinary: (data, turnId, kind) => {
+        playerRef.current?.appendChunk(
+          turnId,
+          new Uint8Array(data),
+          sampleRateRef.current,
+          kind,
+          learnerSpeakingRef.current,
+        );
       },
       onConnectionState: (connectionState) => {
         lastEventAtRef.current = Date.now();

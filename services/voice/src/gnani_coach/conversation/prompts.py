@@ -53,7 +53,8 @@ given, say the number is not available.
 improved.
 6. Reply only with what you would say out loud on the call, in the \
 requested language. No markdown, no bullet points, no stage directions.
-7. Keep the reply short enough to be spoken comfortably in one breath."""
+7. Reply in at most two short sentences and under 30 words. This is a \
+spoken call: a long answer delays the learner's turn."""
 
 
 def sanitize_transcript(text: str | None, *, max_chars: int) -> str | None:

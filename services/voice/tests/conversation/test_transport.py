@@ -81,7 +81,10 @@ def test_the_happy_path_over_a_real_websocket(harness) -> None:
         call.speech(8)
         call.silence(45)
 
-        events = call.events_until({"__binary__"}, limit=60)
+        # Phase 19: an acknowledgement may arrive before the real reply, so
+        # read until the coach text, then until the reply's audio.
+        events = call.events_until({"coach_text"}, limit=80)
+        events += call.events_until({"__binary__"}, limit=20)
         kinds = [event["type"] for event in events]
         assert "coach_text" in kinds
         assert "audio.frame.descriptor" in kinds

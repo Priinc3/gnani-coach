@@ -1,0 +1,83 @@
+url=ws://127.0.0.1:8100/ws/call origin=http://localhost:3000
+hello_frames=20 hello_s=0.64 long_frames=285 long_s=9.12
+
+event arrivals (seconds relative to call start):
+  +   0.428  status state=connecting
+  +   0.428  status state=ready
+  +   0.428  status state=listening
+  +   1.760  status state=thinking
+  +   2.522  descriptor kind=backchannel
+  +   2.523  binary bytes=15360 kind=backchannel
+  +   3.424  transcript_final chars=5 words=1
+  +   3.424  status state=listening
+  +  13.231  status state=thinking
+  +  13.231  descriptor kind=backchannel
+  +  13.232  binary bytes=20480 kind=backchannel
+  +  14.211  transcript_final chars=186 words=39
+  +  15.980  status state=speaking
+  +  15.992  coach_text
+  +  16.156  descriptor kind=reply
+  +  16.156  binary bytes=512 kind=reply
+  +  16.157  binary bytes=3072 kind=reply
+  +  16.168  binary bytes=512 kind=reply
+  +  16.168  binary bytes=2048 kind=reply
+  +  16.169  binary bytes=512 kind=reply
+  +  16.169  binary bytes=1536 kind=reply
+  +  16.184  binary bytes=512 kind=reply
+  +  16.184  binary bytes=2048 kind=reply
+  +  16.185  binary bytes=512 kind=reply
+  +  16.185  binary bytes=1536 kind=reply
+  +  16.199  binary bytes=512 kind=reply
+  +  16.199  binary bytes=2048 kind=reply
+  +  16.201  binary bytes=512 kind=reply
+  +  16.201  binary bytes=3072 kind=reply
+  +  16.215  binary bytes=512 kind=reply
+  +  16.215  binary bytes=3584 kind=reply
+  +  16.216  binary bytes=512 kind=reply
+  +  16.230  binary bytes=512 kind=reply
+  +  16.230  binary bytes=2048 kind=reply
+  +  16.230  binary bytes=512 kind=reply
+  +  16.230  binary bytes=1536 kind=reply
+  +  16.245  binary bytes=1024 kind=reply
+  +  16.247  binary bytes=512 kind=reply
+  +  16.248  binary bytes=4096 kind=reply
+  +  16.248  binary bytes=512 kind=reply
+  +  16.248  binary bytes=512 kind=reply
+  +  16.333  binary bytes=512 kind=reply
+  +  16.334  binary bytes=3584 kind=reply
+  +  16.349  binary bytes=512 kind=reply
+  +  16.351  binary bytes=3584 kind=reply
+  +  16.351  binary bytes=512 kind=reply
+  +  16.365  binary bytes=512 kind=reply
+  +  16.365  binary bytes=512 kind=reply
+  +  16.367  binary bytes=512 kind=reply
+  +  16.368  binary bytes=4096 kind=reply
+  +  16.368  binary bytes=1024 kind=reply
+  +  16.381  binary bytes=512 kind=reply
+  +  16.382  binary bytes=3584 kind=reply
+  +  16.471  binary bytes=512 kind=reply
+  +  16.471  binary bytes=512 kind=reply
+  +  16.471  binary bytes=512 kind=reply
+  +  16.471  binary bytes=3072 kind=reply
+  +  16.487  binary bytes=512 kind=reply
+  +  16.487  binary bytes=2048 kind=reply
+  +  16.488  binary bytes=512 kind=reply
+  +  16.488  binary bytes=3584 kind=reply
+  +  16.502  binary bytes=1024 kind=reply
+  +  16.502  binary bytes=512 kind=reply
+  +  16.502  binary bytes=512 kind=reply
+  +  16.503  binary bytes=2560 kind=reply
+  +  16.503  binary bytes=512 kind=reply
+  +  16.503  binary bytes=1024 kind=reply
+  +  16.572  status state=ended
+
+transcript_final_count=2
+long_transcript_chars=191
+coach_text_count=1 coach_after_long=1
+longest_gap_between_server_messages_ms=9806
+end_of_long_speech_to_first_coach_audio_ms=618
+end_of_long_speech_to_first_sound_of_any_kind_ms=618
+end_of_long_speech_to_first_word_of_real_reply_ms=3542
+backchannel_count=2
+errors=0 socket_closed_early=False
+RESULT=PASS
