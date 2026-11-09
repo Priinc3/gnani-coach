@@ -128,6 +128,6 @@ plus the phone model — not a description.
 
 ## Commit
 
-Commit hash: recorded in the follow-up report commit.
+Commit hash: `5215224`.
 
 PHASE 17 BUILT
