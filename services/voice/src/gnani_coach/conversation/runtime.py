@@ -349,6 +349,11 @@ class CallRuntime:
         self._user_id: str | None = None
         self._started_at = 0.0
         self._last_client_frame_at = 0.0
+        #: Content-free audio diagnostics: how many frames the client sent
+        #: and how many the energy gate called speech. This is what tells a
+        #: silent microphone apart from a recognition failure.
+        self._frames_received = 0
+        self._speech_frames_seen = 0
         self._last_sent_at = 0.0
         self._recording: bytearray | None = None
         self._recording_abandoned = False
@@ -798,6 +803,9 @@ class CallRuntime:
             return
         self._endpointing.advance(FRAME_DURATION_MS)
         speech = self._endpointing.observe(event.data)
+        self._frames_received += 1
+        if speech:
+            self._speech_frames_seen += 1
         if speech:
             self._awaiting_speech = False
             # The learner resumed: a speculative reply is stale and a
@@ -2033,6 +2041,7 @@ class CallRuntime:
         LOGGER.info(
             "call closed session=%s connection=%s closed_by=%s close_code=%d "
             "elapsed_ms=%d since_last_server_message_ms=%d "
+            "frames_received=%d speech_frames=%d "
             "speculation_calls=%d speculation_discarded=%d backchannels=%d",
             self._session_id,
             self._connection_id,
@@ -2040,6 +2049,8 @@ class CallRuntime:
             self._close_code,
             int(round((now - self._started_at) * 1000.0)),
             int(round((now - self._last_sent_at) * 1000.0)),
+            self._frames_received,
+            self._speech_frames_seen,
             self._speculation_calls,
             self._speculation_discarded,
             self._backchannels_sent,

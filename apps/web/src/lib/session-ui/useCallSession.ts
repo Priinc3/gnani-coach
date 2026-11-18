@@ -76,6 +76,11 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
 
   const clientRef = useRef<CallClient | null>(null);
   const captureRef = useRef<CaptureHandle | null>(null);
+  //: True while `startCapture` is still opening the microphone. Both the
+  //: `ready` and `listening` statuses ask for capture, and without this
+  //: guard a real device gets two concurrent `getUserMedia` streams (two
+  //: worklets, so every frame is sent twice at double cadence).
+  const captureStartingRef = useRef(false);
   const contextRef = useRef<AudioContext | null>(null);
   const playerRef = useRef<CoachAudioPlayer | null>(null);
   const startedRef = useRef(false);
@@ -108,6 +113,7 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
   const teardown = useCallback(() => {
     captureRef.current?.stop();
     captureRef.current = null;
+    captureStartingRef.current = false;
     clientRef.current?.close();
     clientRef.current = null;
     playerRef.current?.dispose();
@@ -163,10 +169,18 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
   }, [state.phase]);
 
   const startCaptureRef = useCallback(async () => {
+    // `ready` and `listening` both arrive at the start of a call. Opening
+    // the microphone twice gives two worklets, so every 1,024-byte frame
+    // is sent twice and the recogniser sees a double-rate stream. On a
+    // phone the second `getUserMedia` can also fail or return silence.
+    if (captureRef.current || captureStartingRef.current) {
+      return;
+    }
     const context = contextRef.current;
     if (!context) {
       return;
     }
+    captureStartingRef.current = true;
     try {
       const handle = await startCapture({
         context,
@@ -236,6 +250,8 @@ export function useCallSession(options: UseCallSessionOptions): CallSession {
       if (!micEndedRef.current) {
         dispatch({ type: "mic_failed", failure: describeMicFailure(error) });
       }
+    } finally {
+      captureStartingRef.current = false;
     }
   }, [teardown]);
 
